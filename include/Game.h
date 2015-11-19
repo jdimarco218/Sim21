@@ -11,8 +11,6 @@ private:
     vector<Player> _playerList;
     Shoe _shoe;
     
-    :set shiftwidt=4
-    
 
 };
 
