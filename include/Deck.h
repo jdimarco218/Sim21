@@ -4,12 +4,12 @@
 #include <vector>
 #include "Card.h"
 
-typedef enum TDeckType
+enum class TDeckType
 {
     BLACKJACK = 0,
     SPANISH21 = 1
 
-} TDeckType;
+};
 
 class Deck
 {

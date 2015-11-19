@@ -5,9 +5,9 @@ Deck::Deck(TDeckType deckType)
 {
     switch(deckType)
     {
-        case BLACKJACK:
+        case TDeckType::BLACKJACK:
             break;
-        case SPANISH21:
+        case TDeckType::SPANISH21:
             break;
         default:
             break;
