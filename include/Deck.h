@@ -1,6 +1,7 @@
 #ifndef DECK_H
 #define DECK_H
 
+#include <list>
 #include <vector>
 #include "Card.h"
 
@@ -14,11 +15,13 @@ enum class TDeckType
 class Deck
 {
 public:
+    std::list<Card> GetCards(){ return _cards; }
+
     Deck(TDeckType deckType); 
     ~Deck(){};
 
 private:
-    std::vector<Card> _cards;
+    std::list<Card> _cards;
 
 };
 

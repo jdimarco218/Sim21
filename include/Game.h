@@ -2,13 +2,16 @@
 #define GAME_H
 
 #include <vector>
+#include "Player.h"
+#include "Shoe.h"
 
 class Game
 {
 public:
+    Game();
 
 private:
-    vector<Player> _playerList;
+    std::vector<Player> _playerList;
     Shoe _shoe;
     
 
