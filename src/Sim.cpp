@@ -65,7 +65,7 @@ void Sim::RunStrategySimulation()
     while(!IsSimulationFinished())
     {
         std::cout << "Playing hand..." << std::endl;
-        SimulateHand();
+        SimulateHand(currGame);
         _handsPlayed++;
     }
 }
@@ -92,7 +92,7 @@ bool Sim::IsSimulationFinished()
     return true;
 }
 
-void Sim::SimulateHand()
+void Sim::SimulateHand(Game game)
 {
     std::cout << "Starting a new hand..." << std::endl;
 
@@ -100,7 +100,7 @@ void Sim::SimulateHand()
     for(auto player : _playersVec)
     {
         player.ResetPlayer();
-        player.SetBet();
+        player.SetInitialBet(game);
     }
     
 

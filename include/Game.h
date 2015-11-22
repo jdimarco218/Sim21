@@ -4,8 +4,8 @@
 #include <list>
 #include <vector>
 #include "Deck.h"
-#include "Sim.h"
-#include "Player.h"
+//#include "Sim.h"
+//#include "Player.h"
 #include "Shoe.h"
 
 /**

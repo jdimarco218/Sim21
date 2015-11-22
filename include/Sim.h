@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "Game.h"
+#include "Player.h"
 
 // Forward declarations
 class Game;
@@ -21,7 +22,7 @@ public:
     void RunStrategySimulation();
     void RunEorSimulation();
     void RunIndexSimulation();
-    void SimulateHand();
+    void SimulateHand(Game game);
     void SaveStatistics();
     bool IsSimulationFinished();
 
