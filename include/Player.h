@@ -9,10 +9,12 @@
 
 class Player
 {
+
 public:
-    std::vector<Bet> GetBetVec(){ return _betVec; }
-    std::vector< std::vector<Card> > GetHands(){ return _hands; }
-    std::vector<Card> GetHand(int i){ return _hands[i]; }
+    friend class Sim;
+    std::vector<Bet> &GetBetVec(){ return _betVec; }
+    std::vector< std::vector<Card> > &GetHands(){ return _hands; }
+    std::vector<Card> &GetHand(int i){ return _hands[i]; }
 
     void ResetPlayer();
     void SetInitialBet(Game game);

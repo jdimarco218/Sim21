@@ -12,6 +12,11 @@ void Player::ResetPlayer()
     std::cout << "Resetting player..." << std::endl;
     _betVec.clear();
     _hands.clear();
+
+    // Create an empty initial hand
+    //
+    _hands.push_back(std::vector<Card>());
+    std::cout << "While resetting, made _hands.size(): " << _hands.size() << std::endl;
 }
 
 void Player::SetInitialBet(Game game)

@@ -32,6 +32,12 @@ public:
     inline int GetRank(){ return _rank; }
     inline int GetSuit(){ return _suit; }
 
+    friend std::ostream& operator<<(std::ostream& os, Card &card)
+    {
+        os << card._rank << "." << card._suit;
+        return os;
+    }
+
     Card(int rank, int suit);
     ~Card(){};
 
@@ -42,4 +48,3 @@ private:
 };
 
 #endif
-

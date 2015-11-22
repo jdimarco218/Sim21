@@ -3,9 +3,8 @@
 
 #include <list>
 #include <vector>
+#include "Card.h"
 #include "Deck.h"
-//#include "Sim.h"
-//#include "Player.h"
 #include "Shoe.h"
 
 /**
@@ -19,6 +18,7 @@ class Game
 public:
     int GetCutCardPosition(){ return _cutCardPosition; }
     std::list<Card> GetCards(){ return _shoe.GetCards(); }
+    Card DealCard();
 
     Game();
     Game(TDeckType deckType, int numDecks = 6, int cutPercentMin = 75, int cutPercentMax = 80);

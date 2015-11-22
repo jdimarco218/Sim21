@@ -97,14 +97,29 @@ void Sim::SimulateHand(Game game)
     std::cout << "Starting a new hand..." << std::endl;
 
     // Get bets and reset players
-    for(auto player : _playersVec)
+    for(auto &player : _playersVec)
     {
         player.ResetPlayer();
         player.SetInitialBet(game);
     }
-    
 
     // Deal all initial cards
+    std::cout << "Dealing cards." << std::endl;
+    for(auto &player : _playersVec)
+    {
+        //Card card = game.DealCard();
+        Card card(game.DealCard());
+        std::cout << "Dealing " << card << std::endl;
+        player._hands[0].push_back(card);
+        std::cout << "Hand[0].size(): " << player._hands[0].size() << std::endl;
+        for(auto card : player._hands[0])
+        {
+            std::cout << card << ", ";
+        }
+    }
+
+    std::cout << "Printing game state." << std::endl;
+    PrintGameState(game);
 
     // Check insurance, bonuses, sidebets, and blackjack
 
@@ -114,4 +129,23 @@ void Sim::SimulateHand(Game game)
 
     // Payouts
 
+    return;
+}
+
+void Sim::PrintGameState(Game game)
+{
+    for(auto player : _playersVec)
+    {
+        std::cout << "Player hand: ";
+        for(auto hand : player.GetHands())
+        {
+            for(auto card : hand)
+            {
+                std::cout << card << ", ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    return;
 }

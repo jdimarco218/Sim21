@@ -25,6 +25,7 @@ public:
     void SimulateHand(Game game);
     void SaveStatistics();
     bool IsSimulationFinished();
+    void PrintGameState(Game game);
 
     Sim(TSimMode simMode, TDeckType deckType);
     ~Sim();
