@@ -7,7 +7,8 @@ Card Game::DealCard()
     if(!_shoe.GetCards().empty())
     {
         Card card = _shoe.GetCards().front();
-        _shoe.GetCards().pop_front();
+        _shoe._shoeCards.pop_front();
+        std::cout << "Dealing " << card << std::endl;
         return card;
     }
     std::cerr << "ERROR: Shoe is empty. Cannot DealCard()" << std::endl;

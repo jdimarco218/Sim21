@@ -9,7 +9,9 @@
 class Shoe
 {
 public:
+    friend class Game;
     inline std::list<Card> GetCards(){ return _shoeCards; }
+
     Shoe(){};
     Shoe(int numDecks, TDeckType deckType);
     ~Shoe(){}

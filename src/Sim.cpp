@@ -137,7 +137,7 @@ void Sim::PrintGameState(Game game)
     for(auto player : _playersVec)
     {
         std::cout << "Player hand: ";
-        for(auto hand : player.GetHands())
+        for(auto hand : player._hands)
         {
             for(auto card : hand)
             {
