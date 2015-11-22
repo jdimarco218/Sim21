@@ -10,6 +10,7 @@ class Shoe
 {
 public:
     inline std::list<Card> GetCards(){ return _shoeCards; }
+    Shoe(){};
     Shoe(int numDecks, TDeckType deckType);
     ~Shoe(){}
 
