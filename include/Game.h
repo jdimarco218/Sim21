@@ -1,6 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <list>
 #include <vector>
 #include "Deck.h"
 #include "Sim.h"
@@ -16,7 +17,11 @@
 class Game
 {
 public:
-    Game(TDeckType deckType, int numDecks, int cutPercentMin, int cutPercentMax);
+    int GetCutCardPosition(){ return _cutCardPosition; }
+    std::list<Card> GetCards(){ return _shoe.GetCards(); }
+
+    Game();
+    Game(TDeckType deckType, int numDecks = 6, int cutPercentMin = 75, int cutPercentMax = 80);
 
 private:
     Shoe _shoe;

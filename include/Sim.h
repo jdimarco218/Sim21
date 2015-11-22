@@ -1,7 +1,11 @@
 #ifndef SIM_H
 #define SIM_H
 
+#include <vector>
 #include "Game.h"
+
+// Forward declarations
+class Game;
 
 enum class TSimMode
 {
@@ -17,6 +21,7 @@ public:
     void RunStrategySimulation();
     void RunEorSimulation();
     void RunIndexSimulation();
+    void SimulateHand();
     void SaveStatistics();
     bool IsSimulationFinished();
 
@@ -24,7 +29,9 @@ public:
     ~Sim();
 
 private:
+    std::vector<Player> _playersVec;
     int _handsPlayed;
+    int _handsToPlay;
     TSimMode _simMode;
     TDeckType _deckType;
 
