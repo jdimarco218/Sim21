@@ -21,7 +21,7 @@ void Player::ResetPlayer()
     std::cout << "While resetting, made _hands.size(): " << _hands.size() << std::endl;
 }
 
-void Player::SetInitialBet(Game &game)
+void Player::SetInitialBet(Game * game)
 {
     int betAmount = 25;
     _betVec.push_back(Bet(betAmount, (double)betAmount));

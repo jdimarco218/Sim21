@@ -21,10 +21,10 @@ public:
     void RunStrategySimulation();
     void RunEorSimulation();
     void RunIndexSimulation();
-    void SimulateHand(Game &game);
+    void SimulateHand(Game * game);
     void SaveStatistics();
     bool IsSimulationFinished();
-    void PrintGameState(Game &game);
+    void PrintGameState(Game * game);
 
     Sim(TSimMode simMode, TDeckType deckType);
     ~Sim()

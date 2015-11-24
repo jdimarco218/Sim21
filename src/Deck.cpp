@@ -1,3 +1,4 @@
+#include <list>
 #include <memory>
 #include "Card.h"
 #include "Deck.h"

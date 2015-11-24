@@ -1,3 +1,5 @@
+#include <list>
+#include <memory>
 #include "Shoe.h"
 #include "Deck.h"
 

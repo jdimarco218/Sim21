@@ -16,13 +16,13 @@
 class Game
 {
 public:
-    int GetCutCardPosition(){ return _cutCardPosition; }
-    inline int GetCardsRemaining(){ return _shoe.GetCardsRemaining(); }
+    inline int GetCutCardPosition(){ return _cutCardPosition; }
+    inline int GetCardsRemaining(){ return _shoe->GetCardsRemaining(); }
     std::unique_ptr<Card> DealCard();
 
     Game()
     {
-        _shoe = Shoe();
+        _shoe = std::move(std::unique_ptr<Shoe>(new Shoe()));
         _cutCardPosition = 0;
         _hiloCount = 0;
     }
@@ -33,7 +33,7 @@ public:
     }  
 
 private:
-    Shoe _shoe;
+    std::unique_ptr<Shoe> _shoe;
     // TODO count stuffs
     int _cutCardPosition;
     int _hiloCount;

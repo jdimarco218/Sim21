@@ -54,16 +54,18 @@ void Sim::RunStrategySimulation()
     std::cout << "RunStrategySimulation()..." << std::endl;
 
     // Start a new Game
-    Game currGame = Game(_deckType);
+    std::unique_ptr<Game> currGame(new Game(_deckType));
 
-    std::cout << "Cut card: " << currGame.GetCutCardPosition() << " out of " << currGame.GetCardsRemaining() << std::endl;
+    std::cout << "Cut card: " << currGame->GetCutCardPosition() << " out of " << currGame->GetCardsRemaining() << std::endl;
 
     while(!IsSimulationFinished())
     {
         std::cout << "Playing hand..." << std::endl;
-        SimulateHand(currGame);
+        SimulateHand(currGame.get());
         _handsPlayed++;
     }
+
+    //delete currGame;
 }
 
 bool Sim::IsSimulationFinished()
@@ -88,7 +90,7 @@ bool Sim::IsSimulationFinished()
     return true;
 }
 
-void Sim::SimulateHand(Game &game)
+void Sim::SimulateHand(Game * game)
 {
     std::cout << "Starting a new hand..." << std::endl;
 
@@ -108,15 +110,17 @@ void Sim::SimulateHand(Game &game)
         // Deal two cards
         //Card card0(game.DealCard());
         //Card card1(game.DealCard());
-        player->_hands[0].push_back(game.DealCard());
-        player->_hands[0].push_back(game.DealCard());
+        std::cout << "Hand[0].size(): " << player->_hands[0].size() << std::endl;
+        std::cout << "Dealing to a player now." << std::endl;
+        player->_hands[0].push_back(game->DealCard());
+        std::cout << "Dealing to a player now." << std::endl;
+        player->_hands[0].push_back(game->DealCard());
+        //player->_hands[0].push_back(game.DealCard());
         std::cout << "Hand[0].size(): " << player->_hands[0].size() << std::endl;
     }
     // Dealer's initial cards
-    //Card card0(game.DealCard());
-    //Card card1(game.DealCard());
-    _dealer->_hands[0].push_back(game.DealCard());
-    _dealer->_hands[0].push_back(game.DealCard());
+    _dealer->_hands[0].push_back(game->DealCard());
+    _dealer->_hands[0].push_back(game->DealCard());
 
     std::cout << "Printing game state." << std::endl;
     PrintGameState(game);
@@ -136,7 +140,7 @@ void Sim::SimulateHand(Game &game)
     return;
 }
 
-void Sim::PrintGameState(Game &game)
+void Sim::PrintGameState(Game * game)
 {
     //for(auto& player : _playersVec)
     //{

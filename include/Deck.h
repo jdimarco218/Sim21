@@ -17,7 +17,7 @@ enum class TDeckType
 class Deck
 {
 public:
-    inline std::list<std::unique_ptr<Card> > &GetCards(){ return _cards; }
+    inline std::list<std::unique_ptr<Card> > GetCards(){ return std::move(_cards); }
 
     Deck(TDeckType deckType); 
     ~Deck()

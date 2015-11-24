@@ -19,7 +19,7 @@ public:
     std::vector<std::unique_ptr<Card> > &GetHand(int i){ return _hands[i]; }
 
     void ResetPlayer();
-    void SetInitialBet(Game &game);
+    void SetInitialBet(Game * game);
 
     Player();
     ~Player()
