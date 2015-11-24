@@ -20,7 +20,12 @@ public:
     inline int GetCardsRemaining(){ return _shoe.GetCardsRemaining(); }
     std::unique_ptr<Card> DealCard();
 
-    Game();
+    Game()
+    {
+        _shoe = Shoe();
+        _cutCardPosition = 0;
+        _hiloCount = 0;
+    }
     Game(TDeckType deckType, int numDecks = 6, int cutPercentMin = 75, int cutPercentMax = 80);
     ~Game()
     {

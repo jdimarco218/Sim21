@@ -40,6 +40,11 @@ public:
         return os;
     }
 
+    Card()
+    {
+        _rank = 1;
+        _suit = 0;
+    }
     Card(int rank, int suit);
     ~Card()
     {
