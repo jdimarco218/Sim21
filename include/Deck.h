@@ -1,7 +1,9 @@
 #ifndef DECK_H
 #define DECK_H
 
+#include <iostream>
 #include <list>
+#include <memory>
 #include <vector>
 #include "Card.h"
 
@@ -15,13 +17,16 @@ enum class TDeckType
 class Deck
 {
 public:
-    std::list<Card> GetCards(){ return _cards; }
+    inline std::list<std::unique_ptr<Card> > &GetCards(){ return _cards; }
 
     Deck(TDeckType deckType); 
-    ~Deck(){};
+    ~Deck()
+    {
+        std::cout << "Deck dtor." << std::endl;
+    }
 
 private:
-    std::list<Card> _cards;
+    std::list<std::unique_ptr<Card> > _cards;
 
 };
 

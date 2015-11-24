@@ -1,28 +1,36 @@
 #include <iostream>
+#include <list>
+#include <memory>
 #include <random>
 #include "Game.h"
 
-Card Game::DealCard()
+std::unique_ptr<Card> Game::DealCard()
 {
-    if(!_shoe.GetCards().empty())
+    if(!_shoe.IsEmpty())
     {
-        Card card = _shoe.GetCards().front();
+        //Card card = _shoe.GetCards().front();
+        //_shoe._shoeCards.pop_front();
+        //std::cout << "Dealing " << card << std::endl;
+        //return card;
+
+        std::unique_ptr<Card> temp = std::move(_shoe._shoeCards.front());
         _shoe._shoeCards.pop_front();
-        std::cout << "Dealing " << card << std::endl;
-        return card;
+        return temp;
     }
     std::cerr << "ERROR: Shoe is empty. Cannot DealCard()" << std::endl;
-    return Card(0, 1);
+    return std::move(std::unique_ptr<Card>(new Card(0, 1)));
 }
 
 Game::Game(TDeckType deckType, int numDecks, int cutPercentMin, int cutPercentMax)
 {
     _shoe = Shoe(numDecks, deckType);
+    _hiloCount = 0;
 
     // Generate a random cut card in the penetration range
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> dis(cutPercentMin, cutPercentMax);
-    _cutCardPosition = dis(gen) * _shoe.GetCards().size() / 100; 
+    //std::random_device rd;
+    //std::mt19937 gen(rd());
+    //std::uniform_int_distribution<> dis(cutPercentMin, cutPercentMax);
+    //_cutCardPosition = dis(gen) * _shoe.GetCards().size() / 100; 
+    _cutCardPosition = _shoe.GetCards().size() - 10;
 
 }

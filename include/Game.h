@@ -1,10 +1,10 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <list>
+#include <iostream>
 #include <vector>
 #include "Card.h"
-#include "Deck.h"
+//#include "Deck.h"
 #include "Shoe.h"
 
 /**
@@ -17,11 +17,15 @@ class Game
 {
 public:
     int GetCutCardPosition(){ return _cutCardPosition; }
-    std::list<Card> GetCards(){ return _shoe.GetCards(); }
-    Card DealCard();
+    inline int GetCardsRemaining(){ return _shoe.GetCardsRemaining(); }
+    std::unique_ptr<Card> DealCard();
 
     Game();
     Game(TDeckType deckType, int numDecks = 6, int cutPercentMin = 75, int cutPercentMax = 80);
+    ~Game()
+    {
+        std::cout << "Game dtor." << std::endl;
+    }  
 
 private:
     Shoe _shoe;

@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Sim.h"
 #include "Card.h"
-#include "Deck.h"
+//#include "Deck.h"
 #include "Shoe.h"
 
 int main(int argc, char ** argv)

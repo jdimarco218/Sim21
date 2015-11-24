@@ -1,6 +1,8 @@
 #ifndef CARD_H
 #define CARD_H
 
+#include <iostream>
+
 enum class TSuitType
 {
     CLUBS = 0,
@@ -39,7 +41,10 @@ public:
     }
 
     Card(int rank, int suit);
-    ~Card(){};
+    ~Card()
+    {
+        std::cout << "Card dtor." << std::endl;
+    }
 
 private:
     int _rank;

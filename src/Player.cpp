@@ -1,10 +1,12 @@
 #include <iostream>
+#include <memory>
 #include "Game.h"
 #include "Player.h"
 
 Player::Player()
 {
     _chips = 0;
+    ResetPlayer();
 }
 
 void Player::ResetPlayer()
@@ -15,11 +17,11 @@ void Player::ResetPlayer()
 
     // Create an empty initial hand
     //
-    _hands.push_back(std::vector<Card>());
+    _hands.push_back(std::vector<std::unique_ptr<Card> >());
     std::cout << "While resetting, made _hands.size(): " << _hands.size() << std::endl;
 }
 
-void Player::SetInitialBet(Game game)
+void Player::SetInitialBet(Game &game)
 {
     int betAmount = 25;
     _betVec.push_back(Bet(betAmount, (double)betAmount));

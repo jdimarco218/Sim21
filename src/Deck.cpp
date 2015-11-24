@@ -1,3 +1,4 @@
+#include <memory>
 #include "Card.h"
 #include "Deck.h"
 
@@ -10,7 +11,7 @@ Deck::Deck(TDeckType deckType)
             {
                 for(int j = 1; j < 13; ++j)
                 {
-                    _cards.push_back(Card(i, j));
+                    _cards.push_back(std::unique_ptr<Card>(new Card(i, j)));
                 }
             }
             break;
@@ -21,7 +22,7 @@ Deck::Deck(TDeckType deckType)
                 {
                     if(j != 10)
                     {
-                        _cards.push_back(Card(i, j));
+                        _cards.push_back(std::unique_ptr<Card>(new Card(i, j)));
                     }
                 }
             }

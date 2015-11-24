@@ -1,5 +1,6 @@
 #include <iostream>
 #include <list>
+#include <memory>
 #include <vector>
 #include "Sim.h"
 #include "Deck.h"
@@ -7,21 +8,16 @@
 
 Sim::Sim(TSimMode simMode, TDeckType deckType)
 {
+    _dealer = std::unique_ptr<Player>(new Player());
     int numPlayers = 2;
     for(int i = 0; i < numPlayers; ++i)
     {
-        _playersVec.push_back(Player());
+        _playersVec.push_back( std::unique_ptr<Player>(new Player()) );
     }
     _handsPlayed = 0;
     _handsToPlay = 3;
     _simMode = simMode;
     _deckType = deckType;
-}
-
-Sim::~Sim()
-{
-    // dtor
-    return;
 }
 
 void Sim::RunSimulation()
@@ -60,7 +56,7 @@ void Sim::RunStrategySimulation()
     // Start a new Game
     Game currGame = Game(_deckType);
 
-    std::cout << "Cut card: " << currGame.GetCutCardPosition() << " out of " << currGame.GetCards().size() << std::endl;
+    std::cout << "Cut card: " << currGame.GetCutCardPosition() << " out of " << currGame.GetCardsRemaining() << std::endl;
 
     while(!IsSimulationFinished())
     {
@@ -92,60 +88,68 @@ bool Sim::IsSimulationFinished()
     return true;
 }
 
-void Sim::SimulateHand(Game game)
+void Sim::SimulateHand(Game &game)
 {
     std::cout << "Starting a new hand..." << std::endl;
 
     // Get bets and reset players
-    for(auto &player : _playersVec)
+    //
+    for(auto& player : _playersVec)
     {
-        player.ResetPlayer();
-        player.SetInitialBet(game);
+        player->ResetPlayer();
+        player->SetInitialBet(game);
     }
 
     // Deal all initial cards
+    //
     std::cout << "Dealing cards." << std::endl;
-    for(auto &player : _playersVec)
+    for(auto& player : _playersVec)
     {
-        //Card card = game.DealCard();
-        Card card(game.DealCard());
-        std::cout << "Dealing " << card << std::endl;
-        player._hands[0].push_back(card);
-        std::cout << "Hand[0].size(): " << player._hands[0].size() << std::endl;
-        for(auto card : player._hands[0])
-        {
-            std::cout << card << ", ";
-        }
+        // Deal two cards
+        //Card card0(game.DealCard());
+        //Card card1(game.DealCard());
+        player->_hands[0].push_back(game.DealCard());
+        player->_hands[0].push_back(game.DealCard());
+        std::cout << "Hand[0].size(): " << player->_hands[0].size() << std::endl;
     }
+    // Dealer's initial cards
+    //Card card0(game.DealCard());
+    //Card card1(game.DealCard());
+    _dealer->_hands[0].push_back(game.DealCard());
+    _dealer->_hands[0].push_back(game.DealCard());
 
     std::cout << "Printing game state." << std::endl;
     PrintGameState(game);
 
     // Check insurance, bonuses, sidebets, and blackjack
+    //
 
     // Play each player's hand
+    //
 
     // Play dealer's hand
+    //
 
     // Payouts
+    //
 
     return;
 }
 
-void Sim::PrintGameState(Game game)
+void Sim::PrintGameState(Game &game)
 {
-    for(auto player : _playersVec)
-    {
-        std::cout << "Player hand: ";
-        for(auto hand : player._hands)
-        {
-            for(auto card : hand)
-            {
-                std::cout << card << ", ";
-            }
-            std::cout << std::endl;
-        }
-    }
+    //for(auto& player : _playersVec)
+    //{
+    //    std::cout << "Player hand: ";
+    //    for(auto& hand : player->_hands)
+    //    {
+    //        for(auto& card : hand)
+    //        {
+    //            //std::cout << *card << ", ";
+    //        }
+    //        std::cout << std::endl;
+    //    }
+    //}
 
     return;
 }
