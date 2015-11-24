@@ -22,7 +22,6 @@ Game::Game(TDeckType deckType, int numDecks, int cutPercentMin, int cutPercentMa
     _hiloCount = 0;
 
     // Generate a random cut card in the penetration range
-    //
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> dis(cutPercentMin, cutPercentMax);
