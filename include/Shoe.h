@@ -25,7 +25,7 @@ public:
     Shoe(int numDecks, TDeckType deckType);
     ~Shoe()
     {
-        std::cout << "Shoe dtor." << std::endl;
+        //std::cout << "Shoe dtor." << std::endl;
     }
 
 private:

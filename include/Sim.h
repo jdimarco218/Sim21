@@ -25,6 +25,9 @@ public:
     void SaveStatistics();
     bool IsSimulationFinished();
     void PrintGameState(Game * game);
+    void CheckInsuranceAndBlackjack(Game * game);
+    bool WantsInsurance(int playerIdx);
+    bool IsAceUp();
 
     Sim(TSimMode simMode, TDeckType deckType);
     ~Sim()
@@ -39,6 +42,7 @@ private:
     int _handsToPlay;
     TSimMode _simMode;
     TDeckType _deckType;
+    int _upCardIndex;
 
 };
 

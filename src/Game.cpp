@@ -8,12 +8,8 @@ std::unique_ptr<Card> Game::DealCard()
 {
     if(!_shoe->IsEmpty())
     {
-        std::cout << "Grabbing the front..." << std::endl;
         std::unique_ptr<Card> temp = std::move(_shoe->_shoeCards.front());
-        std::cout << "Popping the front..." << std::endl;
         _shoe->_shoeCards.pop_front();
-        std::cout << "Returning..." << std::endl;
-        //return std::move(temp);
         return temp;
     }
     std::cerr << "ERROR: Shoe is empty. Cannot DealCard()" << std::endl;

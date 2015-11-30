@@ -18,6 +18,7 @@ Sim::Sim(TSimMode simMode, TDeckType deckType)
     _handsToPlay = 3;
     _simMode = simMode;
     _deckType = deckType;
+    _upCardIndex = 0;
 }
 
 void Sim::RunSimulation()
@@ -108,25 +109,21 @@ void Sim::SimulateHand(Game * game)
     for(auto& player : _playersVec)
     {
         // Deal two cards
-        //Card card0(game.DealCard());
-        //Card card1(game.DealCard());
-        std::cout << "Hand[0].size(): " << player->_hands[0].size() << std::endl;
-        std::cout << "Dealing to a player now." << std::endl;
+        player->_hands[0].emplace_back(game->DealCard());
         player->_hands[0].push_back(game->DealCard());
-        std::cout << "Dealing to a player now." << std::endl;
-        player->_hands[0].push_back(game->DealCard());
-        //player->_hands[0].push_back(game.DealCard());
-        std::cout << "Hand[0].size(): " << player->_hands[0].size() << std::endl;
     }
     // Dealer's initial cards
     _dealer->_hands[0].push_back(game->DealCard());
     _dealer->_hands[0].push_back(game->DealCard());
 
+    std::cout << std::endl;
     std::cout << "Printing game state." << std::endl;
     PrintGameState(game);
+    std::cout << std::endl;
 
     // Check insurance, bonuses, sidebets, and blackjack
     //
+    CheckInsuranceAndBlackjack(game);
 
     // Play each player's hand
     //
@@ -142,18 +139,46 @@ void Sim::SimulateHand(Game * game)
 
 void Sim::PrintGameState(Game * game)
 {
-    //for(auto& player : _playersVec)
-    //{
-    //    std::cout << "Player hand: ";
-    //    for(auto& hand : player->_hands)
-    //    {
-    //        for(auto& card : hand)
-    //        {
-    //            //std::cout << *card << ", ";
-    //        }
-    //        std::cout << std::endl;
-    //    }
-    //}
+    for(auto& player : _playersVec)
+    {
+        std::cout << "Player hand: ";
+        for(auto& hand : player->_hands)
+        {
+            for(auto& card : hand)
+            {
+                std::cout << *card << ", ";
+            }
+            std::cout << std::endl;
+        }
+    }
 
     return;
+}
+
+void Sim::CheckInsuranceAndBlackjack(Game * game)
+{
+    bool isAceUp = IsAceUp();
+    auto insuranceList = std::list<Player>();
+
+    if (isAceUp)
+    {
+        for (int i = 0; i < _playersVec.size(); ++i)
+        {
+            if (WantsInsurance(i))
+            {
+            }
+        }
+    }
+
+    return;
+}
+
+bool Sim::WantsInsurance(int playerIdx)
+{
+    return false;
+}
+
+bool Sim::IsAceUp()
+{
+    return (_dealer->_hands[0][_upCardIndex]->GetRank() == 1);
 }

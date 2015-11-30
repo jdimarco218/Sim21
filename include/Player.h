@@ -24,7 +24,7 @@ public:
     Player();
     ~Player()
     {
-        std::cout << "Player dtor." << std::endl;
+        //std::cout << "Player dtor." << std::endl;
     }
 
 private:

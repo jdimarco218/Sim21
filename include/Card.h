@@ -48,7 +48,7 @@ public:
     Card(int rank, int suit);
     ~Card()
     {
-        std::cout << "Card dtor." << std::endl;
+        //std::cout << "Card dtor." << std::endl;
     }
 
 private:

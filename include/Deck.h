@@ -22,7 +22,7 @@ public:
     Deck(TDeckType deckType); 
     ~Deck()
     {
-        std::cout << "Deck dtor." << std::endl;
+        //std::cout << "Deck dtor." << std::endl;
     }
 
 private:

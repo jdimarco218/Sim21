@@ -11,7 +11,7 @@ public:
     Bet(int amount, double payout);
     ~Bet()
     {
-        std::cout << "Bet dtor." << std::endl;
+        //std::cout << "Bet dtor." << std::endl;
     }
 
 private:
