@@ -27,3 +27,28 @@ void Player::SetInitialBet(Game * game)
     _betVec.push_back(Bet(betAmount, (double)betAmount));
     _chips -= betAmount;  
 }
+
+void Player::MakeAdditionalBet(int handIdx, int betAmount)
+{
+    if (handIdx == _betVec.size()) // Adding bet (e.g. doubling)
+    {
+    }
+    else if (handIdx < _betVec.size()) // New hand's bet (e.g. split)
+    { 
+        _betVec[handIdx] += betAmount;
+        _totalWagered += betAmount;
+        _chips -= betAmount;
+    }
+    else // Shouldn't happen
+    {
+        std::cerr << "ERROR: unknown hand for adding a new bet!" << std::endl; 
+        return;
+    }
+    return;
+}
+
+void Player::MakeInsuranceBet()
+{
+
+    return;
+}

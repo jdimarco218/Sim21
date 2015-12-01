@@ -158,7 +158,8 @@ void Sim::PrintGameState(Game * game)
 void Sim::CheckInsuranceAndBlackjack(Game * game)
 {
     bool isAceUp = IsAceUp();
-    auto insuranceList = std::list<Player>();
+    // Holds the index of players' insurance choice
+    auto insuranceList = std::list<int>();
 
     if (isAceUp)
     {
@@ -166,10 +167,44 @@ void Sim::CheckInsuranceAndBlackjack(Game * game)
         {
             if (WantsInsurance(i))
             {
+                insuranceList.push_back(true);
+            }
+            else
+            {
+                inusranceList.push_back(false);
             }
         }
     }
 
+    // Handle dealer's blackjack
+    if (_dealer._hands[0].size() == 2 && GetOptimalValue(_dealer._hands[0]) == 21)
+    {
+
+    }
+    else
+    { // Dealer does NOT have blackjack
+        for (auto &player : _playersVec)
+        {
+            if (player._hands[0].size() == 2 && GetOptimalValue(player._hands[0]) == 21)
+            {
+                PayoutPlayer(player, Sim::FACTOR_BLACKJACK);
+                player._active = false;
+            }
+        }
+    }
+
+    return;
+}
+
+int Sim::GetOptimalValue(std::vector<std::unique_ptr<Card> > hand)
+{
+
+    return 0;
+}
+
+void PayoutPlayer(Player player, double factor)
+{
+    // TODO
     return;
 }
 
