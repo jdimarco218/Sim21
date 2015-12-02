@@ -5,9 +5,12 @@
 
 class Bet
 {
+    friend class Player;
 public:
     inline int    GetAmount(){ return _amount; }
     inline double GetPayout(){ return _payout; }
+    Bet(){}
+    Bet(int amount) : _amount(amount) {}
     Bet(int amount, double payout);
     ~Bet()
     {

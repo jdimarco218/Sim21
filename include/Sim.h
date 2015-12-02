@@ -18,9 +18,9 @@ class Sim
 {
 public:
     // Payout coefficients
-    double FACTOR_BLACKJACK = 1.5;
-    double FACTOR_WIN       = 1.0;
-    double FACTOR_SURRENDER = 0.5;
+    static constexpr double FACTOR_BLACKJACK = 1.5;
+    static constexpr double FACTOR_WIN       = 1.0;
+    static constexpr double FACTOR_SURRENDER = 0.5;
 
     void RunSimulation();
     void RunStrategySimulation();
@@ -33,8 +33,9 @@ public:
     void CheckInsuranceAndBlackjack(Game * game);
     bool WantsInsurance(int playerIdx);
     bool IsAceUp();
-    int  GetOptimalValue(std::vector<std::unique_ptr<Card> >);
-    void PayoutPlayer(Player player, double payoutFactor);
+    int  GetOptimalValue(std::vector<std::unique_ptr<Card> >& hand);
+    void PayoutPlayer(std::unique_ptr<Player>& player, int handIdx, double payoutFactor);
+    void PayoutInsurance(std::unique_ptr<Player>& player);
 
     Sim(TSimMode simMode, TDeckType deckType);
     ~Sim()

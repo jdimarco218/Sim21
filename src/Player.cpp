@@ -5,14 +5,16 @@
 
 Player::Player()
 {
+    _active = false;
     _chips = 0;
     ResetPlayer();
 }
 
 void Player::ResetPlayer()
 {
+    _active = true;
     std::cout << "Resetting player..." << std::endl;
-    _betVec.clear();
+    _handsBetVec.clear();
     _hands.clear();
 
     // Create an empty initial hand
@@ -24,18 +26,18 @@ void Player::ResetPlayer()
 void Player::SetInitialBet(Game * game)
 {
     int betAmount = 25;
-    _betVec.push_back(Bet(betAmount, (double)betAmount));
+    _handsBetVec.push_back(Bet(betAmount, (double)betAmount));
     _chips -= betAmount;  
 }
 
 void Player::MakeAdditionalBet(int handIdx, int betAmount)
 {
-    if (handIdx == _betVec.size()) // Adding bet (e.g. doubling)
+    if (handIdx == _handsBetVec.size()) // Adding bet (e.g. doubling)
     {
     }
-    else if (handIdx < _betVec.size()) // New hand's bet (e.g. split)
+    else if (handIdx < _handsBetVec.size()) // New hand's bet (e.g. split)
     { 
-        _betVec[handIdx] += betAmount;
+        _handsBetVec[handIdx]._amount += betAmount;
         _totalWagered += betAmount;
         _chips -= betAmount;
     }
@@ -49,6 +51,7 @@ void Player::MakeAdditionalBet(int handIdx, int betAmount)
 
 void Player::MakeInsuranceBet()
 {
-
+    // Set insurance to be half of the 0th hand's bet
+    _insuranceBet = std::unique_ptr<Bet>(new Bet(_handsBetVec[0]._amount / 2));
     return;
 }

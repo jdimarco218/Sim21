@@ -109,7 +109,7 @@ void Sim::SimulateHand(Game * game)
     for(auto& player : _playersVec)
     {
         // Deal two cards
-        player->_hands[0].emplace_back(game->DealCard());
+        player->_hands[0].push_back(game->DealCard());
         player->_hands[0].push_back(game->DealCard());
     }
     // Dealer's initial cards
@@ -159,25 +159,25 @@ void Sim::CheckInsuranceAndBlackjack(Game * game)
 {
     bool isAceUp = IsAceUp();
     // Holds the index of players' insurance choice
-    auto insuranceList = std::list<int>();
+    //auto insuranceList = std::list<int>();
 
-    if (isAceUp)
-    {
-        for (int i = 0; i < _playersVec.size(); ++i)
-        {
-            if (WantsInsurance(i))
-            {
-                insuranceList.push_back(true);
-            }
-            else
-            {
-                inusranceList.push_back(false);
-            }
-        }
-    }
+    //if (isAceUp)
+    //{
+    //    for (int i = 0; i < _playersVec.size(); ++i)
+    //    {
+    //        if (WantsInsurance(i))
+    //        {
+    //            insuranceList.push_back(true);
+    //        }
+    //        else
+    //        {
+    //            inusranceList.push_back(false);
+    //        }
+    //    }
+    //}
 
     // Handle dealer's blackjack
-    if (_dealer._hands[0].size() == 2 && GetOptimalValue(_dealer._hands[0]) == 21)
+    if (_dealer->_hands[0].size() == 2 && GetOptimalValue(_dealer->_hands[0]) == 21)
     {
 
     }
@@ -185,10 +185,10 @@ void Sim::CheckInsuranceAndBlackjack(Game * game)
     { // Dealer does NOT have blackjack
         for (auto &player : _playersVec)
         {
-            if (player._hands[0].size() == 2 && GetOptimalValue(player._hands[0]) == 21)
+            if (player->_hands[0].size() == 2 && GetOptimalValue(player->_hands[0]) == 21)
             {
-                PayoutPlayer(player, Sim::FACTOR_BLACKJACK);
-                player._active = false;
+                PayoutPlayer(player, 0, Sim::FACTOR_BLACKJACK);
+                player->_active = false;
             }
         }
     }
@@ -196,13 +196,19 @@ void Sim::CheckInsuranceAndBlackjack(Game * game)
     return;
 }
 
-int Sim::GetOptimalValue(std::vector<std::unique_ptr<Card> > hand)
+int Sim::GetOptimalValue(std::vector<std::unique_ptr<Card> >& hand)
 {
 
     return 0;
 }
 
-void PayoutPlayer(Player player, double factor)
+void Sim::PayoutInsurance(std::unique_ptr<Player>& player)
+{
+    // TODO
+    return;
+}
+
+void Sim::PayoutPlayer(std::unique_ptr<Player>& player, int handIdx, double factor)
 {
     // TODO
     return;

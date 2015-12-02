@@ -14,12 +14,14 @@ class Player
 
 public:
     friend class Sim;
-    std::vector<Bet> &GetBetVec(){ return _betVec; }
+    std::vector<Bet> &GetBetVec(){ return _handsBetVec; }
     std::vector< std::vector<std::unique_ptr<Card> > > &GetHands(){ return _hands; }
     std::vector<std::unique_ptr<Card> > &GetHand(int i){ return _hands[i]; }
 
     void ResetPlayer();
     void SetInitialBet(Game * game);
+    void MakeAdditionalBet(int handIdx, int betAmount);
+    void MakeInsuranceBet();
 
     Player();
     ~Player()
@@ -28,9 +30,13 @@ public:
     }
 
 private:
+    bool _active;
     int _chips;
-    std::vector<Bet> _betVec;
+    std::vector<Bet> _handsBetVec;
+    std::unique_ptr<Bet> _insuranceBet;
     std::vector< std::vector<std::unique_ptr<Card> > > _hands;
+    long int _totalWagered;
+    long int _totalWinnings;
 
 };
 
