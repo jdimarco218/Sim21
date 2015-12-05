@@ -4,14 +4,18 @@
 
 CC := g++
 
-SRCDIR := src
-BUILDDIR := build
-TARGET := bin/Sim21
+SRCDIR     := src
+BUILDDIR   := build
+TARGET     := bin/Sim21
+TESTDIR    := test
+TESTTARGET := test/RunTests
 
-SRCEXT := cpp
-SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
-OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
-CFGLAGS := -g
+SRCEXT   := cpp
+SOURCES  := $(shell find $(SRCDIR)  -type f -name *.$(SRCEXT))
+TESTSRC  := $(shell find $(TESTDIR) -type f -name *.$(SRCEXT))
+OBJECTS  := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
+TESTS    := $(patsubst $(TESTDIR)/%,$(BUILDDIR)/%,$(TESTSRC:.$(SRCEXT)=.o)) 
+CFGLAGS  := -g
 LIB := -std=c++0x
 INC := -I include
 
@@ -25,4 +29,5 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 
 clean:
 	@echo " Cleaning..."; 
-	@echo " $(RM) -r $(OBJECTS) $(TARGET)"; $(RM) -r $(OBJECTS) $(TARGET)
+	@echo " $(RM) -r $(OBJECTS) "; $(RM) -r $(OBJECTS)
+

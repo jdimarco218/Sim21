@@ -20,13 +20,15 @@ void Player::ResetPlayer()
     // Create an empty initial hand
     //
     _hands.push_back(std::vector<std::unique_ptr<Card> >());
-    //std::cout << "While resetting, made _hands.size(): " << _hands.size() << std::endl;
+
+    // TODO FIXME
+    _wantsInsurance = true;
 }
 
 void Player::SetInitialBet(Game * game)
 {
     int betAmount = 25;
-    _handsBetVec.push_back(Bet(betAmount, (double)betAmount));
+    _handsBetVec.push_back(std::unique_ptr<Bet>(new Bet(betAmount, (double)betAmount)));
     _chips -= betAmount;  
 }
 
@@ -37,7 +39,7 @@ void Player::MakeAdditionalBet(int handIdx, int betAmount)
     }
     else if (handIdx < _handsBetVec.size()) // New hand's bet (e.g. split)
     { 
-        _handsBetVec[handIdx]._amount += betAmount;
+        _handsBetVec[handIdx]->_amount += betAmount;
         _totalWagered += betAmount;
         _chips -= betAmount;
     }
@@ -52,6 +54,14 @@ void Player::MakeAdditionalBet(int handIdx, int betAmount)
 void Player::MakeInsuranceBet()
 {
     // Set insurance to be half of the 0th hand's bet
-    _insuranceBet = std::unique_ptr<Bet>(new Bet(_handsBetVec[0]._amount / 2));
+    _insuranceBet = std::unique_ptr<Bet>(new Bet(_handsBetVec[0]->_amount / 2));
+    _chips -= _insuranceBet->_amount;
+    _totalWagered += _insuranceBet->_amount;
     return;
+}
+
+bool Player::WantsInsurance(Game * game)
+{
+    // TODO: more intelligent
+    return _wantsInsurance;
 }

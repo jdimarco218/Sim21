@@ -5,6 +5,7 @@
 
 class Bet
 {
+    friend class Sim;
     friend class Player;
 public:
     inline int    GetAmount(){ return _amount; }

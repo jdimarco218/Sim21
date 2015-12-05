@@ -17,9 +17,10 @@ enum class TSimMode
 class Sim
 {
 public:
-    // Payout coefficients
-    static constexpr double FACTOR_BLACKJACK = 1.5;
-    static constexpr double FACTOR_WIN       = 1.0;
+    // Payout coefficients, these include the original amount
+    static constexpr double FACTOR_BLACKJACK = 2.5;
+    static constexpr double FACTOR_WIN       = 2.0;
+    static constexpr double FACTOR_PUSH      = 1.0;
     static constexpr double FACTOR_SURRENDER = 0.5;
 
     void RunSimulation();
@@ -33,7 +34,7 @@ public:
     void CheckInsuranceAndBlackjack(Game * game);
     bool WantsInsurance(int playerIdx);
     bool IsAceUp();
-    int  GetOptimalValue(std::vector<std::unique_ptr<Card> >& hand);
+    int  GetOptimalValue(const std::vector<std::unique_ptr<Card> >& hand);
     void PayoutPlayer(std::unique_ptr<Player>& player, int handIdx, double payoutFactor);
     void PayoutInsurance(std::unique_ptr<Player>& player);
 

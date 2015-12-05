@@ -158,31 +158,26 @@ void Sim::PrintGameState(Game * game)
 void Sim::CheckInsuranceAndBlackjack(Game * game)
 {
     bool isAceUp = IsAceUp();
-    // Holds the index of players' insurance choice
-    //auto insuranceList = std::list<int>();
-
-    //if (isAceUp)
-    //{
-    //    for (int i = 0; i < _playersVec.size(); ++i)
-    //    {
-    //        if (WantsInsurance(i))
-    //        {
-    //            insuranceList.push_back(true);
-    //        }
-    //        else
-    //        {
-    //            inusranceList.push_back(false);
-    //        }
-    //    }
-    //}
 
     // Handle dealer's blackjack
     if (_dealer->_hands[0].size() == 2 && GetOptimalValue(_dealer->_hands[0]) == 21)
     {
-
+        for (auto &player : _playersVec)
+        {
+            if (player->_hands[0].size() == 2 && GetOptimalValue(player->_hands[0]) == 21)
+            {
+                // Player and dealer both have blackjack
+                PayoutPlayer(player, 0, Sim::FACTOR_PUSH);
+            }
+            // Check for insurance
+            if ( isAceUp && player->WantsInsurance(game) )
+            {
+                PayoutPlayer(player, 0, Sim::FACTOR_PUSH);
+            }
+        }
     }
-    else
-    { // Dealer does NOT have blackjack
+    else // Dealer does NOT have blackjack
+    { 
         for (auto &player : _playersVec)
         {
             if (player->_hands[0].size() == 2 && GetOptimalValue(player->_hands[0]) == 21)
@@ -196,21 +191,48 @@ void Sim::CheckInsuranceAndBlackjack(Game * game)
     return;
 }
 
-int Sim::GetOptimalValue(std::vector<std::unique_ptr<Card> >& hand)
+/**
+ * This function returns the best rank possible that is <= 21.
+ * Aces can be 1 or 11, and all face cards are 10
+ */
+int Sim::GetOptimalValue(const std::vector<std::unique_ptr<Card> >& hand)
 {
-
-    return 0;
+    int sum = 0;
+    bool hasAce = false;
+    for (auto& Card : hand)
+    {
+        if (Card->GetRank() == 1)
+        {
+            sum += 1;
+            hasAce = true;
+        }
+        else if (Card->GetRank() >= 10)
+        {
+            sum += 10;
+        }
+        else
+        {
+            sum += Card->GetRank();
+        }
+    }
+    if (hasAce && (sum + 10 <= 21))
+    {
+        sum += 10;
+    }
+    return sum;
 }
 
 void Sim::PayoutInsurance(std::unique_ptr<Player>& player)
 {
-    // TODO
+    player->_totalWinnings += player->_insuranceBet->_amount;
+    player->_chips += player->_insuranceBet->_amount;
     return;
 }
 
 void Sim::PayoutPlayer(std::unique_ptr<Player>& player, int handIdx, double factor)
 {
-    // TODO
+    player->_totalWinnings += player->_handsBetVec[handIdx]->_amount * factor;
+    player->_chips += player->_handsBetVec[handIdx]->_amount * factor;
     return;
 }
 
