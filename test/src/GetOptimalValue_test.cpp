@@ -165,25 +165,3 @@ bool GetOptimalValueTest(std::unique_ptr<Sim>& sim)
 
     return testPassed;
 }
-
-int main(int argc, char ** argv)
-{
-    bool testsPassed = true;
-    std::cout << "Starting test." << std::endl;
-
-    std::unique_ptr<Sim> sim(new Sim(TSimMode::STRATEGY, TDeckType::SPANISH21));
-
-    testsPassed &= GetOptimalValueTest(sim);
-
-    if (testsPassed)
-    {
-        std::cout << "SUCCESS!" << std::endl;
-    }
-    else
-    {
-        std::cout << "WTF THIS SHIT FAILED!" << std::endl;
-    }
-
-    return 0;
-}
-

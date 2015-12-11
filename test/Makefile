@@ -4,12 +4,13 @@
 
 CC := g++
 
-SRCDIR   := ../src
-BUILDDIR := ../build
+SRCDIR       := ../src
+BUILDDIR     := ../build
 TESTSRCDIR   := src
 TESTBUILDDIR := build
-TARGET   := bin/RunTests
-INCDIR   := ../include
+TARGET       := bin/RunTests
+INCDIR       := ../include
+TESTINCDIR   := include
 
 SRCEXT   := cpp
 SOURCES  := $(shell find $(SRCDIR)  -type f -name *.$(SRCEXT))
@@ -19,7 +20,7 @@ OBJECTS  := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 TESTOBJECTS  := $(patsubst $(TESTSRCDIR)/%,$(TESTBUILDDIR)/%,$(TESTSOURCES:.$(SRCEXT)=.o))
 CFGLAGS  := -g
 LIB      := -std=c++0x
-INC      := -I $(INCDIR)
+INC      := -I $(INCDIR) -I $(TESTINCDIR)
 
 $(TARGET): $(OBJECTS) $(TESTOBJECTS)
 	@echo " Linking..."
@@ -36,4 +37,4 @@ $(TESTBUILDDIR)/%.o: $(TESTSRCDIR)/%.$(SRCEXT)
 clean:
 	@echo " Cleaning..."; 
 	@echo " $(RM) -r $(OBJECTS) "; $(RM) -r $(OBJECTS)
-
+	@echo " $(RM) -r $(TESTOBJECTS) "; $(RM) -r $(TESTOBJECTS)
