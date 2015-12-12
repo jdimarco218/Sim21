@@ -39,13 +39,14 @@ public:
     void PayoutPlayer(std::unique_ptr<Player>& player, int handIdx, double payoutFactor);
     void PayoutInsurance(std::unique_ptr<Player>& player);
     std::unique_ptr<Player>& GetPlayerAt(int idx);
-    std::unique_ptr<Player>& GetDealer();
-    std::unique_ptr<Game>&   GetGame() { return _game; }
+    std::unique_ptr<Player>& GetDealer(){ return _dealer; }
+    std::unique_ptr<Game>&   GetGame(){ return _game; }
+    std::vector< std::unique_ptr<Player> >& GetPlayersVec(){ return _playersVec; }
 
     Sim(TSimMode simMode, TDeckType deckType);
     ~Sim()
     {
-        std::cout << "Sim dtor." << std::endl;
+        //std::cout << "Sim dtor." << std::endl;
     }
 
 private:

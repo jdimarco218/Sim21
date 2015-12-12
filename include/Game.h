@@ -32,7 +32,7 @@ public:
     Game(TDeckType deckType, int numDecks = 6, double minimumBet = 25, int cutPercentMin = 75, int cutPercentMax = 80);
     ~Game()
     {
-        std::cout << "Game dtor." << std::endl;
+        //std::cout << "Game dtor." << std::endl;
     }  
 
 private:

@@ -7,7 +7,7 @@
 #include "Deck.h"
 #include "Player.h"
 
-#define DEBUG true
+#define DEBUG false
 
 Sim::Sim(TSimMode simMode, TDeckType deckType)
 {
@@ -29,11 +29,6 @@ std::unique_ptr<Player>& Sim::GetPlayerAt(int idx)
 {
     assert(idx < _playersVec.size());
     return _playersVec[idx];
-}
-
-std::unique_ptr<Player>& Sim::GetDealer()
-{
-    return _dealer;
 }
 
 void Sim::RunSimulation()
@@ -179,38 +174,44 @@ void Sim::CheckInsuranceAndBlackjack()
 
     //if(DEBUG){ std::cout << "db. IsAceUp(): " << isAceUp << std::endl; }
 
+    // First handle insurance if an ace is showing
+    for (auto& player : _playersVec)
+    {
+        if ( isAceUp && player->WantsInsurance(_game.get()) )
+        {
+            if(DEBUG){ std::cout << "db.   Player takes insurance." << std::endl; }
+            player->MakeInsuranceBet();
+        }
+
+    }
+
     // Handle dealer's blackjack
     if (_dealer->_hands[0].size() == 2 && GetOptimalValue(_dealer->_hands[0]) == 21)
     {
+        if(DEBUG){ std::cout << "db.   Dealer has bj." << std::endl; }
         for (auto& player : _playersVec)
         {
+            if ( isAceUp && player->WantsInsurance(_game.get()) )
+            {
+                PayoutPlayer(player, 0, Sim::FACTOR_INSURANCE);
+            }
             if (player->_hands[0].size() == 2 && GetOptimalValue(player->_hands[0]) == 21)
             {
-                if(DEBUG){ std::cout << "db.   Player and dealer bj." << std::endl; }
                 // Player and dealer both have blackjack
+
+                if(DEBUG){ std::cout << "db.   Player has bj." << std::endl; }
                 PayoutPlayer(player, 0, Sim::FACTOR_PUSH);
-                if ( isAceUp && player->WantsInsurance(_game.get()) )
-                {
-                    if(DEBUG){ std::cout << "db.   Player takes insurance." << std::endl; }
-                    player->MakeInsuranceBet();
-                    PayoutPlayer(player, 0, Sim::FACTOR_INSURANCE);
-                }
             }
             else
             {
-                if(DEBUG){ std::cout << "db.   Player no bj, dealer bj." << std::endl; }
+                if(DEBUG){ std::cout << "db.   Player does not have bj." << std::endl; }
                 // Player doesn't have blackjack but dealer does
-                if ( isAceUp && player->WantsInsurance(_game.get()) )
-                {
-                    if(DEBUG){ std::cout << "db.   Player takes insurance." << std::endl; }
-                    player->MakeInsuranceBet();
-                    PayoutPlayer(player, 0, Sim::FACTOR_INSURANCE);
-                }
             }
         }
     }
     else // Dealer does NOT have blackjack
     { 
+        if(DEBUG){ std::cout << "db.   Dealer does not have bj." << std::endl; }
         for (auto &player : _playersVec)
         {
             if (player->_hands[0].size() == 2 && GetOptimalValue(player->_hands[0]) == 21)

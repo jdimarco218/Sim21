@@ -9,73 +9,13 @@
 #include "Shoe.h"
 
 #include "Insurance_test.h"
+#include "TestUtil.h"
 
-/**
- * Helper function to create a player's specific hand
- */
-void MakeHandForPlayerIdxHandIdx(std::unique_ptr<Sim>& sim, std::vector<int> ranks, int pIdx, int hIdx)
-{
-
-    // Assert this is a new or existing hand
-    assert(sim->GetPlayerAt(pIdx)->GetHands().size() >= hIdx && "Must be a new or existing hand index!");
-
-    // Insert the hand at the correct index
-    if(sim->GetPlayerAt(pIdx)->GetHands().size() == hIdx)
-    {
-        // New hand, populate a new one
-        std::vector<std::unique_ptr<Card> > hand;
-        hand.clear();
-
-        for (auto i : ranks)
-        {
-            // All suited as "1", who cares?
-            hand.push_back(std::unique_ptr<Card>(new Card(i, 1)));
-        }
-
-        sim->GetPlayerAt(pIdx)->GetHands().push_back(std::move(hand));
-    }
-    else
-    {
-        // Existing hand, update it
-        std::vector<std::unique_ptr<Card> >& hand = sim->GetPlayerAt(pIdx)->GetHand(hIdx);
-        hand.clear();
-
-        for (auto i : ranks)
-        {
-            // All suited as "1", who cares?
-            hand.push_back(std::unique_ptr<Card>(new Card(i, 1)));
-        }
-    }
-
-    return;
-}
-
-void MakeHandForDealer(std::unique_ptr<Sim>& sim, std::vector<int> ranks)
-{
-    // If dealer has a hand already, clear it
-    assert(sim->GetDealer()->GetHands().size() == 1 && "Dealer must have one hand during InsuranceTest()");
-    //if(sim->GetDealer()->GetHand(0).size() > 0)
-    //{
-    //    sim->GetDealer()->GetHand(0).clear();
-    //}
-
-    // Insert the hand at the zero'th index
-    std::vector<std::unique_ptr<Card> >& hand = sim->GetDealer()->GetHand(0);
-    hand.clear();
-
-    for (auto i : ranks)
-    {
-        // All suited as "1", who cares?
-        hand.push_back(std::unique_ptr<Card>(new Card(i, 1)));
-    }
-
-    return;
-}
 
 /**
  * This tests the insurance component of Sim::CheckInsuranceAndBlackjack()
  */
-bool InsuranceTest(std::unique_ptr<Sim>& sim)
+bool InsuranceTest(std::unique_ptr<Sim>& sim, bool verbose)
 {
     bool testPassed = true;
 
@@ -89,11 +29,12 @@ bool InsuranceTest(std::unique_ptr<Sim>& sim)
     std::vector<int> dealerRanks;
 
     // TEST CASE
-    // Dealer has blackjack
+    // Dealer has blackjack with Ace up
     // No players have blackjack
     // Player 0 wants insurance
     // Player 1 doesn't want insurance
     //
+    ResetTestEnv(sim);
     ranks.clear();
     ranks.push_back(10);
     ranks.push_back(11); // player 20
@@ -104,20 +45,22 @@ bool InsuranceTest(std::unique_ptr<Sim>& sim)
     MakeHandForDealer(sim, dealerRanks);
     sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
     sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
-    std::cout << "test. IsAceUp(): " << sim->IsAceUp() << std::endl;
+    if(verbose){std::cout << "test. IsAceUp(): " << sim->IsAceUp() << std::endl;}
     sim->CheckInsuranceAndBlackjack();
-    std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;
-    std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;
+    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &= 0   == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -25 == sim->GetPlayerAt(1)->GetChips();
     
     // TEST CASE
-    // Dealer has blackjack
+    // Dealer has blackjack with Ace up
     // Both players have blackjack
     // Player 0 wants insurance
     // Player 1 doesn't want insurance
     //
+    ResetTestEnv(sim);
     ranks.clear();
+    dealerRanks.clear();
     ranks.push_back(1);
     ranks.push_back(11); // player blackjack
     dealerRanks.push_back(1);
@@ -127,12 +70,156 @@ bool InsuranceTest(std::unique_ptr<Sim>& sim)
     MakeHandForDealer(sim, dealerRanks);
     sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
     sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
-    std::cout << "test. IsAceUp(): " << sim->IsAceUp() << std::endl;
+    if(verbose){std::cout << "test. IsAceUp(): " << sim->IsAceUp() << std::endl;}
     sim->CheckInsuranceAndBlackjack();
-    std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;
-    std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;
+    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &= 25 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= 0  == sim->GetPlayerAt(1)->GetChips();
+
+    // TEST CASE
+    // Dealer has blackjack without Ace up
+    // No players have blackjack
+    // Neither player can get insurance
+    //
+    ResetTestEnv(sim);
+    ranks.clear();
+    dealerRanks.clear();
+    ranks.push_back(8);
+    ranks.push_back(11); // player 19
+    dealerRanks.push_back(10); // up card
+    dealerRanks.push_back(1); // dealer blackjack
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    if(verbose){std::cout << "test. IsAceUp(): " << sim->IsAceUp() << std::endl;}
+    sim->CheckInsuranceAndBlackjack();
+    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &= -25 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -25 == sim->GetPlayerAt(1)->GetChips();
+
+    // TEST CASE
+    // Dealer has blackjack without Ace up
+    // Both players have blackjack
+    // Neither player can get insurance
+    //
+    ResetTestEnv(sim);
+    ranks.clear();
+    dealerRanks.clear();
+    ranks.push_back(12);
+    ranks.push_back(1); // player blackjack
+    dealerRanks.push_back(13); // up card
+    dealerRanks.push_back(1); // dealer blackjack
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    if(verbose){std::cout << "test. IsAceUp(): " << sim->IsAceUp() << std::endl;}
+    sim->CheckInsuranceAndBlackjack();
+    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &= 0 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= 0 == sim->GetPlayerAt(1)->GetChips();
+
+    // TEST CASE
+    // Dealer does not have blackjack but does have Ace up
+    // Both players have blackjack
+    // Neither player can ask for insurance
+    //
+    ResetTestEnv(sim);
+    ranks.clear();
+    dealerRanks.clear();
+    ranks.push_back(1);
+    ranks.push_back(12); // player blackjack
+    dealerRanks.push_back(1);
+    dealerRanks.push_back(9); // dealer A9
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    if(verbose){std::cout << "test. IsAceUp(): " << sim->IsAceUp() << std::endl;}
+    sim->CheckInsuranceAndBlackjack();
+    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &= 25   == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= 37.5 == sim->GetPlayerAt(1)->GetChips();
+
+    // TEST CASE
+    // Dealer does not have blackjack but does have Ace up
+    // Neither player has blackjack
+    // Neither player can ask for insurance
+    //
+    ResetTestEnv(sim);
+    ranks.clear();
+    dealerRanks.clear();
+    ranks.push_back(1);
+    ranks.push_back(8); // player no blackjack
+    dealerRanks.push_back(1);
+    dealerRanks.push_back(7); // no blackjack but ace up
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    if(verbose){std::cout << "test. IsAceUp(): " << sim->IsAceUp() << std::endl;}
+    sim->CheckInsuranceAndBlackjack();
+    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &= -37.5 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -25   == sim->GetPlayerAt(1)->GetChips();
+
+    // TEST CASE
+    // Dealer does not have blackjack nor Ace up
+    // Both players have blackjack
+    // Neither player can ask for insurance
+    //
+    ResetTestEnv(sim);
+    ranks.clear();
+    dealerRanks.clear();
+    ranks.push_back(1);
+    ranks.push_back(11); // player blackjack
+    dealerRanks.push_back(6);
+    dealerRanks.push_back(8); // not blackjack nor ace up
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    if(verbose){std::cout << "test. IsAceUp(): " << sim->IsAceUp() << std::endl;}
+    sim->CheckInsuranceAndBlackjack();
+    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &= 37.5 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= 37.5  == sim->GetPlayerAt(1)->GetChips();
+
+    // TEST CASE
+    // Dealer does not have blackjack nor Ace up
+    // Neither player has blackjack
+    // Neither player can ask for insurance
+    //
+    ResetTestEnv(sim);
+    ranks.clear();
+    dealerRanks.clear();
+    ranks.push_back(5);
+    ranks.push_back(5); // not blackjack nor ace up
+    dealerRanks.push_back(5);
+    dealerRanks.push_back(5); // not blackjack nor ace up
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    if(verbose){std::cout << "test. IsAceUp(): " << sim->IsAceUp() << std::endl;}
+    sim->CheckInsuranceAndBlackjack();
+    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &= -25 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -25 == sim->GetPlayerAt(1)->GetChips();
 
 
     return testPassed;

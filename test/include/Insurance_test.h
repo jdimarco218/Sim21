@@ -10,6 +10,6 @@ void MakeHandForDealer(std::unique_ptr<Sim>& sim, std::vector<int> ranks);
 /**
  * This tests Sim::GetOptimalValue()
  */
-bool InsuranceTest(std::unique_ptr<Sim>& sim);
+bool InsuranceTest(std::unique_ptr<Sim>& sim, bool verbose = false);
 
 #endif

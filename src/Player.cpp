@@ -20,7 +20,6 @@ void Player::SetWantsInsurance(bool wantsInsurance)
 void Player::ResetPlayer()
 {
     _active = true;
-    std::cout << "Resetting player..." << std::endl;
     _handsBetVec.clear();
     _hands.clear();
 

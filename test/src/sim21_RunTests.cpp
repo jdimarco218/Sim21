@@ -30,6 +30,7 @@ int main(int argc, char ** argv)
         std::cout << "WTF THIS SHIT FAILED!" << std::endl;
     }
 
+    std::cout << "Done test." << std::endl;
     return 0;
 }
 
