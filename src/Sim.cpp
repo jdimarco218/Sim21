@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <iostream>
 #include <list>
 #include <memory>
@@ -6,8 +7,11 @@
 #include "Deck.h"
 #include "Player.h"
 
+#define DEBUG true
+
 Sim::Sim(TSimMode simMode, TDeckType deckType)
 {
+    _game = std::unique_ptr<Game>(new Game(deckType));
     _dealer = std::unique_ptr<Player>(new Player());
     int numPlayers = 2;
     for(int i = 0; i < numPlayers; ++i)
@@ -19,6 +23,17 @@ Sim::Sim(TSimMode simMode, TDeckType deckType)
     _simMode = simMode;
     _deckType = deckType;
     _upCardIndex = 0;
+}
+
+std::unique_ptr<Player>& Sim::GetPlayerAt(int idx)
+{
+    assert(idx < _playersVec.size());
+    return _playersVec[idx];
+}
+
+std::unique_ptr<Player>& Sim::GetDealer()
+{
+    return _dealer;
 }
 
 void Sim::RunSimulation()
@@ -55,18 +70,21 @@ void Sim::RunStrategySimulation()
     std::cout << "RunStrategySimulation()..." << std::endl;
 
     // Start a new Game
-    std::unique_ptr<Game> currGame(new Game(_deckType));
+    //std::unique_ptr<Game> currGame(new Game(_deckType));
+    //_game = new Game(_deckType);
+    //_game(std::unique_ptr<Game>(new Game(_deckType)));
+    _game->ResetGame();
 
-    std::cout << "Cut card: " << currGame->GetCutCardPosition() << " out of " << currGame->GetCardsRemaining() << std::endl;
+    std::cout << "Cut card: " << _game->GetCutCardPosition() << " out of " << _game->GetCardsRemaining() << std::endl;
 
     while(!IsSimulationFinished())
     {
         std::cout << "Playing hand..." << std::endl;
-        SimulateHand(currGame.get());
+        SimulateHand(_game.get());
         _handsPlayed++;
     }
 
-    //delete currGame;
+    return;
 }
 
 bool Sim::IsSimulationFinished()
@@ -123,7 +141,7 @@ void Sim::SimulateHand(Game * game)
 
     // Check insurance, bonuses, sidebets, and blackjack
     //
-    CheckInsuranceAndBlackjack(game);
+    CheckInsuranceAndBlackjack();
 
     // Play each player's hand
     //
@@ -155,24 +173,39 @@ void Sim::PrintGameState(Game * game)
     return;
 }
 
-void Sim::CheckInsuranceAndBlackjack(Game * game)
+void Sim::CheckInsuranceAndBlackjack()
 {
     bool isAceUp = IsAceUp();
+
+    //if(DEBUG){ std::cout << "db. IsAceUp(): " << isAceUp << std::endl; }
 
     // Handle dealer's blackjack
     if (_dealer->_hands[0].size() == 2 && GetOptimalValue(_dealer->_hands[0]) == 21)
     {
-        for (auto &player : _playersVec)
+        for (auto& player : _playersVec)
         {
             if (player->_hands[0].size() == 2 && GetOptimalValue(player->_hands[0]) == 21)
             {
+                if(DEBUG){ std::cout << "db.   Player and dealer bj." << std::endl; }
                 // Player and dealer both have blackjack
                 PayoutPlayer(player, 0, Sim::FACTOR_PUSH);
+                if ( isAceUp && player->WantsInsurance(_game.get()) )
+                {
+                    if(DEBUG){ std::cout << "db.   Player takes insurance." << std::endl; }
+                    player->MakeInsuranceBet();
+                    PayoutPlayer(player, 0, Sim::FACTOR_INSURANCE);
+                }
             }
-            // Check for insurance
-            if ( isAceUp && player->WantsInsurance(game) )
+            else
             {
-                PayoutPlayer(player, 0, Sim::FACTOR_PUSH);
+                if(DEBUG){ std::cout << "db.   Player no bj, dealer bj." << std::endl; }
+                // Player doesn't have blackjack but dealer does
+                if ( isAceUp && player->WantsInsurance(_game.get()) )
+                {
+                    if(DEBUG){ std::cout << "db.   Player takes insurance." << std::endl; }
+                    player->MakeInsuranceBet();
+                    PayoutPlayer(player, 0, Sim::FACTOR_INSURANCE);
+                }
             }
         }
     }

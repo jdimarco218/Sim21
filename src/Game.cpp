@@ -16,10 +16,11 @@ std::unique_ptr<Card> Game::DealCard()
     return std::move(std::unique_ptr<Card>(new Card(0, 1)));
 }
 
-Game::Game(TDeckType deckType, int numDecks, int cutPercentMin, int cutPercentMax)
+Game::Game(TDeckType deckType, int numDecks, double minimumBet, int cutPercentMin, int cutPercentMax)
 {
     _shoe = std::move(std::unique_ptr<Shoe>(new Shoe(numDecks, deckType)));
     _hiloCount = 0;
+    _minimumBet = minimumBet;
 
     // Generate a random cut card in the penetration range
     std::random_device rd;

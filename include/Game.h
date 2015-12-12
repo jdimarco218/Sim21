@@ -16,17 +16,20 @@
 class Game
 {
 public:
+    void ResetGame(){}
     inline int GetCutCardPosition(){ return _cutCardPosition; }
     inline int GetCardsRemaining(){ return _shoe->GetCardsRemaining(); }
     std::unique_ptr<Card> DealCard();
+    double GetMinimumBet(){ return _minimumBet; }
 
     Game()
     {
         _shoe = std::move(std::unique_ptr<Shoe>(new Shoe()));
         _cutCardPosition = 0;
         _hiloCount = 0;
+        _minimumBet = 25;
     }
-    Game(TDeckType deckType, int numDecks = 6, int cutPercentMin = 75, int cutPercentMax = 80);
+    Game(TDeckType deckType, int numDecks = 6, double minimumBet = 25, int cutPercentMin = 75, int cutPercentMax = 80);
     ~Game()
     {
         std::cout << "Game dtor." << std::endl;
@@ -37,6 +40,7 @@ private:
     // TODO count stuffs
     int _cutCardPosition;
     int _hiloCount;
+    double _minimumBet;
     
 
 };

@@ -22,6 +22,7 @@ public:
     static constexpr double FACTOR_WIN       = 2.0;
     static constexpr double FACTOR_PUSH      = 1.0;
     static constexpr double FACTOR_SURRENDER = 0.5;
+    static constexpr double FACTOR_INSURANCE = 1.5;
 
     void RunSimulation();
     void RunStrategySimulation();
@@ -31,12 +32,15 @@ public:
     void SaveStatistics();
     bool IsSimulationFinished();
     void PrintGameState(Game * game);
-    void CheckInsuranceAndBlackjack(Game * game);
+    void CheckInsuranceAndBlackjack();
     bool WantsInsurance(int playerIdx);
     bool IsAceUp();
     int  GetOptimalValue(const std::vector<std::unique_ptr<Card> >& hand);
     void PayoutPlayer(std::unique_ptr<Player>& player, int handIdx, double payoutFactor);
     void PayoutInsurance(std::unique_ptr<Player>& player);
+    std::unique_ptr<Player>& GetPlayerAt(int idx);
+    std::unique_ptr<Player>& GetDealer();
+    std::unique_ptr<Game>&   GetGame() { return _game; }
 
     Sim(TSimMode simMode, TDeckType deckType);
     ~Sim()
@@ -45,13 +49,14 @@ public:
     }
 
 private:
-    std::unique_ptr<Player> _dealer;
+    std::unique_ptr<Game>                        _game;
+    std::unique_ptr<Player>                    _dealer;
     std::vector< std::unique_ptr<Player> > _playersVec;
-    int _handsPlayed;
-    int _handsToPlay;
-    TSimMode _simMode;
-    TDeckType _deckType;
-    int _upCardIndex;
+    int                                   _handsPlayed;
+    int                                   _handsToPlay;
+    TSimMode                                  _simMode;
+    TDeckType                                _deckType;
+    int                                   _upCardIndex;
 
 };
 

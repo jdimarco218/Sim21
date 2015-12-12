@@ -1,5 +1,6 @@
 #include <iostream>
 #include <memory>
+#include "Bet.h"
 #include "Game.h"
 #include "Player.h"
 
@@ -7,7 +8,13 @@ Player::Player()
 {
     _active = false;
     _chips = 0;
+    _wantsInsurance = false;
     ResetPlayer();
+}
+
+void Player::SetWantsInsurance(bool wantsInsurance)
+{
+    _wantsInsurance = wantsInsurance;
 }
 
 void Player::ResetPlayer()
@@ -22,12 +29,12 @@ void Player::ResetPlayer()
     _hands.push_back(std::vector<std::unique_ptr<Card> >());
 
     // TODO FIXME
-    _wantsInsurance = true;
+    //_wantsInsurance = true;
 }
 
 void Player::SetInitialBet(Game * game)
 {
-    int betAmount = 25;
+    int betAmount = game->GetMinimumBet();
     _handsBetVec.push_back(std::unique_ptr<Bet>(new Bet(betAmount, (double)betAmount)));
     _chips -= betAmount;  
 }
@@ -54,7 +61,7 @@ void Player::MakeAdditionalBet(int handIdx, int betAmount)
 void Player::MakeInsuranceBet()
 {
     // Set insurance to be half of the 0th hand's bet
-    _insuranceBet = std::unique_ptr<Bet>(new Bet(_handsBetVec[0]->_amount / 2));
+    _insuranceBet = std::unique_ptr<Bet>(new Bet(_handsBetVec[0]->_amount / 2.0));
     _chips -= _insuranceBet->_amount;
     _totalWagered += _insuranceBet->_amount;
     return;

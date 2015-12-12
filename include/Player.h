@@ -20,9 +20,12 @@ public:
 
     void ResetPlayer();
     void SetInitialBet(Game * game);
+    void SetWantsInsurance(bool wantsInsurance);
     void MakeAdditionalBet(int handIdx, int betAmount);
     void MakeInsuranceBet();
     bool WantsInsurance(Game * game);
+    double GetChips(){ return _chips; }
+    void SetChips(double chips){ _chips = chips; }
 
     Player();
     ~Player()
@@ -32,7 +35,7 @@ public:
 
 private:
     bool _active;
-    int _chips;
+    double _chips;
     std::vector<std::unique_ptr<Bet> > _handsBetVec;
     std::unique_ptr<Bet> _insuranceBet;
     std::vector< std::vector<std::unique_ptr<Card> > > _hands;

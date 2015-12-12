@@ -1,6 +1,6 @@
 #include "Bet.h"
 
-Bet::Bet(int amount, double payout)
+Bet::Bet(double amount, double payout)
 {
     _amount = amount;
     _payout = payout;
