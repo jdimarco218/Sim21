@@ -31,8 +31,8 @@ enum class TRankType
 class Card
 {
 public:
-    inline int GetRank(){ return _rank; }
-    inline int GetSuit(){ return _suit; }
+    inline int GetRank() const { return _rank; }
+    inline int GetSuit() const { return _suit; }
 
     friend std::ostream& operator<<(std::ostream& os, Card &card)
     {

@@ -2,10 +2,17 @@
 #include <iostream>
 #include <list>
 #include <memory>
+#include <utility>
 #include <vector>
 #include "Sim.h"
 #include "Deck.h"
 #include "Player.h"
+
+using std::pair;
+using std::make_pair;
+using std::map;
+using std::string;
+using std::vector;
 
 #define DEBUG false
 
@@ -140,6 +147,11 @@ void Sim::SimulateHand(Game * game)
 
     // Play each player's hand
     //
+    for (int i = 0; i < _playersVec.size(); ++i)
+    {
+        std::cout << "Playing player " << i << "'s hand(s)..." << std::endl;
+        PlayHand(i, 0);
+    }
 
     // Play dealer's hand
     //
@@ -226,10 +238,32 @@ void Sim::CheckInsuranceAndBlackjack()
 }
 
 /**
+ * This function returns the lowest rank possible that is <= 21.
+ * Aces are counted as 1 and all face cards are 10
+ */
+int Sim::GetMinimalValue(const std::vector<std::unique_ptr<Card> >& hand) const
+{
+    int sum = 0;
+    bool hasAce = false;
+    for (auto& Card : hand)
+    {
+        if (Card->GetRank() >= 10)
+        {
+            sum += 10;
+        }
+        else
+        {
+            sum += Card->GetRank();
+        }
+    }
+    return sum;
+}
+
+/**
  * This function returns the best rank possible that is <= 21.
  * Aces can be 1 or 11, and all face cards are 10
  */
-int Sim::GetOptimalValue(const std::vector<std::unique_ptr<Card> >& hand)
+int Sim::GetOptimalValue(const std::vector<std::unique_ptr<Card> >& hand) const
 {
     int sum = 0;
     bool hasAce = false;
@@ -278,4 +312,58 @@ bool Sim::WantsInsurance(int playerIdx)
 bool Sim::IsAceUp()
 {
     return (_dealer->_hands[0][_upCardIndex]->GetRank() == 1);
+}
+
+void Sim::PlayHand(int pIdx, int hIdx)
+{
+    auto& player = _playersVec[pIdx];
+    auto& hand = player->GetHand(hIdx);
+    while (GetOptimalValue(hand) < 21)
+    {
+        // Deal first card if this is a hand resulting from a split (one card)
+        if (hand.size() == 1)
+        {
+            //TODO
+        }
+
+        // CHECK AND HANDLE Split action
+        //if (GetDecision(
+    }
+
+    return;
+}
+
+std::string Sim::GetStratKey(const std::vector<std::unique_ptr<Card> >& hand)
+{
+    std::string ret = "";
+    if (hand.size() == 2)
+    {
+        int rank_0 = hand[0].get()->GetRank();
+        int rank_1 = hand[1].get()->GetRank();    
+        if (rank_0 > 10)
+        {
+            rank_0 = 10;
+        }
+        if (rank_1 > 10)
+        {
+            rank_1 = 10;
+        }
+        return "p" + std::to_string(rank_0);
+    }
+    else if (IsHandSoft(hand))
+    {
+        return "s" + std::to_string(GetOptimalValue(hand)); 
+    }
+    
+    return std::to_string(GetOptimalValue(hand));
+}
+
+TPlayAction GetDecision(std::vector<std::unique_ptr<Card> >& hand, Game * game)
+{
+    return TPlayAction::NONE;
+}
+
+bool Sim::IsHandSoft(const std::vector<std::unique_ptr<Card> >& hand) const
+{
+    return GetOptimalValue(hand) != GetMinimalValue(hand);
 }

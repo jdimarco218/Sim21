@@ -11,6 +11,18 @@
 #include "Insurance_test.h"
 #include "TestUtil.h"
 
+//******************************************************************************
+//
+// Tests:
+//
+// Permutations of the following
+// Dealer does and doesn't have blackjack
+// Ace is up and not up
+// Players do and don't have blackjack
+// Players do and don't want insurance
+//
+//******************************************************************************
+
 
 /**
  * This tests the insurance component of Sim::CheckInsuranceAndBlackjack()

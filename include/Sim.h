@@ -2,10 +2,18 @@
 #define SIM_H
 
 #include <iostream>
+#include <map>
 #include <memory>
+#include <string>
+#include <utility>
 #include <vector>
 #include "Game.h"
 #include "Player.h"
+
+using std::map;
+using std::pair;
+using std::string;
+using std::vector;
 
 enum class TSimMode
 {
@@ -35,13 +43,18 @@ public:
     void CheckInsuranceAndBlackjack();
     bool WantsInsurance(int playerIdx);
     bool IsAceUp();
-    int  GetOptimalValue(const std::vector<std::unique_ptr<Card> >& hand);
+    int  GetOptimalValue(const std::vector<std::unique_ptr<Card> >& hand) const;
+    int  GetMinimalValue(const std::vector<std::unique_ptr<Card> >& hand) const;
+    std::string GetStratKey(const std::vector<std::unique_ptr<Card> >& hand);
+    bool IsHandSoft(const std::vector<std::unique_ptr<Card> >& hand) const;
     void PayoutPlayer(std::unique_ptr<Player>& player, int handIdx, double payoutFactor);
     void PayoutInsurance(std::unique_ptr<Player>& player);
+    void PlayHand(int pIdx, int hIdx);
     std::unique_ptr<Player>& GetPlayerAt(int idx);
     std::unique_ptr<Player>& GetDealer(){ return _dealer; }
     std::unique_ptr<Game>&   GetGame(){ return _game; }
     std::vector< std::unique_ptr<Player> >& GetPlayersVec(){ return _playersVec; }
+    TPlayAction GetDecision(std::vector<std::unique_ptr<Card> >& hand, Game * game);
 
     Sim(TSimMode simMode, TDeckType deckType);
     ~Sim()
