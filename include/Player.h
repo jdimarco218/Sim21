@@ -38,6 +38,7 @@ public:
     static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ls;
     static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_s17_das_ns;
     static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ns;
+    map<string, vector<pair<TPlayAction, TPlayAction> > > GetMap();
 
     std::vector<std::unique_ptr<Bet> > &GetBetVec(){ return _handsBetVec; }
     std::vector<std::vector<std::unique_ptr<Card> > > &GetHands(){ return _hands; }

@@ -72,6 +72,11 @@ bool Player::WantsInsurance(Game * game)
     return _wantsInsurance;
 }
 
+map<string, vector<pair<TPlayAction, TPlayAction> > > Player::GetMap()
+{
+    return bs_s17_das_ls;
+}
+
 // Basic strategy for Stand-17, DAS LS
 map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_s17_das_ls = 
 { 

@@ -12,7 +12,7 @@ Deck::Deck(TDeckType deckType)
             {
                 for(int j = 1; j < 13; ++j)
                 {
-                    _cards.push_back(std::unique_ptr<Card>(new Card(i, j)));
+                    _cards.push_back(std::unique_ptr<Card>(new Card(j, i)));
                 }
             }
             break;
@@ -23,7 +23,7 @@ Deck::Deck(TDeckType deckType)
                 {
                     if(j != 10)
                     {
-                        _cards.push_back(std::unique_ptr<Card>(new Card(i, j)));
+                        _cards.push_back(std::unique_ptr<Card>(new Card(j, i)));
                     }
                 }
             }

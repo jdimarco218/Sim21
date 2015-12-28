@@ -54,7 +54,8 @@ public:
     std::unique_ptr<Player>& GetDealer(){ return _dealer; }
     std::unique_ptr<Game>&   GetGame(){ return _game; }
     std::vector< std::unique_ptr<Player> >& GetPlayersVec(){ return _playersVec; }
-    TPlayAction GetDecision(std::vector<std::unique_ptr<Card> >& hand, Game * game);
+    TPlayAction GetDecision(std::unique_ptr<Player>& player, std::vector<std::unique_ptr<Card> >& hand, bool isFollowUp);
+    inline int GetUpCardRank() {return _dealer->_hands[0][_upCardIndex]->GetRank(); }
 
     Sim(TSimMode simMode, TDeckType deckType);
     ~Sim()
