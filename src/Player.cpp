@@ -323,16 +323,16 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_s17_das_ls =
     {"18", vector<pair<TPlayAction, TPlayAction> >
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
-            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 1, dealer ace
-            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 2
-            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 6
-            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 7
-            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 8
-            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 9
-            make_pair(TPlayAction::HIT, TPlayAction::STAND), // T
+            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 1, dealer ace
+            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 2
+            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 3
+            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 4
+            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 5
+            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 6
+            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 7
+            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 8
+            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 9
+            make_pair(TPlayAction::STAND, TPlayAction::STAND), // T
         }
     }, 
     {"19", vector<pair<TPlayAction, TPlayAction> >

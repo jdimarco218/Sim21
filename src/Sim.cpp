@@ -333,7 +333,50 @@ void Sim::PlayHand(int pIdx, int hIdx)
         else if (decision == TPlayAction::DOUBLE)
         {
             std::cout << "Handling double action." << std::endl;
-            break;
+            if (_deckType == TDeckType::BLACKJACK)
+            { 
+                if (hand.size() == 2)
+                {
+                    hand.push_back(GetGame()->DealCard());
+                    std::cout << "Hand after: " << std::endl;
+                    for (auto& card : hand)
+                    {
+                        std::cout << card->GetRank() << ", ";
+                    }
+                    std::cout << std::endl;
+                    break;
+                }
+                else
+                {
+                    // Player cannot execute double, lookup follow-up action
+                    auto followup = GetDecision(player, hand, true);
+                    if (followup == TPlayAction::STAND)
+                    {
+                        if (DEBUG) {std::cout << "Follow-up STAND." << std::endl;}
+                    }
+                    if (followup == TPlayAction::HIT)
+                    {
+                        if (DEBUG) {std::cout << "Follow-up HIT." << std::endl;}
+                    }
+                    else
+                    {
+                        std::cerr << "ERROR: Unknown followup decision after double." << std::endl;
+                        exit(-1);
+                    }
+                }
+            }
+            else
+            {
+                // TODO FOR SP21
+                hand.push_back(GetGame()->DealCard());
+                std::cout << "Hand after: " << std::endl;
+                for (auto& card : hand)
+                {
+                    std::cout << card->GetRank() << ", ";
+                }
+                std::cout << std::endl;
+                break;
+            }
         }
         else if (decision == TPlayAction::STAND)
         {
@@ -350,7 +393,6 @@ void Sim::PlayHand(int pIdx, int hIdx)
                 std::cout << card->GetRank() << ", ";
             }
             std::cout << std::endl;
-            break;
         }
         else if (decision == TPlayAction::SURRENDER)
         {
