@@ -50,6 +50,9 @@ bool PlayHandTest(std::unique_ptr<Sim>& sim, bool verbose)
 //
 // When a player Splits, TODO
 //
+// Standard splits then hits
+// Standard splits then doubles
+// Maximum splits, follow-up action
 // TODO
 //
 //******************************************************************************
@@ -105,10 +108,55 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  50 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -50 == sim->GetPlayerAt(1)->GetChips();
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
+
+    // TEST CASE
+    // Both players split 9s then double afterwards
+    // Player 0 wins both
+    // Player 1 loses both
+    //
+    ResetTestEnv(sim);
+    ref = "PlayHandSplitTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    ranks0.clear();
+    ranks1.clear();
+    dealerRanks.clear();
+    shoeRanks.clear();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    ranks0.push_back(9);
+    ranks0.push_back(9); // player0 p9
+    ranks1.push_back(9);
+    ranks1.push_back(9); // player1 p9
+    shoeRanks.push_back(2); // player0 gets 11
+    shoeRanks.push_back(9); // player0 doubles to 20 on first hand
+    shoeRanks.push_back(2); // player0 gets 11
+    shoeRanks.push_back(11); // player0 gets 21 on second hand
+    shoeRanks.push_back(2); // player1 gets 11
+    shoeRanks.push_back(5); // player1 gets 16 on first hand, shouldn't hit
+    shoeRanks.push_back(2); // player1 gets 11
+    shoeRanks.push_back(6); // player1 gets 17 on second hand
+    dealerRanks.push_back(8);
+    dealerRanks.push_back(11); // dealer 18, with 8 Up 
+    MakeHandForPlayerIdxHandIdx(sim, ranks0, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks1, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    FrontloadShoe(sim, shoeRanks);
+    sim->CheckInsuranceAndBlackjack();
+    sim->PlayHand(0, 0);
+    sim->PlayHand(1, 0);
+    sim->PlayDealerHand();
+    sim->PayoutWinners();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &=  100 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -100 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
 
     return testPassed;

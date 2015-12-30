@@ -445,7 +445,6 @@ void Sim::PlayHand(int pIdx, int hIdx)
 
     while (GetOptimalValue(player->_hands[hIdx]) < 21)
     {
-        auto  decision = GetDecision(player, player->_hands[hIdx], isFollowup);
         // Deal first card if this is a hand resulting from a split (one card)
         if (player->_hands[hIdx].size() == 1)
         {
@@ -465,6 +464,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
             }
         }
 
+        auto  decision = GetDecision(player, player->_hands[hIdx], isFollowup);
         std::cout << "Decision: " << static_cast<int>(decision) << std::endl;
         // CHECK AND HANDLE Split action
         if (decision == TPlayAction::SPLIT)

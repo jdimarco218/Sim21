@@ -631,8 +631,8 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_s17_das_ls =
             make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 4
             make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 5
             make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 6
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 7
-            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 8
+            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 7
+            make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 8
             make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 9
             make_pair(TPlayAction::STAND, TPlayAction::STAND), // T
         }
