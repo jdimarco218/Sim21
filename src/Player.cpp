@@ -51,12 +51,14 @@ void Player::MakeAdditionalBet(int handIdx, int betAmount)
     {std::cout << "handIdx: " << handIdx << "  _handsBetVec.size(): " << _handsBetVec.size() << std::endl;}
     if (handIdx < _handsBetVec.size()) // Adding bet (e.g. doubling)
     {
+        std::cout << "J5e3: increasing hIdx " << handIdx << "'s bet by " << betAmount << std::endl;
         _handsBetVec[handIdx]->_amount += betAmount;
         _totalWagered += betAmount;
         _chips -= betAmount;
     }
     else if (handIdx == _handsBetVec.size()) // New hand's bet (e.g. split)
     { 
+        std::cout << "J5e3: adding hIdx " << handIdx << "'s bet as " << betAmount << std::endl;
         _handsBetVec.push_back(std::unique_ptr<Bet>(new Bet(betAmount)));
         _totalWagered += betAmount;
         _chips -= betAmount;

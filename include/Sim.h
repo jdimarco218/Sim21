@@ -28,9 +28,9 @@ public:
     // Payout coefficients, these include the original amount
     static constexpr double FACTOR_BLACKJACK   = 2.5;
     static constexpr double FACTOR_WIN         = 2.0;
-    static constexpr double FACTOR_WIN_DOUBLE  = 4.0;
+    //static constexpr double FACTOR_WIN_DOUBLE  = 4.0;
     static constexpr double FACTOR_PUSH        = 1.0;
-    static constexpr double FACTOR_PUSH_DOUBLE = 2.0;
+    //static constexpr double FACTOR_PUSH_DOUBLE = 2.0;
     static constexpr double FACTOR_SURRENDER   = 0.5;
     static constexpr double FACTOR_INSURANCE   = 1.5;
 

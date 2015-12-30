@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 #include "Card.h"
-//#include "Deck.h"
 #include "Shoe.h"
 
 /**
@@ -17,11 +16,18 @@ class Game
 {
 public:
     void ResetGame(){}
+    void SetNumSplits(int numSplits){ _numSplits = numSplits; }
+    void SetResplitAces(bool resplitAces){ _resplitAces = resplitAces; }
+    void SetPlaySplitAces(bool playSplitAces){ _playSplitAces = playSplitAces; }
+    void SetBonusPayOnSplitAces(bool bonus){ _bonusPayOnSplitAces = bonus; }
     inline int GetCutCardPosition(){ return _cutCardPosition; }
     inline int GetCardsRemaining(){ return _shoe->GetCardsRemaining(); }
     std::unique_ptr<Card> DealCard();
     double GetMinimumBet(){ return _minimumBet; }
     inline int GetNumSplits(){ return _numSplits; }
+    inline bool GetResplitAces(){ return _resplitAces; }
+    inline bool GetPlaySplitAces(){ return _playSplitAces; }
+    inline bool GetBonusPayOnSplitAces(){ return _bonusPayOnSplitAces; }
     inline std::unique_ptr<Shoe>& GetShoe(){ return _shoe; }
 
     Game()
@@ -31,7 +37,13 @@ public:
         _hiloCount = 0;
         _minimumBet = 25;
     }
-    Game(TDeckType deckType, int numDecks = 6, double minimumBet = 25, int cutPercentMin = 75, int cutPercentMax = 80);
+
+    Game(TDeckType deckType,
+         int numDecks = 6,
+         double minimumBet = 25,
+         int cutPercentMin = 75,
+         int cutPercentMax = 80);
+
     ~Game()
     {
         //std::cout << "Game dtor." << std::endl;
@@ -44,7 +56,9 @@ private:
     int _hiloCount;
     double _minimumBet;
     int _numSplits;
-    
+    bool _resplitAces;
+    bool _playSplitAces;
+    bool _bonusPayOnSplitAces;
 
 };
 

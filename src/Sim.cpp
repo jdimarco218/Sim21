@@ -381,8 +381,8 @@ void Sim::PayoutWinners()
                         //
                         if (_playersVec[pIdx]->_doubleVec[hIdx])
                         {
-                            if (DEBUG) {std::cout << "Paying player[" << pIdx << "] PUSH DOUBLE." << std::endl;}
-                            PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_PUSH_DOUBLE);
+                            if (DEBUG) {std::cout << "Paying player[" << pIdx << "] PUSH on a double." << std::endl;}
+                            PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_PUSH);
                         }
                         else
                         {
@@ -396,8 +396,8 @@ void Sim::PayoutWinners()
                         //
                         if (_playersVec[pIdx]->_doubleVec[hIdx])
                         {
-                            if (DEBUG) {std::cout << "Paying player[" << pIdx << "] WIN DOUBLE." << std::endl;}
-                            PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_WIN_DOUBLE);
+                            if (DEBUG) {std::cout << "Paying player[" << pIdx << "] WIN on a double." << std::endl;}
+                            PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_WIN);
                         }
                         else
                         {
@@ -446,32 +446,55 @@ void Sim::PlayHand(int pIdx, int hIdx)
     while (GetOptimalValue(player->_hands[hIdx]) < 21)
     {
         // Deal first card if this is a hand resulting from a split (one card)
+        //
         if (player->_hands[hIdx].size() == 1)
         {
             if (DEBUG) {std::cout << "Dealing second card after split." << std::endl;}
             player->_hands[hIdx].push_back(GetGame()->DealCard());
-            // Deal only one card on top of an Ace
-            //
-            if (player->_hands[hIdx][0]->GetRank() == 1)
-            {
-                // TODO, allow multiple cards if game's rules allow it
-                break;
-            }
+
             if (IsBlackjack(player->_hands[hIdx]))
             {
-                // TODO, pay what the game's rules call for
-                PayoutPlayer(player, hIdx, Sim::FACTOR_BLACKJACK);
+                // Payout, then finished this particular hand
+                //
+                if (GetGame()->GetBonusPayOnSplitAces())
+                {
+                    PayoutPlayer(player, hIdx, Sim::FACTOR_BLACKJACK);
+                }
+                else
+                {
+                    PayoutPlayer(player, hIdx, Sim::FACTOR_WIN);
+                }
+                player->_activeVec[hIdx] = false;
+                break;
+            }
+            
+            // Finished if this was an Ace and unable to play split aces
+            //
+            if (!GetGame()->GetPlaySplitAces() &&
+                player->_hands[hIdx][0]->GetRank() == 1)
+            {
+                break;
             }
         }
 
-        auto  decision = GetDecision(player, player->_hands[hIdx], isFollowup);
+        // At this point, the player has a two-card hand that needs a decision
+        //
+        auto decision = GetDecision(player, player->_hands[hIdx], isFollowup);
         std::cout << "Decision: " << static_cast<int>(decision) << std::endl;
+
         // CHECK AND HANDLE Split action
         if (decision == TPlayAction::SPLIT)
         {
             if (DEBUG) {std::cout << "Handling split action." << std::endl;}
 
-            if (player->_hands.size() < _game->GetNumSplits())
+            // The player can split if:
+            //   - The number of splits has not reached the max AND
+            //   - They are not a resplit aces OR resplit aces are allowed
+            //
+            if (player->_hands.size() < _game->GetNumSplits() &&
+                (player->_hands[hIdx][0]->GetRank() != 1 ||
+                 player->_hands.size() == 1 ||
+                 GetGame()->GetPlaySplitAces()) )
             {
                 // Player can execute split
                 //
@@ -479,15 +502,16 @@ void Sim::PlayHand(int pIdx, int hIdx)
                 player->_activeVec.push_back(true);
                 player->_doubleVec.push_back(false);
 
-                // std::move the Card from one hand to the other
+                // std::move the Card from current hand to the newest hand
                 //
+                int numHands = player->_hands.size();
                 const auto it = player->_hands[hIdx].rbegin();
-                player->_hands[hIdx+1].push_back(std::move(*it));
+                player->_hands[numHands-1].push_back(std::move(*it));
                 player->_hands[hIdx].pop_back();
 
                 // Update the new wager/Bet
                 //
-                player->MakeAdditionalBet(hIdx+1, player->GetHandBetAmount(hIdx)); 
+                player->MakeAdditionalBet(numHands-1, player->GetHandBetAmount(hIdx)); 
             }
             else
             {
@@ -528,6 +552,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
                 {
                     player->_hands[hIdx].push_back(GetGame()->DealCard());
                     player->_doubleVec[hIdx] = true;
+                    player->MakeAdditionalBet(hIdx, player->GetHandBetAmount(hIdx)); 
                     std::cout << "Hand after: " << std::endl;
                     for (auto& card : player->_hands[hIdx])
                     {
