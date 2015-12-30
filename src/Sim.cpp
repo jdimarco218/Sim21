@@ -441,25 +441,24 @@ void Sim::PlayDealerHand()
 void Sim::PlayHand(int pIdx, int hIdx)
 {
     auto& player = _playersVec[pIdx];
-    auto& hand = player->GetHand(hIdx);
     bool isFollowup = false;
 
-    while (GetOptimalValue(hand) < 21)
+    while (GetOptimalValue(player->_hands[hIdx]) < 21)
     {
-        auto  decision = GetDecision(player, hand, isFollowup);
+        auto  decision = GetDecision(player, player->_hands[hIdx], isFollowup);
         // Deal first card if this is a hand resulting from a split (one card)
-        if (hand.size() == 1)
+        if (player->_hands[hIdx].size() == 1)
         {
             if (DEBUG) {std::cout << "Dealing second card after split." << std::endl;}
-            hand.push_back(GetGame()->DealCard());
+            player->_hands[hIdx].push_back(GetGame()->DealCard());
             // Deal only one card on top of an Ace
             //
-            if (hand[0]->GetRank() == 1)
+            if (player->_hands[hIdx][0]->GetRank() == 1)
             {
                 // TODO, allow multiple cards if game's rules allow it
                 break;
             }
-            if (IsBlackjack(hand))
+            if (IsBlackjack(player->_hands[hIdx]))
             {
                 // TODO, pay what the game's rules call for
                 PayoutPlayer(player, hIdx, Sim::FACTOR_BLACKJACK);
@@ -494,7 +493,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
             {
                 // Player cannot split, take follow-up action
                 //
-                auto followup = GetDecision(player, hand, true);
+                auto followup = GetDecision(player, player->_hands[hIdx], true);
                 if (followup == TPlayAction::STAND)
                 {
                     if (DEBUG) {std::cout << "Follow-up STAND." << std::endl;}
@@ -503,7 +502,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
                 else if (followup == TPlayAction::HIT)
                 {
                     if (DEBUG) {std::cout << "Follow-up HIT." << std::endl;}
-                    hand.push_back(GetGame()->DealCard());
+                    player->_hands[hIdx].push_back(GetGame()->DealCard());
                 }
                 else if (followup == TPlayAction::SURRENDER)
                 {
@@ -525,12 +524,12 @@ void Sim::PlayHand(int pIdx, int hIdx)
             std::cout << "Handling double action." << std::endl;
             if (_deckType == TDeckType::BLACKJACK)
             { 
-                if (hand.size() == 2)
+                if (player->_hands[hIdx].size() == 2)
                 {
-                    hand.push_back(GetGame()->DealCard());
+                    player->_hands[hIdx].push_back(GetGame()->DealCard());
                     player->_doubleVec[hIdx] = true;
                     std::cout << "Hand after: " << std::endl;
-                    for (auto& card : hand)
+                    for (auto& card : player->_hands[hIdx])
                     {
                         std::cout << card->GetRank() << ", ";
                     }
@@ -542,7 +541,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
                     // Player cannot execute double, lookup follow-up action
                     //
                     if (DEBUG) {std::cout << "Unable to double" << std::endl;}
-                    auto followup = GetDecision(player, hand, true);
+                    auto followup = GetDecision(player, player->_hands[hIdx], true);
                     if (followup == TPlayAction::STAND)
                     {
                         if (DEBUG) {std::cout << "Follow-up STAND." << std::endl;}
@@ -551,7 +550,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
                     else if (followup == TPlayAction::HIT)
                     {
                         if (DEBUG) {std::cout << "Follow-up HIT." << std::endl;}
-                        hand.push_back(GetGame()->DealCard());
+                        player->_hands[hIdx].push_back(GetGame()->DealCard());
                     }
                     else
                     {
@@ -563,9 +562,9 @@ void Sim::PlayHand(int pIdx, int hIdx)
             else
             {
                 // TODO FOR SP21
-                hand.push_back(GetGame()->DealCard());
+                player->_hands[hIdx].push_back(GetGame()->DealCard());
                 std::cout << "Hand after: " << std::endl;
-                for (auto& card : hand)
+                for (auto& card : player->_hands[hIdx])
                 {
                     std::cout << card->GetRank() << ", ";
                 }
@@ -583,9 +582,9 @@ void Sim::PlayHand(int pIdx, int hIdx)
         else if (decision == TPlayAction::HIT)
         {
             std::cout << "Handling hit action." << std::endl;
-            hand.push_back(GetGame()->DealCard());
+            player->_hands[hIdx].push_back(GetGame()->DealCard());
             std::cout << "Hand after: " << std::endl;
-            for (auto& card : hand)
+            for (auto& card : player->_hands[hIdx])
             {
                 std::cout << card->GetRank() << ", ";
             }
@@ -595,7 +594,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
         else if (decision == TPlayAction::SURRENDER)
         {
             // TODO handle other possible game rules
-            if (hand.size() == 2)
+            if (player->_hands[hIdx].size() == 2)
             {
                 std::cout << "Handling surrender action." << std::endl;
                 PayoutPlayer(player, hIdx, Sim::FACTOR_SURRENDER);
@@ -605,7 +604,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
             else
             {
                 // Player cannot execute surrender, lookup follow-up action
-                auto followup = GetDecision(player, hand, true);
+                auto followup = GetDecision(player, player->_hands[hIdx], true);
                 if (followup == TPlayAction::STAND)
                 {
                     if (DEBUG) {std::cout << "Follow-up STAND." << std::endl;}
@@ -614,7 +613,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
                 else if (followup == TPlayAction::HIT)
                 {
                     if (DEBUG) {std::cout << "Follow-up HIT." << std::endl;}
-                    hand.push_back(GetGame()->DealCard());
+                    player->_hands[hIdx].push_back(GetGame()->DealCard());
                 }
                 else
                 {

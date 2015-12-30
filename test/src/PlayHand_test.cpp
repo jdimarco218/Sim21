@@ -60,6 +60,56 @@ bool PlayHandTest(std::unique_ptr<Sim>& sim, bool verbose)
 bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
 {
     bool testPassed = true;
+    bool preTest = true;
+
+    std::vector<int> ranks0;
+    std::vector<int> ranks1;
+    std::vector<int> shoeRanks;
+    std::vector<int> dealerRanks;
+    std::string ref = "";
+    int refCount = 0;
+
+    // TEST CASE
+    // Both players split 7s
+    // Player 0 wins both
+    // Player 1 loses both
+    //
+    ResetTestEnv(sim);
+    ref = "PlayHandSplitTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    ranks0.clear();
+    ranks1.clear();
+    dealerRanks.clear();
+    shoeRanks.clear();
+    ranks0.push_back(7);
+    ranks0.push_back(7); // player0 p7
+    ranks1.push_back(7);
+    ranks1.push_back(7); // player1 p7
+    shoeRanks.push_back(8); // player0 gets 15
+    shoeRanks.push_back(6); // player0 gets 21 on first hand
+    shoeRanks.push_back(6); // player0 gets 13
+    shoeRanks.push_back(7); // player0 gets 21 on second hand
+    shoeRanks.push_back(13); // player1 gets 17 on first hand
+    shoeRanks.push_back(9); // player1 gets 16
+    shoeRanks.push_back(9); // player1 busts on second hand
+    dealerRanks.push_back(7);
+    dealerRanks.push_back(1); // dealer 18, with 7 Up 
+    MakeHandForPlayerIdxHandIdx(sim, ranks0, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks1, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    FrontloadShoe(sim, shoeRanks);
+    sim->CheckInsuranceAndBlackjack();
+    sim->PlayHand(0, 0);
+    sim->PlayHand(1, 0);
+    sim->PlayDealerHand();
+    sim->PayoutWinners();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &=  50 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -50 == sim->GetPlayerAt(1)->GetChips();
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
 
     return testPassed;
 }

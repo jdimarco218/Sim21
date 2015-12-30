@@ -48,12 +48,16 @@ void Player::SetInitialBet(Game * game)
 
 void Player::MakeAdditionalBet(int handIdx, int betAmount)
 {
-    if (handIdx == _handsBetVec.size()) // Adding bet (e.g. doubling)
+    {std::cout << "handIdx: " << handIdx << "  _handsBetVec.size(): " << _handsBetVec.size() << std::endl;}
+    if (handIdx < _handsBetVec.size()) // Adding bet (e.g. doubling)
     {
-    }
-    else if (handIdx < _handsBetVec.size()) // New hand's bet (e.g. split)
-    { 
         _handsBetVec[handIdx]->_amount += betAmount;
+        _totalWagered += betAmount;
+        _chips -= betAmount;
+    }
+    else if (handIdx == _handsBetVec.size()) // New hand's bet (e.g. split)
+    { 
+        _handsBetVec.push_back(std::unique_ptr<Bet>(new Bet(betAmount)));
         _totalWagered += betAmount;
         _chips -= betAmount;
     }
