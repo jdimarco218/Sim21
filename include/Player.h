@@ -53,6 +53,7 @@ public:
     bool WantsInsurance(Game * game);
     double GetChips(){ return _chips; }
     void SetChips(double chips){ _chips = chips; }
+    inline bool IsActiveAt(int hIdx){ return _activeVec[hIdx]; }
 
     Player();
     ~Player()

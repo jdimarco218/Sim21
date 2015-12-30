@@ -194,6 +194,10 @@ void Sim::CheckInsuranceAndBlackjack()
                 if(DEBUG){ std::cout << "db.   Player does not have bj." << std::endl; }
                 // Player doesn't have blackjack but dealer does
             }
+
+            // Player does not get to play
+            //
+            player->_activeVec[0] = false;
         }
     }
     else // Dealer does NOT have blackjack

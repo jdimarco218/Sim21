@@ -54,10 +54,15 @@ bool PlayHandTest(std::unique_ptr<Sim>& sim, bool verbose)
 // Standard splits then doubles
 // Maximum splits, follow-up action wins and losses
 // Maximum splits, follow-up action surrender(s), push(es), win, and loss
-// No resplit, no play, no bonus,  bj win, win, push, loss
-// No resplit, no play, no bonus,  bj push, loss
-// No resplit, no play, yes bonus, bj win, win, push, loss
-// No resplit, no play, yes bonus, bj push, loss
+// Aces tests
+//   -Dealer bj no play
+//   -No  resplit,  no play,  no bonus, bj win, win, push, loss
+//   -No  resplit,  no play, yes bonus, bj win, win, push, loss
+//   -No  resplit, yes play, yes bonus, bj win, win, push, loss
+//   -Yes resplit, yes play, yes bonus, bj win, win, push, loss
+//   -Yes resplit, yes play,  no bonus, bj win, win, push, loss
+//   -Yes resplit,  no play,  no bonus, bj win, win, push, loss
+//
 // TODO
 //
 //******************************************************************************
@@ -269,6 +274,57 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     testPassed &= -37.5 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
     sim->GetGame()->SetNumSplits(prevNumSplits); // revert numSplits
+    
+    // TEST CASE
+    // Test no resplit, no play, no bonus
+    // Dealer blackjack so no splits
+    //
+    ResetTestEnv(sim);
+    ref = "PlayHandSplitTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    sim->GetGame()->SetNumSplits(4); // Set rules for this test
+    sim->GetGame()->SetResplitAces(false);
+    sim->GetGame()->SetPlaySplitAces(false);
+    sim->GetGame()->SetBonusPayOnSplitAces(false);
+    ranks0.clear();
+    ranks1.clear();
+    dealerRanks.clear();
+    shoeRanks.clear();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    ranks0.push_back(1);
+    ranks0.push_back(1); // player0 pA
+    ranks1.push_back(1);
+    ranks1.push_back(1); // player1 pA
+    dealerRanks.push_back(10);
+    dealerRanks.push_back(1); // dealer 18, with T Up 
+    MakeHandForPlayerIdxHandIdx(sim, ranks0, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks1, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    FrontloadShoe(sim, shoeRanks);
+    sim->CheckInsuranceAndBlackjack();
+    // Players should be inactive now
+    //
+    for (int i = 0; i < sim->GetPlayersVec().size(); ++i)
+    {
+        if (sim->GetPlayerAt(i)->IsActiveAt(0))
+        {
+            sim->PlayHand(i, 0);
+        }
+    }
+    sim->PlayDealerHand();
+    sim->PayoutWinners();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &= -25.0 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -25.0 == sim->GetPlayerAt(1)->GetChips();
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
+    sim->GetGame()->SetNumSplits(prevNumSplits); // revert numSplits
+    sim->GetGame()->SetResplitAces(prevResplitAces); // revert resplitAces
+    sim->GetGame()->SetPlaySplitAces(prevPlaySplitAces); // revert play split
+    sim->GetGame()->SetBonusPayOnSplitAces(prevBonusPayOnSplitAces); // revert
 
     // TEST CASE
     // Test no resplit, no play, no bonus
@@ -313,6 +369,277 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
     if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  50.0 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -25.0 == sim->GetPlayerAt(1)->GetChips();
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
+    sim->GetGame()->SetNumSplits(prevNumSplits); // revert numSplits
+    sim->GetGame()->SetResplitAces(prevResplitAces); // revert resplitAces
+    sim->GetGame()->SetPlaySplitAces(prevPlaySplitAces); // revert play split
+    sim->GetGame()->SetBonusPayOnSplitAces(prevBonusPayOnSplitAces); // revert
+
+    // TEST CASE
+    // Test no resplit, no play, yes bonus
+    // Player 0 wins one blackjack, standard wins other
+    // Player 1 pushes one, loses other
+    //
+    ResetTestEnv(sim);
+    ref = "PlayHandSplitTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    sim->GetGame()->SetNumSplits(4); // Set rules for this test
+    sim->GetGame()->SetResplitAces(false);
+    sim->GetGame()->SetPlaySplitAces(false);
+    sim->GetGame()->SetBonusPayOnSplitAces(true);
+    ranks0.clear();
+    ranks1.clear();
+    dealerRanks.clear();
+    shoeRanks.clear();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    ranks0.push_back(1);
+    ranks0.push_back(1); // player0 pA
+    ranks1.push_back(1);
+    ranks1.push_back(1); // player1 pA
+    shoeRanks.push_back(10); // player0 gets blackjack on first hand
+    shoeRanks.push_back(9); // player0 gets s20 on second hand
+    shoeRanks.push_back(7); // player1 gets 18 on first hand
+    shoeRanks.push_back(5); // player0 gets 12 on second hand
+    shoeRanks.push_back(9); // should not be a dealt card
+    dealerRanks.push_back(10);
+    dealerRanks.push_back(8); // dealer 18, with T Up 
+    MakeHandForPlayerIdxHandIdx(sim, ranks0, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks1, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    FrontloadShoe(sim, shoeRanks);
+    sim->CheckInsuranceAndBlackjack();
+    sim->PlayHand(0, 0);
+    sim->PlayHand(1, 0);
+    sim->PlayDealerHand();
+    sim->PayoutWinners();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &=  62.5 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -25.0 == sim->GetPlayerAt(1)->GetChips();
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
+    sim->GetGame()->SetNumSplits(prevNumSplits); // revert numSplits
+    sim->GetGame()->SetResplitAces(prevResplitAces); // revert resplitAces
+    sim->GetGame()->SetPlaySplitAces(prevPlaySplitAces); // revert play split
+    sim->GetGame()->SetBonusPayOnSplitAces(prevBonusPayOnSplitAces); // revert
+
+    // TEST CASE
+    // Test no resplit, yes play, yes bonus
+    // Player 0 wins one blackjack, standard wins other
+    // Player 1 pushes one, loses other
+    //
+    ResetTestEnv(sim);
+    ref = "PlayHandSplitTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    sim->GetGame()->SetNumSplits(4); // Set rules for this test
+    sim->GetGame()->SetResplitAces(false);
+    sim->GetGame()->SetPlaySplitAces(true);
+    sim->GetGame()->SetBonusPayOnSplitAces(true);
+    ranks0.clear();
+    ranks1.clear();
+    dealerRanks.clear();
+    shoeRanks.clear();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    ranks0.push_back(1);
+    ranks0.push_back(1); // player0 pA
+    ranks1.push_back(1);
+    ranks1.push_back(1); // player1 pA
+    shoeRanks.push_back(10); // player0 gets blackjack on first hand
+    shoeRanks.push_back(7); // player0 gets s18
+    shoeRanks.push_back(2); // player0 gets s20 on second hand
+    shoeRanks.push_back(7); // player1 gets s18
+    shoeRanks.push_back(12); // player1 gets 18 on first hand
+    shoeRanks.push_back(5); // player1 gets s16
+    shoeRanks.push_back(10); // player1 gets 16
+    shoeRanks.push_back(11); // player1 busts on second hand
+    dealerRanks.push_back(10);
+    dealerRanks.push_back(8); // dealer 18, with T Up 
+    MakeHandForPlayerIdxHandIdx(sim, ranks0, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks1, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    FrontloadShoe(sim, shoeRanks);
+    sim->CheckInsuranceAndBlackjack();
+    sim->PlayHand(0, 0);
+    sim->PlayHand(1, 0);
+    sim->PlayDealerHand();
+    sim->PayoutWinners();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &=  62.5 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -25.0 == sim->GetPlayerAt(1)->GetChips();
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
+    sim->GetGame()->SetNumSplits(prevNumSplits); // revert numSplits
+    sim->GetGame()->SetResplitAces(prevResplitAces); // revert resplitAces
+    sim->GetGame()->SetPlaySplitAces(prevPlaySplitAces); // revert play split
+    sim->GetGame()->SetBonusPayOnSplitAces(prevBonusPayOnSplitAces); // revert
+
+    // TEST CASE
+    // Test yes resplit, yes play, yes bonus
+    // Player 0 wins one blackjack, standard wins others
+    // Player 1 pushes one, loses others
+    //
+    ResetTestEnv(sim);
+    ref = "PlayHandSplitTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    sim->GetGame()->SetNumSplits(3); // Set rules for this test
+    sim->GetGame()->SetResplitAces(true);
+    sim->GetGame()->SetPlaySplitAces(true);
+    sim->GetGame()->SetBonusPayOnSplitAces(true);
+    ranks0.clear();
+    ranks1.clear();
+    dealerRanks.clear();
+    shoeRanks.clear();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    ranks0.push_back(1);
+    ranks0.push_back(1); // player0 pA
+    ranks1.push_back(1);
+    ranks1.push_back(1); // player1 pA
+    shoeRanks.push_back(1); // player0 gets another pA
+    shoeRanks.push_back(11); // player0 gets blackjack on first hand
+    shoeRanks.push_back(1); // player0 gets pA, follow-up
+    shoeRanks.push_back(8); // player0 gets s20 on second hand
+    shoeRanks.push_back(9); // player0 gets s20 on third hand
+    shoeRanks.push_back(1); // player1 gets another pA
+    shoeRanks.push_back(7); // player1 gets s18
+    shoeRanks.push_back(10); // player1 gets 18 on first hand
+    shoeRanks.push_back(1); // player1 gets pA, follow-up
+    shoeRanks.push_back(12); // player1 gets 12
+    shoeRanks.push_back(12); // player1 busts on second hand
+    shoeRanks.push_back(5); // player1 gets s16
+    shoeRanks.push_back(10); // player1 gets 16
+    shoeRanks.push_back(11); // player1 busts on third hand
+    dealerRanks.push_back(10);
+    dealerRanks.push_back(8); // dealer 18, with T Up 
+    MakeHandForPlayerIdxHandIdx(sim, ranks0, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks1, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    FrontloadShoe(sim, shoeRanks);
+    sim->CheckInsuranceAndBlackjack();
+    sim->PlayHand(0, 0);
+    sim->PlayHand(1, 0);
+    sim->PlayDealerHand();
+    sim->PayoutWinners();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &=  87.5 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -50.0 == sim->GetPlayerAt(1)->GetChips();
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
+    sim->GetGame()->SetNumSplits(prevNumSplits); // revert numSplits
+    sim->GetGame()->SetResplitAces(prevResplitAces); // revert resplitAces
+    sim->GetGame()->SetPlaySplitAces(prevPlaySplitAces); // revert play split
+    sim->GetGame()->SetBonusPayOnSplitAces(prevBonusPayOnSplitAces); // revert
+
+    // TEST CASE
+    // Test yes resplit, yes play, no bonus
+    // Player 0 wins one blackjack, standard wins others
+    // Player 1 pushes one, loses others
+    //
+    ResetTestEnv(sim);
+    ref = "PlayHandSplitTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    sim->GetGame()->SetNumSplits(3); // Set rules for this test
+    sim->GetGame()->SetResplitAces(true);
+    sim->GetGame()->SetPlaySplitAces(true);
+    sim->GetGame()->SetBonusPayOnSplitAces(false);
+    ranks0.clear();
+    ranks1.clear();
+    dealerRanks.clear();
+    shoeRanks.clear();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    ranks0.push_back(1);
+    ranks0.push_back(1); // player0 pA
+    ranks1.push_back(1);
+    ranks1.push_back(1); // player1 pA
+    shoeRanks.push_back(1); // player0 gets another pA
+    shoeRanks.push_back(11); // player0 gets blackjack on first hand
+    shoeRanks.push_back(1); // player0 gets pA, follow-up
+    shoeRanks.push_back(8); // player0 gets s20 on second hand
+    shoeRanks.push_back(9); // player0 gets s20 on third hand
+    shoeRanks.push_back(1); // player1 gets another pA
+    shoeRanks.push_back(7); // player1 gets s18
+    shoeRanks.push_back(10); // player1 gets 18 on first hand
+    shoeRanks.push_back(1); // player1 gets pA, follow-up
+    shoeRanks.push_back(12); // player1 gets 12
+    shoeRanks.push_back(12); // player1 busts on second hand
+    shoeRanks.push_back(5); // player1 gets s16
+    shoeRanks.push_back(10); // player1 gets 16
+    shoeRanks.push_back(11); // player1 busts on third hand
+    dealerRanks.push_back(10);
+    dealerRanks.push_back(8); // dealer 18, with T Up 
+    MakeHandForPlayerIdxHandIdx(sim, ranks0, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks1, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    FrontloadShoe(sim, shoeRanks);
+    sim->CheckInsuranceAndBlackjack();
+    sim->PlayHand(0, 0);
+    sim->PlayHand(1, 0);
+    sim->PlayDealerHand();
+    sim->PayoutWinners();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &=  75.0 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -50.0 == sim->GetPlayerAt(1)->GetChips();
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
+    sim->GetGame()->SetNumSplits(prevNumSplits); // revert numSplits
+    sim->GetGame()->SetResplitAces(prevResplitAces); // revert resplitAces
+    sim->GetGame()->SetPlaySplitAces(prevPlaySplitAces); // revert play split
+    sim->GetGame()->SetBonusPayOnSplitAces(prevBonusPayOnSplitAces); // revert
+
+    // TEST CASE
+    // Test yes resplit, no play, no bonus
+    // Player 0 wins one blackjack, one push
+    // Player 1 pushes one, loses others
+    //
+    ResetTestEnv(sim);
+    ref = "PlayHandSplitTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    sim->GetGame()->SetNumSplits(3); // Set rules for this test
+    sim->GetGame()->SetResplitAces(true);
+    sim->GetGame()->SetPlaySplitAces(false);
+    sim->GetGame()->SetBonusPayOnSplitAces(false);
+    ranks0.clear();
+    ranks1.clear();
+    dealerRanks.clear();
+    shoeRanks.clear();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    ranks0.push_back(1);
+    ranks0.push_back(1); // player0 pA
+    ranks1.push_back(1);
+    ranks1.push_back(1); // player1 pA
+    shoeRanks.push_back(10); // player0 gets blackjack on first hand
+    shoeRanks.push_back(7); // player0 gets s18 on third hand
+    shoeRanks.push_back(1); // player1 gets s12 on first hand
+    shoeRanks.push_back(7); // player1 gets s18 on second hand
+    shoeRanks.push_back(10); // should not be dealt
+    dealerRanks.push_back(10);
+    dealerRanks.push_back(8); // dealer 18, with T Up 
+    MakeHandForPlayerIdxHandIdx(sim, ranks0, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks1, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    FrontloadShoe(sim, shoeRanks);
+    sim->CheckInsuranceAndBlackjack();
+    sim->PlayHand(0, 0);
+    sim->PlayHand(1, 0);
+    sim->PlayDealerHand();
+    sim->PayoutWinners();
+    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &=  25.0 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -25.0 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
     sim->GetGame()->SetNumSplits(prevNumSplits); // revert numSplits
