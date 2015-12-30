@@ -25,6 +25,8 @@ Game::Game(TDeckType deckType, int numDecks, double minimumBet, int cutPercentMi
     _resplitAces = false;
     _playSplitAces = false;
     _bonusPayOnSplitAces = false;
+    _das = true;
+    _s17 = true;
 
     // Generate a random cut card in the penetration range
     std::random_device rd;

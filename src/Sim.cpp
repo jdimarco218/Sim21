@@ -426,7 +426,7 @@ void Sim::PlayDealerHand()
     while (GetOptimalValue(hand) < 17 ||
           (GetOptimalValue(hand) == 17 &&
            IsHandSoft(hand) &&
-           !IsS17()) )
+           !GetGame()->IsS17()) )
     {
         hand.push_back(GetGame()->DealCard());
     }
@@ -657,6 +657,14 @@ void Sim::PlayHand(int pIdx, int hIdx)
             std::cerr << "ERROR: Unknown action!" << std::endl;
             break;
         }
+    }
+
+    // If the hand busted, set inactive. It is possible to arrive here
+    // after breaking out of the loop (value < 21)
+    //
+    if (GetOptimalValue(player->_hands[hIdx]) > 21)
+    {
+        player->_activeVec[hIdx] = false;
     }
 
     //

@@ -20,6 +20,7 @@ public:
     void SetResplitAces(bool resplitAces){ _resplitAces = resplitAces; }
     void SetPlaySplitAces(bool playSplitAces){ _playSplitAces = playSplitAces; }
     void SetBonusPayOnSplitAces(bool bonus){ _bonusPayOnSplitAces = bonus; }
+    void SetS17(bool s17){ _s17 = s17; }
     inline int GetCutCardPosition(){ return _cutCardPosition; }
     inline int GetCardsRemaining(){ return _shoe->GetCardsRemaining(); }
     std::unique_ptr<Card> DealCard();
@@ -28,6 +29,9 @@ public:
     inline bool GetResplitAces(){ return _resplitAces; }
     inline bool GetPlaySplitAces(){ return _playSplitAces; }
     inline bool GetBonusPayOnSplitAces(){ return _bonusPayOnSplitAces; }
+    inline bool GetDaS(){ return _das; }
+    inline bool GetS17(){ return _s17; }
+    inline bool IsS17(){ return _s17; }
     inline std::unique_ptr<Shoe>& GetShoe(){ return _shoe; }
 
     Game()
@@ -59,6 +63,8 @@ private:
     bool _resplitAces;
     bool _playSplitAces;
     bool _bonusPayOnSplitAces;
+    bool _das;
+    bool _s17;
 
 };
 
