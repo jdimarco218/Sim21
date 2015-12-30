@@ -21,6 +21,8 @@ public:
     inline int GetCardsRemaining(){ return _shoe->GetCardsRemaining(); }
     std::unique_ptr<Card> DealCard();
     double GetMinimumBet(){ return _minimumBet; }
+    inline int GetNumSplits(){ return _numSplits; }
+    inline std::unique_ptr<Shoe>& GetShoe(){ return _shoe; }
 
     Game()
     {
@@ -41,6 +43,7 @@ private:
     int _cutCardPosition;
     int _hiloCount;
     double _minimumBet;
+    int _numSplits;
     
 
 };

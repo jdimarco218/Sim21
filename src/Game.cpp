@@ -21,6 +21,7 @@ Game::Game(TDeckType deckType, int numDecks, double minimumBet, int cutPercentMi
     _shoe = std::move(std::unique_ptr<Shoe>(new Shoe(numDecks, deckType)));
     _hiloCount = 0;
     _minimumBet = minimumBet;
+    _numSplits = 4;
 
     // Generate a random cut card in the penetration range
     std::random_device rd;

@@ -8,6 +8,9 @@
 #include "Deck.h"
 #include "Shoe.h"
 
+/**
+ * Reset the test environment by clearing hands, bets, and re-initializing chips
+ */
 void ResetTestEnv(std::unique_ptr<Sim>& sim)
 {
 
@@ -23,7 +26,21 @@ void ResetTestEnv(std::unique_ptr<Sim>& sim)
 }
 
 /**
- * Helper function to create a player's specific hand
+ * Sets the front of the Shoe to the given Card ranks
+ */
+void FrontloadShoe(std::unique_ptr<Sim>& sim, std::vector<int> ranks)
+{
+    auto& shoeCards = sim->GetGame()->GetShoe()->GetCards();
+    for (auto it = ranks.rbegin(); it != ranks.rend(); ++it)
+    {
+        // All suited as "1", whoe cares?
+        shoeCards.push_front(std::unique_ptr<Card>(new Card(*it, 1)));
+    }
+    return;
+}
+
+/**
+ * Helper function to create a player's specific hand given a set of ranks
  */
 void MakeHandForPlayerIdxHandIdx(std::unique_ptr<Sim>& sim, std::vector<int> ranks, int pIdx, int hIdx)
 {
@@ -62,6 +79,9 @@ void MakeHandForPlayerIdxHandIdx(std::unique_ptr<Sim>& sim, std::vector<int> ran
     return;
 }
 
+/**
+ * Helper function to create a dealer's specific hand given a set of ranks
+ */
 void MakeHandForDealer(std::unique_ptr<Sim>& sim, std::vector<int> ranks)
 {
     // If dealer has a hand already, clear it

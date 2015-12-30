@@ -48,6 +48,7 @@ public:
     void SetInitialBet(Game * game);
     void SetWantsInsurance(bool wantsInsurance);
     void MakeAdditionalBet(int handIdx, int betAmount);
+    double GetHandBetAmount(int handIdx); 
     void MakeInsuranceBet();
     bool WantsInsurance(Game * game);
     double GetChips(){ return _chips; }
@@ -60,14 +61,15 @@ public:
     }
 
 private:
-    bool _active;
-    double _chips;
-    std::vector<std::unique_ptr<Bet> > _handsBetVec;
-    std::unique_ptr<Bet> _insuranceBet;
+    double                                             _chips;
+    long double                                 _totalWagered;
+    long double                                _totalWinnings;
+    bool                                      _wantsInsurance;
+    std::vector<bool>                              _activeVec;
+    std::vector<bool>                              _doubleVec;
+    std::vector<std::unique_ptr<Bet> >           _handsBetVec;
+    std::unique_ptr<Bet>                        _insuranceBet;
     std::vector< std::vector<std::unique_ptr<Card> > > _hands;
-    long int _totalWagered;
-    long int _totalWinnings;
-    bool _wantsInsurance;
 
 };
 

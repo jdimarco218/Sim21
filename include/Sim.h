@@ -26,11 +26,13 @@ class Sim
 {
 public:
     // Payout coefficients, these include the original amount
-    static constexpr double FACTOR_BLACKJACK = 2.5;
-    static constexpr double FACTOR_WIN       = 2.0;
-    static constexpr double FACTOR_PUSH      = 1.0;
-    static constexpr double FACTOR_SURRENDER = 0.5;
-    static constexpr double FACTOR_INSURANCE = 1.5;
+    static constexpr double FACTOR_BLACKJACK   = 2.5;
+    static constexpr double FACTOR_WIN         = 2.0;
+    static constexpr double FACTOR_WIN_DOUBLE  = 4.0;
+    static constexpr double FACTOR_PUSH        = 1.0;
+    static constexpr double FACTOR_PUSH_DOUBLE = 2.0;
+    static constexpr double FACTOR_SURRENDER   = 0.5;
+    static constexpr double FACTOR_INSURANCE   = 1.5;
 
     void RunSimulation();
     void RunStrategySimulation();
@@ -40,22 +42,27 @@ public:
     void SaveStatistics();
     bool IsSimulationFinished();
     void PrintGameState(Game * game);
+    void PrintChips();
     void CheckInsuranceAndBlackjack();
     bool WantsInsurance(int playerIdx);
     bool IsAceUp();
+    inline bool IsS17() {return false;}
     int  GetOptimalValue(const std::vector<std::unique_ptr<Card> >& hand) const;
     int  GetMinimalValue(const std::vector<std::unique_ptr<Card> >& hand) const;
-    std::string GetStratKey(const std::vector<std::unique_ptr<Card> >& hand);
+    std::string GetStratKey(const std::vector<std::unique_ptr<Card> >& hand) const;
+    int GetUpCardRank();
     bool IsHandSoft(const std::vector<std::unique_ptr<Card> >& hand) const;
+    bool IsBlackjack(const std::vector<std::unique_ptr<Card> >& hand) const;
     void PayoutPlayer(std::unique_ptr<Player>& player, int handIdx, double payoutFactor);
     void PayoutInsurance(std::unique_ptr<Player>& player);
     void PlayHand(int pIdx, int hIdx);
+    void PlayDealerHand();
+    void PayoutWinners();
     std::unique_ptr<Player>& GetPlayerAt(int idx);
     std::unique_ptr<Player>& GetDealer(){ return _dealer; }
     std::unique_ptr<Game>&   GetGame(){ return _game; }
     std::vector< std::unique_ptr<Player> >& GetPlayersVec(){ return _playersVec; }
     TPlayAction GetDecision(std::unique_ptr<Player>& player, std::vector<std::unique_ptr<Card> >& hand, bool isFollowUp);
-    inline int GetUpCardRank() {return _dealer->_hands[0][_upCardIndex]->GetRank(); }
 
     Sim(TSimMode simMode, TDeckType deckType);
     ~Sim()

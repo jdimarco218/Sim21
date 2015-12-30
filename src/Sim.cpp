@@ -14,7 +14,7 @@ using std::map;
 using std::string;
 using std::vector;
 
-#define DEBUG false
+#define DEBUG true
 
 Sim::Sim(TSimMode simMode, TDeckType deckType)
 {
@@ -72,18 +72,19 @@ void Sim::RunStrategySimulation()
     std::cout << "RunStrategySimulation()..." << std::endl;
 
     // Start a new Game
+    _game->ResetGame();
     //std::unique_ptr<Game> currGame(new Game(_deckType));
     //_game = new Game(_deckType);
     //_game(std::unique_ptr<Game>(new Game(_deckType)));
-    _game->ResetGame();
 
-    std::cout << "Cut card: " << _game->GetCutCardPosition() << " out of " << _game->GetCardsRemaining() << std::endl;
+    if (DEBUG) {std::cout << "Cut card: " << _game->GetCutCardPosition() << " out of " << _game->GetCardsRemaining() << std::endl;}
 
     while(!IsSimulationFinished())
     {
-        std::cout << "Playing hand..." << std::endl;
+        std::cout << "Playing new hand..." << std::endl;
         SimulateHand(_game.get());
         _handsPlayed++;
+        if (DEBUG) {PrintChips();}
     }
 
     return;
@@ -125,8 +126,33 @@ void Sim::PrintGameState(Game * game)
             std::cout << std::endl;
         }
     }
+    std::cout << "Dealer: " << *(_dealer->_hands[0][_upCardIndex]) << std::endl;
 
     return;
+}
+
+void Sim::PrintChips()
+{
+    for(int pIdx = 0; pIdx < _playersVec.size(); ++pIdx)
+    {
+        std::cout << "Player[" << pIdx << "]'s chips, totalWagerd, totalWinnings: " << std::endl;
+        std::cout << _playersVec[pIdx]->_chips << ", "
+                  << _playersVec[pIdx]->_totalWagered << ", "
+                  << _playersVec[pIdx]->_totalWinnings << ", "
+                  << std::endl;
+    }
+
+    return;
+}
+
+bool Sim::IsBlackjack(const std::vector<std::unique_ptr<Card> >& hand) const
+{
+    bool ret = false;
+    if (hand.size() == 2 && GetOptimalValue(hand) == 21)
+    {
+        ret = true;
+    }
+    return ret;
 }
 
 void Sim::CheckInsuranceAndBlackjack()
@@ -177,8 +203,9 @@ void Sim::CheckInsuranceAndBlackjack()
         {
             if (player->_hands[0].size() == 2 && GetOptimalValue(player->_hands[0]) == 21)
             {
+                if (DEBUG) {std::cout << "db.   Player has bj." << std::endl;}
                 PayoutPlayer(player, 0, Sim::FACTOR_BLACKJACK);
-                player->_active = false;
+                player->_activeVec[0] = false;
             }
         }
     }
@@ -263,7 +290,7 @@ bool Sim::IsAceUp()
     return (_dealer->_hands[0][_upCardIndex]->GetRank() == 1);
 }
 
-std::string Sim::GetStratKey(const std::vector<std::unique_ptr<Card> >& hand)
+std::string Sim::GetStratKey(const std::vector<std::unique_ptr<Card> >& hand) const
 {
     std::string ret = "";
     if (hand.size() == 2)
@@ -278,9 +305,12 @@ std::string Sim::GetStratKey(const std::vector<std::unique_ptr<Card> >& hand)
         {
             rank_1 = 10;
         }
-        return "p" + std::to_string(rank_0);
+        if (rank_0 == rank_1)
+        {
+            return "p" + std::to_string(rank_0);
+        }
     }
-    else if (IsHandSoft(hand))
+    if (IsHandSoft(hand))
     {
         return "s" + std::to_string(GetOptimalValue(hand)); 
     }
@@ -288,12 +318,35 @@ std::string Sim::GetStratKey(const std::vector<std::unique_ptr<Card> >& hand)
     return std::to_string(GetOptimalValue(hand));
 }
 
+int Sim::GetUpCardRank()
+{
+    int ret = _dealer->_hands[0][_upCardIndex]->GetRank();
+    if (ret > 10)
+    {
+        ret = 10;
+    }
+    return ret;
+}
+
 TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                              std::vector<std::unique_ptr<Card> >& hand,
                              bool isFollowUp)
 {
+
     std::string stratKey = GetStratKey(hand);
-    std::cout << stratKey << std::endl;
+    if (DEBUG)
+    {
+        std::cout << "StratKey, DealerUpCard found: " 
+                  << stratKey << ", " 
+                  << GetUpCardRank() << " for hand" 
+                  << std::endl;
+        for (auto& card : hand)
+        {
+            std::cout << *card << ", ";
+        }
+        std::cout << std::endl;
+    }
+    
     if (isFollowUp)
     {
         return player->bs_s17_das_ls.find(stratKey)->second[GetUpCardRank()].second;
@@ -309,25 +362,162 @@ bool Sim::IsHandSoft(const std::vector<std::unique_ptr<Card> >& hand) const
     return GetOptimalValue(hand) != GetMinimalValue(hand);
 }
 
+void Sim::PayoutWinners()
+{
+    for (int pIdx = 0; pIdx < _playersVec.size(); ++pIdx)
+    {
+        for (int hIdx = 0; hIdx < _playersVec[pIdx]->_hands.size(); ++hIdx)
+        {
+            if (_playersVec[pIdx]->_activeVec[hIdx])
+            {
+                int playerResult = GetOptimalValue(_playersVec[pIdx]->_hands[hIdx]);
+                int dealerResult = GetOptimalValue(_dealer->_hands[0]);
+                if (DEBUG) {std::cout << "Player has " << playerResult << " against the dealer " << dealerResult << std::endl;}
+                if (playerResult <= 21)
+                {
+                    if (playerResult == dealerResult)
+                    {
+                        // Push
+                        //
+                        if (_playersVec[pIdx]->_doubleVec[hIdx])
+                        {
+                            if (DEBUG) {std::cout << "Paying player[" << pIdx << "] PUSH DOUBLE." << std::endl;}
+                            PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_PUSH_DOUBLE);
+                        }
+                        else
+                        {
+                            if (DEBUG) {std::cout << "Paying player[" << pIdx << "] PUSH." << std::endl;}
+                            PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_PUSH);
+                        }
+                    }
+                    else if (playerResult > dealerResult || dealerResult > 21)
+                    {
+                        // Winner!
+                        //
+                        if (_playersVec[pIdx]->_doubleVec[hIdx])
+                        {
+                            if (DEBUG) {std::cout << "Paying player[" << pIdx << "] WIN DOUBLE." << std::endl;}
+                            PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_WIN_DOUBLE);
+                        }
+                        else
+                        {
+                            if (DEBUG) {std::cout << "Paying player[" << pIdx << "] WIN." << std::endl;}
+                            PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_WIN);
+                        }
+                    }
+                }
+                //
+                // else, player's hand busted
+                //
+            }
+            _playersVec[pIdx]->_activeVec[hIdx] = false;
+        }
+    }
+}
+
+void Sim::PlayDealerHand()
+{
+    auto& hand = _dealer->GetHand(0);
+
+    while (GetOptimalValue(hand) < 17 ||
+          (GetOptimalValue(hand) == 17 &&
+           IsHandSoft(hand) &&
+           !IsS17()) )
+    {
+        hand.push_back(GetGame()->DealCard());
+    }
+
+    if (DEBUG) 
+    {
+        std::cout << "Dealer final hand: " << std::endl;
+        for (auto& card : hand)
+        {
+            std::cout << *card << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
 void Sim::PlayHand(int pIdx, int hIdx)
 {
     auto& player = _playersVec[pIdx];
     auto& hand = player->GetHand(hIdx);
-    auto  decision = GetDecision(player, hand, false);
+    bool isFollowup = false;
+
     while (GetOptimalValue(hand) < 21)
     {
+        auto  decision = GetDecision(player, hand, isFollowup);
         // Deal first card if this is a hand resulting from a split (one card)
         if (hand.size() == 1)
         {
-            //TODO
+            if (DEBUG) {std::cout << "Dealing second card after split." << std::endl;}
+            hand.push_back(GetGame()->DealCard());
+            // Deal only one card on top of an Ace
+            //
+            if (hand[0]->GetRank() == 1)
+            {
+                // TODO, allow multiple cards if game's rules allow it
+                break;
+            }
+            if (IsBlackjack(hand))
+            {
+                // TODO, pay what the game's rules call for
+                PayoutPlayer(player, hIdx, Sim::FACTOR_BLACKJACK);
+            }
         }
 
-        std::cout << "Decision: " << static_cast<int>(GetDecision(player, hand, false)) << std::endl;
+        std::cout << "Decision: " << static_cast<int>(decision) << std::endl;
         // CHECK AND HANDLE Split action
         if (decision == TPlayAction::SPLIT)
         {
-            std::cout << "Handling split action." << std::endl;
-            break;
+            if (DEBUG) {std::cout << "Handling split action." << std::endl;}
+
+            if (player->_hands.size() < _game->GetNumSplits())
+            {
+                // Player can execute split
+                //
+                player->_hands.push_back(std::vector<std::unique_ptr<Card> >());
+                player->_activeVec.push_back(true);
+                player->_doubleVec.push_back(false);
+
+                // std::move the Card from one hand to the other
+                //
+                const auto it = player->_hands[hIdx].rbegin();
+                player->_hands[hIdx+1].push_back(std::move(*it));
+                player->_hands[hIdx].pop_back();
+
+                // Update the new wager/Bet
+                //
+                player->MakeAdditionalBet(hIdx+1, player->GetHandBetAmount(hIdx)); 
+            }
+            else
+            {
+                // Player cannot split, take follow-up action
+                //
+                auto followup = GetDecision(player, hand, true);
+                if (followup == TPlayAction::STAND)
+                {
+                    if (DEBUG) {std::cout << "Follow-up STAND." << std::endl;}
+                    break;
+                }
+                else if (followup == TPlayAction::HIT)
+                {
+                    if (DEBUG) {std::cout << "Follow-up HIT." << std::endl;}
+                    hand.push_back(GetGame()->DealCard());
+                }
+                else if (followup == TPlayAction::SURRENDER)
+                {
+                    if (DEBUG) {std::cout << "Follow-up SURRENDER." << std::endl;}
+                    PayoutPlayer(player, hIdx, Sim::FACTOR_SURRENDER);
+                    player->_activeVec[hIdx] = false;
+                    break;
+                }
+                else
+                {
+                    std::cerr << "ERROR: Unknown followup decision after split." << std::endl;
+                    exit(-1);
+                }
+            }
         }
         // CHECK AND HANDLE Double action
         else if (decision == TPlayAction::DOUBLE)
@@ -338,6 +528,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
                 if (hand.size() == 2)
                 {
                     hand.push_back(GetGame()->DealCard());
+                    player->_doubleVec[hIdx] = true;
                     std::cout << "Hand after: " << std::endl;
                     for (auto& card : hand)
                     {
@@ -349,14 +540,18 @@ void Sim::PlayHand(int pIdx, int hIdx)
                 else
                 {
                     // Player cannot execute double, lookup follow-up action
+                    //
+                    if (DEBUG) {std::cout << "Unable to double" << std::endl;}
                     auto followup = GetDecision(player, hand, true);
                     if (followup == TPlayAction::STAND)
                     {
                         if (DEBUG) {std::cout << "Follow-up STAND." << std::endl;}
+                        break;
                     }
-                    if (followup == TPlayAction::HIT)
+                    else if (followup == TPlayAction::HIT)
                     {
                         if (DEBUG) {std::cout << "Follow-up HIT." << std::endl;}
+                        hand.push_back(GetGame()->DealCard());
                     }
                     else
                     {
@@ -378,11 +573,13 @@ void Sim::PlayHand(int pIdx, int hIdx)
                 break;
             }
         }
+        // CHECK AND HANDLE Stand action
         else if (decision == TPlayAction::STAND)
         {
             std::cout << "Handling stand action." << std::endl;
             break;
         }
+        // CHECK AND HANDLE Hit action
         else if (decision == TPlayAction::HIT)
         {
             std::cout << "Handling hit action." << std::endl;
@@ -394,10 +591,37 @@ void Sim::PlayHand(int pIdx, int hIdx)
             }
             std::cout << std::endl;
         }
+        // CHECK AND HANDLE Surrender action
         else if (decision == TPlayAction::SURRENDER)
         {
-            std::cout << "Handling surrender action." << std::endl;
-            break;
+            // TODO handle other possible game rules
+            if (hand.size() == 2)
+            {
+                std::cout << "Handling surrender action." << std::endl;
+                PayoutPlayer(player, hIdx, Sim::FACTOR_SURRENDER);
+                player->_activeVec[hIdx] = false;
+                break;
+            }
+            else
+            {
+                // Player cannot execute surrender, lookup follow-up action
+                auto followup = GetDecision(player, hand, true);
+                if (followup == TPlayAction::STAND)
+                {
+                    if (DEBUG) {std::cout << "Follow-up STAND." << std::endl;}
+                    break;
+                }
+                else if (followup == TPlayAction::HIT)
+                {
+                    if (DEBUG) {std::cout << "Follow-up HIT." << std::endl;}
+                    hand.push_back(GetGame()->DealCard());
+                }
+                else
+                {
+                    std::cerr << "ERROR: Unknown followup decision after double." << std::endl;
+                    exit(-1);
+                }
+            }
         }
         // Should never happen
         else
@@ -405,7 +629,17 @@ void Sim::PlayHand(int pIdx, int hIdx)
             std::cerr << "ERROR: Unknown action!" << std::endl;
             break;
         }
-        //if (GetDecision(
+    }
+
+    //
+    // At this point, we have handled the current hand's play. If a new
+    // hand was split off then we must play the next one - recursively.
+    //
+    int numHands = player->_hands.size();
+    if (numHands > (hIdx + 1) && (player->_hands[hIdx+1].size() == 1))
+    {
+        if (DEBUG) {std::cout << "Detected split, starting hand number " << hIdx + 1 << std::endl;}
+        PlayHand(pIdx, hIdx + 1);
     }
 
     return;
@@ -413,20 +647,21 @@ void Sim::PlayHand(int pIdx, int hIdx)
 
 void Sim::SimulateHand(Game * game)
 {
-    std::cout << "Starting a new hand..." << std::endl;
+    if (DEBUG) {std::cout << "Starting a new hand..." << std::endl;}
 
     // Get bets and reset players
     //
-    for(auto& player : _playersVec)
+    for (auto& player : _playersVec)
     {
         player->ResetPlayer();
         player->SetInitialBet(game);
     }
+    _dealer->ResetPlayer();
 
     // Deal all initial cards
     //
-    std::cout << "Dealing cards." << std::endl;
-    for(auto& player : _playersVec)
+    if (DEBUG) {std::cout << "Dealing cards." << std::endl;}
+    for (auto& player : _playersVec)
     {
         // Deal two cards
         player->_hands[0].push_back(game->DealCard());
@@ -436,32 +671,45 @@ void Sim::SimulateHand(Game * game)
     _dealer->_hands[0].push_back(game->DealCard());
     _dealer->_hands[0].push_back(game->DealCard());
 
-    std::cout << std::endl;
-    std::cout << "Printing game state." << std::endl;
-    PrintGameState(game);
-    std::cout << std::endl;
+    if (DEBUG)
+    {
+        std::cout << std::endl;
+        std::cout << "Printing game state." << std::endl;
+        PrintGameState(game);
+        std::cout << std::endl;
+    }
 
     // Check insurance, bonuses, sidebets, and blackjack
     //
+    if (DEBUG) {std::cout << "Checking BJ & Insurance." << std::endl;}
     CheckInsuranceAndBlackjack();
 
     // Play each player's hand
     //
     for (int i = 0; i < _playersVec.size(); ++i)
     {
-        for (auto& card : _playersVec[i]->GetHand(0))
+        if (_playersVec[i]->_activeVec[0])
         {
-            std::cout << card->GetRank() << std::endl;
+            for (auto& card : _playersVec[i]->GetHand(0))
+            {
+                std::cout << card->GetRank() << std::endl;
+            }
+            std::cout << "Playing player " << i << "'s hand(s)..." << std::endl;
+            PlayHand(i, 0);
         }
-        std::cout << "Playing player " << i << "'s hand(s)..." << std::endl;
-        PlayHand(i, 0);
+        else
+        {
+            if (DEBUG) {std::cout << "Skipping inactive player[" << i << "]." << std::endl;}
+        }
     }
 
-    // Play dealer's hand
+    // Play dealer's hand after all players
     //
+    PlayDealerHand();
 
-    // Payouts
+    // Check and payout the winners
     //
+    PayoutWinners();
 
     return;
 }
