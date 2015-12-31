@@ -30,4 +30,5 @@ $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
 clean:
 	@echo " Cleaning..."; 
 	@echo " $(RM) -r $(OBJECTS) "; $(RM) -r $(OBJECTS)
+	@echo " $(RM) results/*.csv "; $(RM)  results/*.csv
 
