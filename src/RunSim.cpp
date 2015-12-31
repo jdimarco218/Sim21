@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 #include <list>
 #include <memory>
@@ -6,14 +7,24 @@
 #include "Deck.h"
 #include "Shoe.h"
 
+using namespace std::chrono;
+
 int main(int argc, char ** argv)
 {
     std::cout << "Starting sim." << std::endl;
 
+    auto start = std::chrono::steady_clock::now();
+
     std::unique_ptr<Sim> sim(new Sim(TSimMode::STRATEGY, TDeckType::SPANISH21));
     sim->RunSimulation();
 
-    std::cout << "Done." << std::endl;
+    auto end = std::chrono::steady_clock::now();
+    auto timeSpan = std::chrono::duration_cast<duration<double> >(end - start);
+
+    std::cout << "Done. Elapsed time: "
+              << timeSpan.count()
+              << " seconds."
+              << std::endl;
 
     //delete sim;
 
