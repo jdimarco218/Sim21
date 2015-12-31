@@ -426,7 +426,7 @@ void Sim::PlayDealerHand()
     while (GetOptimalValue(hand) < 17 ||
           (GetOptimalValue(hand) == 17 &&
            IsHandSoft(hand) &&
-           !GetGame()->IsS17()) )
+           !GetGame()->GetS17()) )
     {
         hand.push_back(GetGame()->DealCard());
     }
