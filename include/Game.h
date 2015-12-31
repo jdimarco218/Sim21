@@ -15,7 +15,7 @@
 class Game
 {
 public:
-    void ResetGame(){}
+    void ResetGame();
     void SetNumSplits(int numSplits){ _numSplits = numSplits; }
     void SetResplitAces(bool resplitAces){ _resplitAces = resplitAces; }
     void SetPlaySplitAces(bool playSplitAces){ _playSplitAces = playSplitAces; }
