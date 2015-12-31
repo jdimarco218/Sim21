@@ -28,7 +28,7 @@ Sim::Sim(TSimMode simMode, TDeckType deckType)
     }
     _handsPlayed = 0;
     _shoesPlayed = 0;
-    _handsToPlay = 50;
+    _handsToPlay = 1000;
     _simMode = simMode;
     _deckType = deckType;
     _upCardIndex = 0;
@@ -59,9 +59,9 @@ void Sim::SaveStatistics()
                 std::ofstream outputFile(
                                     _outputDir + "/" + _playerNames[i] + ".csv",
                                     std::ofstream::out | std::ofstream::app);
-                outputFile << _handsPlayed << ", "
+                outputFile << _playersVec[i]->GetChips() << ", "
                            << _shoesPlayed << ", "
-                           << _playersVec[i]->GetChips()
+                           << _handsPlayed << ", "
                            << std::endl;
             }
         }
@@ -88,9 +88,9 @@ void Sim::FinalizeStatistics()
                 std::ofstream outputFile(
                                     _outputDir + "/" + _playerNames[i] + ".csv",
                                     std::ofstream::out | std::ofstream::app);
-                outputFile << _handsPlayed << ", "
+                outputFile << _playersVec[i]->GetChips() << ", "
                            << _shoesPlayed << ", "
-                           << _playersVec[i]->GetChips()
+                           << _handsPlayed << ", "
                            << std::endl
                            << "#End of run."
                            << std::endl;
