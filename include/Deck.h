@@ -17,16 +17,20 @@ enum class TDeckType
 
 class Deck
 {
+    friend class Shoe;
 public:
-    inline std::deque<std::unique_ptr<Card> > GetCards(){ return std::move(_cards); }
 
+    Deck()
+    {
+        _cards = std::deque<std::unique_ptr<Card> >();
+    }
     Deck(TDeckType deckType); 
     ~Deck()
     {
         //std::cout << "Deck dtor." << std::endl;
     }
 
-private:
+protected:
     std::deque<std::unique_ptr<Card> > _cards;
 
 };

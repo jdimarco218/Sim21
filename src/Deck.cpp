@@ -7,6 +7,7 @@
 
 Deck::Deck(TDeckType deckType)
 {
+    _cards = std::deque<std::unique_ptr<Card> >();
     switch(deckType)
     {
         case TDeckType::BLACKJACK:

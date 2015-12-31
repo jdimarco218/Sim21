@@ -28,7 +28,7 @@ Sim::Sim(TSimMode simMode, TDeckType deckType)
     }
     _handsPlayed = 0;
     _shoesPlayed = 0;
-    _handsToPlay = 1000;
+    _handsToPlay = 10000;
     _simMode = simMode;
     _deckType = deckType;
     _upCardIndex = 0;

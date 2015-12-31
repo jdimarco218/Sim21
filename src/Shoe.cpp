@@ -1,7 +1,8 @@
-#include <algorithm>
+//#include <algorithm>
 #include <deque>
 #include <list>
 #include <memory>
+#include <unistd.h>
 #include <vector>
 #include "Shoe.h"
 #include "Deck.h"
@@ -11,10 +12,14 @@ Shoe::Shoe(int numDecks, TDeckType deckType)
     for(int i = 0; i < numDecks; ++i)
     {
         //_shoeCards.splice(_shoeCards.end(), Deck(deckType).GetCards());
-        Deck deck = Deck(deckType);
+
+        Deck * deck = new Deck(deckType);
+
         //_shoeCards.insert(_shoeCards.end(), deck.GetCards().begin, deck.GetCards().end());
         //std::move(deck.GetCards().begin(), deck.GetCards().end(), std::back_inserter(_shoeCards));
-        for (auto& card : deck.GetCards())
+        //for (auto& card : deck.GetCards())
+
+        for (auto& card : deck->_cards)
         {
             _shoeCards.push_back(std::move(card));
         }
@@ -25,7 +30,7 @@ Shoe::Shoe(int numDecks, TDeckType deckType)
 void Shoe::ShuffleCards()
 {
     srand(Mix(clock(), time(0), getpid()));
-    std::random_shuffle(_shoeCards.begin(), _shoeCards.end());
+    //std::random_shuffle(_shoeCards.begin(), _shoeCards.end());
 
     return;
 }
