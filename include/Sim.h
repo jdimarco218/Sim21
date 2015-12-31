@@ -39,7 +39,6 @@ public:
     void RunEorSimulation();
     void RunIndexSimulation();
     void SimulateHand(Game * game);
-    void SaveStatistics();
     bool IsSimulationFinished();
     void PrintGameState(Game * game);
     void PrintChips();
@@ -57,6 +56,7 @@ public:
     void PlayHand(int pIdx, int hIdx);
     void PlayDealerHand();
     void PayoutWinners();
+    void SaveStatistics();
     std::unique_ptr<Player>& GetPlayerAt(int idx);
     std::unique_ptr<Player>& GetDealer(){ return _dealer; }
     std::unique_ptr<Game>&   GetGame(){ return _game; }
@@ -74,10 +74,14 @@ private:
     std::unique_ptr<Player>                    _dealer;
     std::vector< std::unique_ptr<Player> > _playersVec;
     int                                   _handsPlayed;
+    int                                   _shoesPlayed;
     int                                   _handsToPlay;
     TSimMode                                  _simMode;
     TDeckType                                _deckType;
     int                                   _upCardIndex;
+    std::string                             _outputDir;
+    std::vector<std::string>              _playerNames;
+    int                              _saveStatsPerShoe;
 
 };
 

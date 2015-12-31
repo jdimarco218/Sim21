@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <fstream>
 #include <iostream>
 #include <list>
 #include <memory>
@@ -26,10 +27,44 @@ Sim::Sim(TSimMode simMode, TDeckType deckType)
         _playersVec.push_back( std::unique_ptr<Player>(new Player()) );
     }
     _handsPlayed = 0;
+    _shoesPlayed = 0;
     _handsToPlay = 3;
     _simMode = simMode;
     _deckType = deckType;
     _upCardIndex = 0;
+    //TODO: Take these from config
+    _outputDir = "results";
+    _playerNames = std::vector<std::string>();
+    _playerNames.push_back("Player_0");
+    _playerNames.push_back("Player_1");
+    _saveStatsPerShoe = 1;
+}
+
+/**
+ * Writes the results of the simulation to the given directory and file
+ * according to the given intervals.  Output is csv format with a special
+ * delimiting string between runs: "#End of run." by default.
+ */
+void Sim::SaveStatistics()
+{
+    if (DEBUG) {std::cout << "Saving statistics." << std::endl;}
+
+    if (_shoesPlayed % _saveStatsPerShoe == 0)
+    {
+        for (int i = 0; i < _playersVec.size(); ++i)
+        {
+            if (i < _playerNames.size())
+            {
+                std::ofstream outputFile(_outputDir + "/" + _playerNames[i] + ".csv");
+                outputFile << _handsPlayed << ", "
+                           << _shoesPlayed << ", "
+                           << _playersVec[i]->GetChips()
+                           << std::endl;
+            }
+        }
+
+    }
+    return;
 }
 
 std::unique_ptr<Player>& Sim::GetPlayerAt(int idx)
@@ -138,7 +173,7 @@ void Sim::PrintChips()
         std::cout << "Player[" << pIdx << "]'s chips, totalWagerd, totalWinnings: " << std::endl;
         std::cout << _playersVec[pIdx]->_chips << ", "
                   << _playersVec[pIdx]->_totalWagered << ", "
-                  << _playersVec[pIdx]->_totalWinnings << ", "
+                  << _playersVec[pIdx]->_totalWinnings
                   << std::endl;
     }
 
@@ -159,9 +194,8 @@ void Sim::CheckInsuranceAndBlackjack()
 {
     bool isAceUp = IsAceUp();
 
-    //if(DEBUG){ std::cout << "db. IsAceUp(): " << isAceUp << std::endl; }
-
     // First handle insurance if an ace is showing
+    //
     for (auto& player : _playersVec)
     {
         if ( isAceUp && player->WantsInsurance(_game.get()) )
@@ -173,6 +207,7 @@ void Sim::CheckInsuranceAndBlackjack()
     }
 
     // Handle dealer's blackjack
+    //
     if (_dealer->_hands[0].size() == 2 && GetOptimalValue(_dealer->_hands[0]) == 21)
     {
         if(DEBUG){ std::cout << "db.   Dealer has bj." << std::endl; }
@@ -185,7 +220,7 @@ void Sim::CheckInsuranceAndBlackjack()
             if (player->_hands[0].size() == 2 && GetOptimalValue(player->_hands[0]) == 21)
             {
                 // Player and dealer both have blackjack
-
+                //
                 if(DEBUG){ std::cout << "db.   Player has bj." << std::endl; }
                 PayoutPlayer(player, 0, Sim::FACTOR_PUSH);
             }
@@ -218,7 +253,7 @@ void Sim::CheckInsuranceAndBlackjack()
 }
 
 /**
- * This function returns the lowest rank possible that is <= 21.
+ * This function returns the lowest rank possible.
  * Aces are counted as 1 and all face cards are 10
  */
 int Sim::GetMinimalValue(const std::vector<std::unique_ptr<Card> >& hand) const
@@ -241,7 +276,8 @@ int Sim::GetMinimalValue(const std::vector<std::unique_ptr<Card> >& hand) const
 
 /**
  * This function returns the best rank possible that is <= 21.
- * Aces can be 1 or 11, and all face cards are 10
+ * Aces can be 1 or 11, and all face cards are 10. 
+ * If the value is > 21, then Aces count as 1 (irrelevant).
  */
 int Sim::GetOptimalValue(const std::vector<std::unique_ptr<Card> >& hand) const
 {
@@ -294,6 +330,17 @@ bool Sim::IsAceUp()
     return (_dealer->_hands[0][_upCardIndex]->GetRank() == 1);
 }
 
+/**
+ * This function will return the std::string key for the Player's basic
+ * strategy std::map. The key system uses the following hierarchy:
+ *
+ * For a pair, prepend "p" to one of the Card's rank
+ *   - pair of 7's --> "p7"
+ * For a soft hand, prepend "s" to the higher possible total
+ *   - ace 5       --> "s16"
+ * For all others, the integer total is used
+ *   - 3 5 Jack    --> "18"
+ */
 std::string Sim::GetStratKey(const std::vector<std::unique_ptr<Card> >& hand) const
 {
     std::string ret = "";
@@ -322,6 +369,10 @@ std::string Sim::GetStratKey(const std::vector<std::unique_ptr<Card> >& hand) co
     return std::to_string(GetOptimalValue(hand));
 }
 
+/**
+ * Returns the _dealer's up card value. That is, Ace counts for 1
+ * and all face cards count for 10.
+ */
 int Sim::GetUpCardRank()
 {
     int ret = _dealer->_hands[0][_upCardIndex]->GetRank();
@@ -332,6 +383,10 @@ int Sim::GetUpCardRank()
     return ret;
 }
 
+/**
+ * Does a lookup of the Player's strategy decision based on
+ * TODO
+ */
 TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                              std::vector<std::unique_ptr<Card> >& hand,
                              bool isFollowUp)
@@ -361,6 +416,9 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
     }
 }
 
+/**
+ * If an Ace can count for 1 or 11 without exceeding 21.
+ */ 
 bool Sim::IsHandSoft(const std::vector<std::unique_ptr<Card> >& hand) const
 {
     return GetOptimalValue(hand) != GetMinimalValue(hand);
@@ -442,6 +500,9 @@ void Sim::PlayDealerHand()
     }
 }
 
+/**
+ * TODO
+ */
 void Sim::PlayHand(int pIdx, int hIdx)
 {
     auto& player = _playersVec[pIdx];
