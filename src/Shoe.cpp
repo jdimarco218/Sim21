@@ -11,9 +11,7 @@ Shoe::Shoe(int numDecks, TDeckType deckType)
 {
     for(int i = 0; i < numDecks; ++i)
     {
-        //_shoeCards.splice(_shoeCards.end(), Deck(deckType).GetCards());
-
-        Deck * deck = new Deck(deckType);
+        std::unique_ptr<Deck> deck(std::unique_ptr<Deck>(new Deck(deckType)));
 
         for (auto& card : deck->_cards)
         {

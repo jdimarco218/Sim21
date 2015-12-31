@@ -4,3 +4,4 @@ bin/Sim21
 build/*
 *.swp
 results/*.csv
+*.txt
