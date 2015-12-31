@@ -1,6 +1,7 @@
 #ifndef DECK_H
 #define DECK_H
 
+#include <deque>
 #include <iostream>
 #include <list>
 #include <memory>
@@ -17,7 +18,7 @@ enum class TDeckType
 class Deck
 {
 public:
-    inline std::list<std::unique_ptr<Card> > GetCards(){ return std::move(_cards); }
+    inline std::deque<std::unique_ptr<Card> > GetCards(){ return std::move(_cards); }
 
     Deck(TDeckType deckType); 
     ~Deck()
@@ -26,7 +27,7 @@ public:
     }
 
 private:
-    std::list<std::unique_ptr<Card> > _cards;
+    std::deque<std::unique_ptr<Card> > _cards;
 
 };
 

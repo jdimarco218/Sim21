@@ -1,4 +1,6 @@
+#include <deque>
 #include <list>
+#include <vector>
 #include <memory>
 #include "Card.h"
 #include "Deck.h"

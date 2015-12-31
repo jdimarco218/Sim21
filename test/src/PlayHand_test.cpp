@@ -122,8 +122,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  50 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -50 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -140,8 +138,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     ranks1.clear();
     dealerRanks.clear();
     shoeRanks.clear();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     ranks0.push_back(9);
     ranks0.push_back(9); // player0 p9
     ranks1.push_back(9);
@@ -167,8 +163,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  100 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -100 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -186,8 +180,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     ranks1.clear();
     dealerRanks.clear();
     shoeRanks.clear();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     ranks0.push_back(8);
     ranks0.push_back(8); // player0 p8
     ranks1.push_back(8);
@@ -218,8 +210,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  75 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -75 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -238,8 +228,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     ranks1.clear();
     dealerRanks.clear();
     shoeRanks.clear();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     ranks0.push_back(8);
     ranks0.push_back(8); // player0 p8
     ranks1.push_back(8);
@@ -268,8 +256,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  12.5 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -37.5 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -290,8 +276,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     ranks1.clear();
     dealerRanks.clear();
     shoeRanks.clear();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     ranks0.push_back(1);
     ranks0.push_back(1); // player0 pA
     ranks1.push_back(1);
@@ -316,8 +300,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     }
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &= -25.0 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -25.0 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -342,8 +324,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     ranks1.clear();
     dealerRanks.clear();
     shoeRanks.clear();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     ranks0.push_back(1);
     ranks0.push_back(1); // player0 pA
     ranks1.push_back(1);
@@ -366,8 +346,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  50.0 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -25.0 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -392,8 +370,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     ranks1.clear();
     dealerRanks.clear();
     shoeRanks.clear();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     ranks0.push_back(1);
     ranks0.push_back(1); // player0 pA
     ranks1.push_back(1);
@@ -416,8 +392,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  62.5 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -25.0 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -442,8 +416,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     ranks1.clear();
     dealerRanks.clear();
     shoeRanks.clear();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     ranks0.push_back(1);
     ranks0.push_back(1); // player0 pA
     ranks1.push_back(1);
@@ -469,8 +441,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  62.5 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -25.0 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -495,8 +465,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     ranks1.clear();
     dealerRanks.clear();
     shoeRanks.clear();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     ranks0.push_back(1);
     ranks0.push_back(1); // player0 pA
     ranks1.push_back(1);
@@ -528,8 +496,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  87.5 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -50.0 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -554,8 +520,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     ranks1.clear();
     dealerRanks.clear();
     shoeRanks.clear();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     ranks0.push_back(1);
     ranks0.push_back(1); // player0 pA
     ranks1.push_back(1);
@@ -587,8 +551,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  75.0 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -50.0 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -613,8 +575,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     ranks1.clear();
     dealerRanks.clear();
     shoeRanks.clear();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     ranks0.push_back(1);
     ranks0.push_back(1); // player0 pA
     ranks1.push_back(1);
@@ -637,8 +597,6 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(1){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(1){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  25.0 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -25.0 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -712,8 +670,6 @@ bool PlayHandDoubleTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  50 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -50 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -751,8 +707,6 @@ bool PlayHandDoubleTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  50 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -50 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -821,8 +775,6 @@ bool PlayHandHitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  25 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -25 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -858,8 +810,6 @@ bool PlayHandHitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  25 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -25 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -899,8 +849,6 @@ bool PlayHandHitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  25 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -25 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -941,8 +889,6 @@ bool PlayHandHitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  25 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -25 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -980,8 +926,6 @@ bool PlayHandHitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PlayHand(1, 0);
     sim->PlayDealerHand();
     sim->PayoutWinners();
-    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &=  25 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -25 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}

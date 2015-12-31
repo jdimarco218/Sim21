@@ -8,8 +8,11 @@ std::unique_ptr<Card> Game::DealCard()
 {
     if(!_shoe->IsEmpty())
     {
-        std::unique_ptr<Card> temp = std::move(_shoe->_shoeCards.front());
-        _shoe->_shoeCards.pop_front();
+        //std::unique_ptr<Card> temp = std::move(_shoe->_shoeCards.front());
+        //_shoe->_shoeCards.pop_front();
+        const auto it = _shoe->_shoeCards.begin();
+        auto temp = std::move(*it);//_shoe->_shoeCards.
+        _shoe->_shoeCards.erase(it);
         return temp;
     }
     std::cerr << "ERROR: Shoe is empty. Cannot DealCard()" << std::endl;
@@ -19,6 +22,7 @@ std::unique_ptr<Card> Game::DealCard()
 Game::Game(TDeckType deckType, int numDecks, double minimumBet, int cutPercentMin, int cutPercentMax)
 {
     _shoe = std::move(std::unique_ptr<Shoe>(new Shoe(numDecks, deckType)));
+    _shoe->ShuffleCards();
     _hiloCount = 0;
     _minimumBet = minimumBet;
     _numSplits = 4;

@@ -57,6 +57,7 @@ public:
     void PlayDealerHand();
     void PayoutWinners();
     void SaveStatistics();
+    void FinalizeStatistics();
     std::unique_ptr<Player>& GetPlayerAt(int idx);
     std::unique_ptr<Player>& GetDealer(){ return _dealer; }
     std::unique_ptr<Game>&   GetGame(){ return _game; }

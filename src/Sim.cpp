@@ -28,7 +28,7 @@ Sim::Sim(TSimMode simMode, TDeckType deckType)
     }
     _handsPlayed = 0;
     _shoesPlayed = 0;
-    _handsToPlay = 3;
+    _handsToPlay = 50;
     _simMode = simMode;
     _deckType = deckType;
     _upCardIndex = 0;
@@ -42,8 +42,9 @@ Sim::Sim(TSimMode simMode, TDeckType deckType)
 
 /**
  * Writes the results of the simulation to the given directory and file
- * according to the given intervals.  Output is csv format with a special
- * delimiting string between runs: "#End of run." by default.
+ * according to the given intervals.  Output is csv format and 
+ * FinalizeStatistics() should be called finally to append the delimiting
+ * string. "#End of run." by default.
  */
 void Sim::SaveStatistics()
 {
@@ -55,10 +56,43 @@ void Sim::SaveStatistics()
         {
             if (i < _playerNames.size())
             {
-                std::ofstream outputFile(_outputDir + "/" + _playerNames[i] + ".csv");
+                std::ofstream outputFile(
+                                    _outputDir + "/" + _playerNames[i] + ".csv",
+                                    std::ofstream::out | std::ofstream::app);
                 outputFile << _handsPlayed << ", "
                            << _shoesPlayed << ", "
                            << _playersVec[i]->GetChips()
+                           << std::endl;
+            }
+        }
+
+    }
+    return;
+}
+
+/**
+ * Writes the results of the simulation to the given directory and file
+ * according to the given intervals.  Output is csv format with a special
+ * delimiting string between runs: "#End of run." by default.
+ */
+void Sim::FinalizeStatistics()
+{
+    if (DEBUG) {std::cout << "Finalizing statistics." << std::endl;}
+
+    if (_shoesPlayed % _saveStatsPerShoe == 0)
+    {
+        for (int i = 0; i < _playersVec.size(); ++i)
+        {
+            if (i < _playerNames.size())
+            {
+                std::ofstream outputFile(
+                                    _outputDir + "/" + _playerNames[i] + ".csv",
+                                    std::ofstream::out | std::ofstream::app);
+                outputFile << _handsPlayed << ", "
+                           << _shoesPlayed << ", "
+                           << _playersVec[i]->GetChips()
+                           << std::endl
+                           << "#End of run."
                            << std::endl;
             }
         }
@@ -113,6 +147,13 @@ void Sim::RunStrategySimulation()
 
     while(!IsSimulationFinished())
     {
+        if (_game->GetShoe()->GetCardsRemaining() < 200)
+        {
+            _shoesPlayed++;
+            if (DEBUG) {std::cout << "Shuffle up. New Shoe." << std::endl;}
+            _game = std::unique_ptr<Game>(new Game(_deckType));
+            SaveStatistics();
+        }
         if (DEBUG) {std::cout << "Playing new hand..." << std::endl;}
 
         SimulateHand(_game.get());
@@ -120,6 +161,7 @@ void Sim::RunStrategySimulation()
 
         if (DEBUG) {PrintChips();}
     }
+    FinalizeStatistics();
 
     return;
 }
@@ -724,7 +766,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
         else
         {
             std::cerr << "ERROR: Unknown action!" << std::endl;
-            break;
+            exit(-1);
         }
     }
 
