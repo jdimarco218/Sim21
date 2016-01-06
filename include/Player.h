@@ -11,6 +11,7 @@
 #include "Bet.h"
 #include "Card.h"
 #include "Game.h"
+#include "Strategy.h"
 
 using std::map;
 using std::make_pair;
@@ -66,6 +67,7 @@ private:
     long double                                 _totalWagered;
     long double                                _totalWinnings;
     bool                                      _wantsInsurance;
+    std::unique_ptr<Strategy>                       _strategy;
     std::vector<bool>                              _activeVec;
     std::vector<bool>                              _doubleVec;
     std::vector<std::unique_ptr<Bet> >           _handsBetVec;

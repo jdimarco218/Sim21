@@ -11,6 +11,7 @@
 #include "GetOptimalValue_test.h"
 #include "Insurance_test.h"
 #include "PlayHand_test.h"
+#include "SetInitialBet_test.h"
 
 int main(int argc, char ** argv)
 {
@@ -22,6 +23,7 @@ int main(int argc, char ** argv)
     testsPassed &= GetOptimalValueTest(sim);
     testsPassed &= InsuranceTest(sim);
     testsPassed &= PlayHandTest(sim);
+    testsPassed &= SetInitialBetTest(sim);
 
     if (testsPassed)
     {

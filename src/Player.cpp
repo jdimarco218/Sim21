@@ -3,6 +3,7 @@
 #include "Bet.h"
 #include "Game.h"
 #include "Player.h"
+#include "Strategy.h"
 
 Player::Player()
 {
@@ -12,6 +13,7 @@ Player::Player()
     _doubleVec.push_back(false);
     _chips = 0;
     _wantsInsurance = false;
+    _strategy = std::unique_ptr<Strategy>(new Strategy());
     ResetPlayer();
 }
 
@@ -41,7 +43,7 @@ void Player::ResetPlayer()
 
 void Player::SetInitialBet(Game * game)
 {
-    int betAmount = game->GetMinimumBet();
+    int betAmount = game->GetMinimumBet() * _strategy->GetNumUnits(game->GetHiloTrueCount());
     _handsBetVec.push_back(std::unique_ptr<Bet>(new Bet(betAmount, (double)betAmount)));
     _chips -= betAmount;  
 }

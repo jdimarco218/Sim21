@@ -1,9 +1,17 @@
 #ifndef STRATEGY_H
 #define STRATEGY_H
 
-#include <unordered_map>
-#include <utility>
+class Strategy
+{
+public:
+    Strategy(){};
 
-std::unordered_map<int, std::pair<char, char> > basicStrategy;
+    double GetNumUnits(int primaryCount);
+
+private:
+     
+
+};
+
 
 #endif

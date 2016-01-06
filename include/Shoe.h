@@ -13,6 +13,7 @@ class Shoe
 {
 public:
     friend class Game;
+    double GetNumDecksRemaining();
     inline std::deque<std::unique_ptr<Card> > &GetCards(){ return _shoeCards; }
     inline int GetCardsRemaining(){ return _shoeCards.size(); }
     inline bool IsEmpty(){ return _shoeCards.size() == 0; }
@@ -32,7 +33,8 @@ public:
 
 private:
     int                                  _numDecks;
-    std::deque<std::unique_ptr<Card> > _shoeCards; 
+    int                              _cardsPerDeck;
+    std::deque<std::unique_ptr<Card> >  _shoeCards; 
 
 };
 

@@ -31,7 +31,7 @@ void ResetTestEnv(std::unique_ptr<Sim>& sim)
 void FrontloadShoe(std::unique_ptr<Sim>& sim, std::vector<int> ranks)
 {
     auto& shoeCards = sim->GetGame()->GetShoe()->GetCards();
-    for (auto it = ranks.rbegin(); it != ranks.rend(); ++it)
+    for (auto it = ranks.rbegin(); it != ranks.rend(); it++)
     {
         // All suited as "1", whoe cares?
         shoeCards.push_front(std::unique_ptr<Card>(new Card(*it, 1)));
@@ -104,3 +104,42 @@ void MakeHandForDealer(std::unique_ptr<Sim>& sim, std::vector<int> ranks)
     return;
 }
 
+/**
+ * Helper function to set the size of the the remaining Cards in the Shoe.
+ * NOTE: FrontloadShoe() if you want to DealCard()s.
+ */
+void SetShoeToNumCards(std::unique_ptr<Sim>& sim, int numCards)
+{
+    sim->GetGame()->GetShoe()->GetCards().clear();
+    for (int i = 0; i < numCards; ++i)
+    {
+        sim->GetGame()->GetShoe()->GetCards().push_back(std::unique_ptr<Card>(new Card(0, 1)));
+    }
+    return;
+}
+
+/**
+ * Helper function to set the current Hilo count of the Shoe regardless of what
+ * has already been dealt.
+ */
+void SetHiloCount(std::unique_ptr<Sim>& sim, int count)
+{
+    // Deal the appropriate value Hilo cards until we reach the desired count
+    //
+    std::vector<int> ranks;
+    while (sim->GetGame()->GetHiloCount() < count)
+    {
+        // Raise count
+        ranks.push_back(6);
+        FrontloadShoe(sim, ranks);
+        sim->GetGame()->DealCard();
+    }
+    while (sim->GetGame()->GetHiloCount() > count)
+    {
+        // Lower count
+        ranks.push_back(10);
+        FrontloadShoe(sim, ranks);
+        sim->GetGame()->DealCard();
+    }
+    return;
+}

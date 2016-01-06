@@ -21,6 +21,8 @@ public:
     void SetPlaySplitAces(bool playSplitAces){ _playSplitAces = playSplitAces; }
     void SetBonusPayOnSplitAces(bool bonus){ _bonusPayOnSplitAces = bonus; }
     void SetS17(bool s17){ _s17 = s17; }
+    double GetHiloTrueCount();
+    inline int  GetHiloCount(){ return _hiloCount; }
     inline int GetCutCardPosition(){ return _cutCardPosition; }
     inline int GetCardsRemaining(){ return _shoe->GetCardsRemaining(); }
     std::unique_ptr<Card> DealCard();

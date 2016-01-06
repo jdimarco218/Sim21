@@ -8,10 +8,20 @@ std::unique_ptr<Card> Game::DealCard()
 {
     if(!_shoe->IsEmpty())
     {
-        //std::unique_ptr<Card> temp = std::move(_shoe->_shoeCards.front());
-        //_shoe->_shoeCards.pop_front();
         const auto it = _shoe->_shoeCards.begin();
-        auto temp = std::move(*it);//_shoe->_shoeCards.
+        if ((*it)->GetRank() == 1)
+        {
+            _hiloCount -= 1;
+        }
+        else if ((*it)->GetRank() < 7)
+        {
+            _hiloCount += 1;
+        }
+        else if ((*it)->GetRank() >= 10)
+        {
+            _hiloCount -= 1;
+        }
+        auto temp = std::move(*it);
         _shoe->_shoeCards.erase(it);
         return temp;
     }
@@ -45,4 +55,9 @@ void Game::ResetGame()
     //TODO
 
     return;
+}
+
+double Game::GetHiloTrueCount()
+{
+    return static_cast<double>(_hiloCount) / _shoe->GetNumDecksRemaining();
 }

@@ -19,6 +19,15 @@ Shoe::Shoe(int numDecks, TDeckType deckType)
         }
     }
     _numDecks = numDecks;
+    switch (deckType)
+    {
+        case TDeckType::BLACKJACK:
+            _cardsPerDeck = 52;
+        case TDeckType::SPANISH21:
+            _cardsPerDeck = 48;
+        default:
+            _cardsPerDeck = 52;
+    }
 }
 
 void Shoe::ShuffleCards()
@@ -41,4 +50,10 @@ unsigned long Shoe::Mix(unsigned long a, unsigned long b, unsigned long c)
     b=b-c;  b=b-a;  b=b^(a << 10);
     c=c-a;  c=c-b;  c=c^(b >> 15);
     return c;
+}
+
+double Shoe::GetNumDecksRemaining()
+{
+    return static_cast<double>(_shoeCards.size()) / 
+           static_cast<double>(_cardsPerDeck);
 }
