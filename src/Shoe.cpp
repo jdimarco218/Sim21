@@ -2,6 +2,7 @@
 #include <deque>
 #include <list>
 #include <memory>
+#include <random>
 #include <unistd.h>
 #include <vector>
 #include "Shoe.h"
@@ -32,8 +33,10 @@ Shoe::Shoe(int numDecks, TDeckType deckType)
 
 void Shoe::ShuffleCards()
 {
-    srand(Mix(clock(), time(0), getpid()));
-    std::random_shuffle(_shoeCards.begin(), _shoeCards.end());
+    std::mt19937 r{std::random_device{}()};
+    std::shuffle(std::begin(_shoeCards), std::end(_shoeCards), r);
+    //srand(Mix(clock(), time(0), getpid()));
+    //std::random_shuffle(_shoeCards.begin(), _shoeCards.end());
 
     return;
 }
@@ -56,4 +59,9 @@ double Shoe::GetNumDecksRemaining()
 {
     return static_cast<double>(_shoeCards.size()) / 
            static_cast<double>(_cardsPerDeck);
+}
+
+int Shoe::GetNumStartingCards()
+{
+    return _cardsPerDeck * _numDecks;
 }

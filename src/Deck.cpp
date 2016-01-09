@@ -13,7 +13,7 @@ Deck::Deck(TDeckType deckType)
         case TDeckType::BLACKJACK:
             for(int i = 0; i < 4; ++i)
             {
-                for(int j = 1; j < 13; ++j)
+                for(int j = 1; j < 14; ++j)
                 {
                     _cards.push_back(std::unique_ptr<Card>(new Card(j, i)));
                 }

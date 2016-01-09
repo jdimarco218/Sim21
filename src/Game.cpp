@@ -9,6 +9,10 @@ std::unique_ptr<Card> Game::DealCard()
     if(!_shoe->IsEmpty())
     {
         const auto it = _shoe->_shoeCards.begin();
+        if ((*it)->GetRank() == 0)
+        {
+            std::cerr << "WTF ZERO" << std::endl;
+        }
         if ((*it)->GetRank() == 1)
         {
             _hiloCount -= 1;
@@ -31,6 +35,7 @@ std::unique_ptr<Card> Game::DealCard()
 
 Game::Game(TDeckType deckType, int numDecks, double minimumBet, int cutPercentMin, int cutPercentMax)
 {
+    _deckType = deckType;
     _shoe = std::move(std::unique_ptr<Shoe>(new Shoe(numDecks, deckType)));
     _shoe->ShuffleCards();
     _hiloCount = 0;
@@ -60,4 +65,9 @@ void Game::ResetGame()
 double Game::GetHiloTrueCount()
 {
     return static_cast<double>(_hiloCount) / _shoe->GetNumDecksRemaining();
+}
+
+int Game::GetNumCardsDealt()
+{
+    return _shoe->GetNumStartingCards() - _shoe->GetCardsRemaining();
 }

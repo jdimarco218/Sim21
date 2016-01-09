@@ -1,8 +1,10 @@
+#include <cmath>
 #include "Strategy.h"
 
-double Strategy::GetNumUnits(int primaryCount)
+double Strategy::GetNumUnits(double primaryCount)
 {
     double ret = 1.0;
+    primaryCount = floor(primaryCount);
     if (primaryCount <= 1)
     {
         ret = 1.0;

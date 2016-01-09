@@ -12,6 +12,7 @@
 #include "Insurance_test.h"
 #include "PlayHand_test.h"
 #include "SetInitialBet_test.h"
+#include "GetTrueCount_test.h"
 
 int main(int argc, char ** argv)
 {
@@ -20,10 +21,11 @@ int main(int argc, char ** argv)
 
     std::unique_ptr<Sim> sim(new Sim(TSimMode::STRATEGY, TDeckType::BLACKJACK));
 
+    testsPassed &= PlayHandTest(sim);
     testsPassed &= GetOptimalValueTest(sim);
     testsPassed &= InsuranceTest(sim);
-    testsPassed &= PlayHandTest(sim);
     testsPassed &= SetInitialBetTest(sim);
+    testsPassed &= GetTrueCountTest(sim);
 
     if (testsPassed)
     {

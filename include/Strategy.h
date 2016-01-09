@@ -6,7 +6,7 @@ class Strategy
 public:
     Strategy(){};
 
-    double GetNumUnits(int primaryCount);
+    double GetNumUnits(double primaryCount);
 
 private:
      

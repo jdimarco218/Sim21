@@ -14,6 +14,7 @@ Player::Player()
     _chips = 0;
     _wantsInsurance = false;
     _strategy = std::unique_ptr<Strategy>(new Strategy());
+    _isCounting = true;
     ResetPlayer();
 }
 
@@ -43,7 +44,15 @@ void Player::ResetPlayer()
 
 void Player::SetInitialBet(Game * game)
 {
-    int betAmount = game->GetMinimumBet() * _strategy->GetNumUnits(game->GetHiloTrueCount());
+    int betAmount = 0;
+    if (_isCounting)
+    {
+        betAmount = game->GetMinimumBet() * _strategy->GetNumUnits(game->GetHiloTrueCount());
+    }
+    else
+    {
+        betAmount = game->GetMinimumBet();
+    }
     _handsBetVec.push_back(std::unique_ptr<Bet>(new Bet(betAmount, (double)betAmount)));
     _chips -= betAmount;  
 }
@@ -93,6 +102,12 @@ bool Player::WantsInsurance(Game * game)
 map<string, vector<pair<TPlayAction, TPlayAction> > > Player::GetMap()
 {
     return bs_s17_das_ls;
+}
+
+void Player::SetCounting(bool counting)
+{
+    _isCounting = counting;
+    return;
 }
 
 // Basic strategy for Stand-17, DAS LS
@@ -245,7 +260,7 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_s17_das_ls =
             make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 7
             make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 8
             make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 9
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // T
         }
     }, 
     {"12", vector<pair<TPlayAction, TPlayAction> >

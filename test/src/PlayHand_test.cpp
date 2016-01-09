@@ -605,6 +605,163 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->GetGame()->SetPlaySplitAces(prevPlaySplitAces); // revert play split
     sim->GetGame()->SetBonusPayOnSplitAces(prevBonusPayOnSplitAces); // revert
 
+    // TEST CASE
+    // TC +3
+    // Both players split 9s then double afterwards
+    // Player 0 wins both
+    // Player 1 loses both
+    //
+    ResetTestEnv(sim);
+    ref = "PlayHandSplitTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    sim->GetPlayerAt(0)->SetCounting(true); // Set players to count
+    sim->GetPlayerAt(1)->SetCounting(true);
+    ranks0.clear();
+    ranks1.clear();
+    dealerRanks.clear();
+    shoeRanks.clear();
+    ranks0.push_back(9);
+    ranks0.push_back(9); // player0 p9
+    ranks1.push_back(9);
+    ranks1.push_back(9); // player1 p9
+    shoeRanks.push_back(2); // player0 gets 11
+    shoeRanks.push_back(9); // player0 doubles to 20 on first hand
+    shoeRanks.push_back(2); // player0 gets 11
+    shoeRanks.push_back(11); // player0 gets 21 on second hand
+    shoeRanks.push_back(2); // player1 gets 11
+    shoeRanks.push_back(5); // player1 gets 16 on first hand, shouldn't hit
+    shoeRanks.push_back(2); // player1 gets 11
+    shoeRanks.push_back(6); // player1 gets 17 on second hand
+    dealerRanks.push_back(8);
+    dealerRanks.push_back(11); // dealer 18, with 8 Up 
+    MakeHandForPlayerIdxHandIdx(sim, ranks0, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks1, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    FrontloadShoe(sim, shoeRanks);
+    SetHiloCount(sim, 24);
+    BackloadShoeToNumCards(sim, 416); // RC 24 / 8 decks = TC +3
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    sim->CheckInsuranceAndBlackjack();
+    sim->PlayHand(0, 0);
+    sim->PlayHand(1, 0);
+    sim->PlayDealerHand();
+    sim->PayoutWinners();
+    testPassed &=  400 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -400 == sim->GetPlayerAt(1)->GetChips();
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
+
+    // TEST CASE
+    // TC +3
+    // Test yes resplit, yes play, no bonus
+    // Player 0 wins one blackjack, standard wins others
+    // Player 1 pushes one, loses others
+    //
+    ResetTestEnv(sim);
+    ref = "PlayHandSplitTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    sim->GetPlayerAt(0)->SetCounting(true); // Set players to count
+    sim->GetPlayerAt(1)->SetCounting(true);
+    sim->GetGame()->SetNumSplits(3); // Set rules for this test
+    sim->GetGame()->SetResplitAces(true);
+    sim->GetGame()->SetPlaySplitAces(true);
+    sim->GetGame()->SetBonusPayOnSplitAces(false);
+    ranks0.clear();
+    ranks1.clear();
+    dealerRanks.clear();
+    shoeRanks.clear();
+    ranks0.push_back(1);
+    ranks0.push_back(1); // player0 pA
+    ranks1.push_back(1);
+    ranks1.push_back(1); // player1 pA
+    shoeRanks.push_back(1); // player0 gets another pA
+    shoeRanks.push_back(11); // player0 gets blackjack on first hand
+    shoeRanks.push_back(1); // player0 gets pA, follow-up
+    shoeRanks.push_back(8); // player0 gets s20 on second hand
+    shoeRanks.push_back(9); // player0 gets s20 on third hand
+    shoeRanks.push_back(1); // player1 gets another pA
+    shoeRanks.push_back(7); // player1 gets s18
+    shoeRanks.push_back(10); // player1 gets 18 on first hand
+    shoeRanks.push_back(1); // player1 gets pA, follow-up
+    shoeRanks.push_back(12); // player1 gets 12
+    shoeRanks.push_back(12); // player1 busts on second hand
+    shoeRanks.push_back(5); // player1 gets s16
+    shoeRanks.push_back(10); // player1 gets 16
+    shoeRanks.push_back(11); // player1 busts on third hand
+    dealerRanks.push_back(10);
+    dealerRanks.push_back(8); // dealer 18, with T Up 
+    MakeHandForPlayerIdxHandIdx(sim, ranks0, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks1, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    FrontloadShoe(sim, shoeRanks);
+    SetHiloCount(sim, 24);
+    BackloadShoeToNumCards(sim, 416); // RC 24 / 8 decks = TC +3
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    sim->CheckInsuranceAndBlackjack();
+    sim->PlayHand(0, 0);
+    sim->PlayHand(1, 0);
+    sim->PlayDealerHand();
+    sim->PayoutWinners();
+    testPassed &=  300.0 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -200.0 == sim->GetPlayerAt(1)->GetChips();
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
+    sim->GetGame()->SetNumSplits(prevNumSplits); // revert numSplits
+    sim->GetGame()->SetResplitAces(prevResplitAces); // revert resplitAces
+    sim->GetGame()->SetPlaySplitAces(prevPlaySplitAces); // revert play split
+    sim->GetGame()->SetBonusPayOnSplitAces(prevBonusPayOnSplitAces); // revert
+
+    // TEST CASE
+    // TC +3
+    // Test yes resplit, no play, no bonus
+    // Player 0 wins one blackjack, one push
+    // Player 1 pushes one, loses others
+    //
+    ResetTestEnv(sim);
+    ref = "PlayHandSplitTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    sim->GetPlayerAt(0)->SetCounting(true);
+    sim->GetPlayerAt(1)->SetCounting(true);
+    sim->GetGame()->SetNumSplits(3); // Set rules for this test
+    sim->GetGame()->SetResplitAces(true);
+    sim->GetGame()->SetPlaySplitAces(false);
+    sim->GetGame()->SetBonusPayOnSplitAces(false);
+    ranks0.clear();
+    ranks1.clear();
+    dealerRanks.clear();
+    shoeRanks.clear();
+    ranks0.push_back(1);
+    ranks0.push_back(1); // player0 pA
+    ranks1.push_back(1);
+    ranks1.push_back(1); // player1 pA
+    shoeRanks.push_back(10); // player0 gets blackjack on first hand
+    shoeRanks.push_back(7); // player0 gets s18 on third hand
+    shoeRanks.push_back(1); // player1 gets s12 on first hand
+    shoeRanks.push_back(7); // player1 gets s18 on second hand
+    shoeRanks.push_back(10); // should not be dealt
+    dealerRanks.push_back(10);
+    dealerRanks.push_back(8); // dealer 18, with T Up 
+    MakeHandForPlayerIdxHandIdx(sim, ranks0, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks1, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    FrontloadShoe(sim, shoeRanks);
+    SetHiloCount(sim, 24);
+    BackloadShoeToNumCards(sim, 416); // RC 24 / 8 decks = TC +3
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
+    sim->CheckInsuranceAndBlackjack();
+    sim->PlayHand(0, 0);
+    sim->PlayHand(1, 0);
+    sim->PlayDealerHand();
+    sim->PayoutWinners();
+    testPassed &=  100.0 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -100.0 == sim->GetPlayerAt(1)->GetChips();
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
+    sim->GetGame()->SetNumSplits(prevNumSplits); // revert numSplits
+    sim->GetGame()->SetResplitAces(prevResplitAces); // revert resplitAces
+    sim->GetGame()->SetPlaySplitAces(prevPlaySplitAces); // revert play split
+    sim->GetGame()->SetBonusPayOnSplitAces(prevBonusPayOnSplitAces); // revert
+
     return testPassed;
 }
 

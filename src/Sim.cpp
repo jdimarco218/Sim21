@@ -28,7 +28,7 @@ Sim::Sim(TSimMode simMode, TDeckType deckType)
     }
     _handsPlayed = 0;
     _shoesPlayed = 0;
-    _handsToPlay = 100000;
+    _handsToPlay = 1000000;
     _simMode = simMode;
     _deckType = deckType;
     _upCardIndex = 0;
@@ -147,11 +147,13 @@ void Sim::RunStrategySimulation()
 
     while(!IsSimulationFinished())
     {
-        if (_game->GetShoe()->GetCardsRemaining() < 200)
+        if (_game->GetNumCardsDealt() > _game->GetCutCardPosition())
         {
             _shoesPlayed++;
             if (DEBUG) {std::cout << "Shuffle up. New Shoe." << std::endl;}
             _game = std::unique_ptr<Game>(new Game(_deckType));
+            // J5e3
+            //std::cout << "NEW SHOE!" << std::endl;
             SaveStatistics();
         }
         if (DEBUG) {std::cout << "Playing new hand..." << std::endl;}
@@ -802,6 +804,13 @@ void Sim::SimulateHand(Game * game)
     {
         player->ResetPlayer();
         player->SetInitialBet(game);
+        //J5e3
+        //std::cout << "Betting " << player->GetHandBetAmount(0) 
+        //          << " on cards,RC,TC: " 
+        //          << game->GetCardsRemaining()
+        //          << ", " << game->GetHiloCount()
+        //          << ", " << game->GetHiloTrueCount()
+        //          << std::endl;
     }
     _dealer->ResetPlayer();
 

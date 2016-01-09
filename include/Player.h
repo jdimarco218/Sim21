@@ -53,6 +53,8 @@ public:
     void MakeInsuranceBet();
     bool WantsInsurance(Game * game);
     double GetChips(){ return _chips; }
+    inline bool IsCounting(){ return _isCounting; }
+    void SetCounting(bool counting);
     void SetChips(double chips){ _chips = chips; }
     inline bool IsActiveAt(int hIdx){ return _activeVec[hIdx]; }
 
@@ -67,6 +69,7 @@ private:
     long double                                 _totalWagered;
     long double                                _totalWinnings;
     bool                                      _wantsInsurance;
+    bool                                          _isCounting;
     std::unique_ptr<Strategy>                       _strategy;
     std::vector<bool>                              _activeVec;
     std::vector<bool>                              _doubleVec;

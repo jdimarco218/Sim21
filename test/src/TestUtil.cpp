@@ -13,7 +13,7 @@
  */
 void ResetTestEnv(std::unique_ptr<Sim>& sim)
 {
-
+    sim->GetGame() = std::unique_ptr<Game>(new Game(sim->GetGame()->GetDeckType()));
     // Reset chips to zero, clear hands, clear bets
     for (auto& player : sim->GetPlayersVec())
     {
@@ -133,6 +133,7 @@ void SetHiloCount(std::unique_ptr<Sim>& sim, int count)
         ranks.push_back(6);
         FrontloadShoe(sim, ranks);
         sim->GetGame()->DealCard();
+        ranks.clear();
     }
     while (sim->GetGame()->GetHiloCount() > count)
     {
@@ -140,6 +141,40 @@ void SetHiloCount(std::unique_ptr<Sim>& sim, int count)
         ranks.push_back(10);
         FrontloadShoe(sim, ranks);
         sim->GetGame()->DealCard();
+        ranks.clear();
     }
     return;
+}
+
+/**
+ * Helper function to increase the size of the Shoe to a given number of cards.
+ * This is useful to guarantee a clean True Count calculation.
+ */
+void BackloadShoeToNumCards(std::unique_ptr<Sim>& sim, int totalCards)
+{
+    if (sim->GetGame()->GetCardsRemaining() > totalCards)
+    {
+        std::cout << "ERROR: Shoe too large to BackloadShoeToNumCards()"
+                  << std::endl;
+                  std::cout << sim->GetGame()->GetCardsRemaining()
+                  << std::endl;
+    }
+
+    auto& shoeCards = sim->GetGame()->GetShoe()->GetCards();
+    while (sim->GetGame()->GetCardsRemaining() < totalCards)
+    {
+        shoeCards.push_back(std::unique_ptr<Card>(new Card(1, 1)));
+    }
+}
+
+void PrintFirstTenCards(std::unique_ptr<Sim>& sim)
+{
+    auto& shoeCards = sim->GetGame()->GetShoe()->GetCards();
+    int i = 0;
+    for (int i = 0; i < 10; ++i)
+    {
+        std::cout << *shoeCards[i] << ", ";
+    }
+    std::cout << std::endl;
+
 }

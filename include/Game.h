@@ -22,11 +22,13 @@ public:
     void SetBonusPayOnSplitAces(bool bonus){ _bonusPayOnSplitAces = bonus; }
     void SetS17(bool s17){ _s17 = s17; }
     double GetHiloTrueCount();
+    int GetNumCardsDealt();
+    inline TDeckType GetDeckType(){ return _deckType; }
     inline int  GetHiloCount(){ return _hiloCount; }
     inline int GetCutCardPosition(){ return _cutCardPosition; }
     inline int GetCardsRemaining(){ return _shoe->GetCardsRemaining(); }
     std::unique_ptr<Card> DealCard();
-    double GetMinimumBet(){ return _minimumBet; }
+    inline double GetMinimumBet(){ return _minimumBet; }
     inline int GetNumSplits(){ return _numSplits; }
     inline bool GetResplitAces(){ return _resplitAces; }
     inline bool GetPlaySplitAces(){ return _playSplitAces; }
@@ -67,6 +69,7 @@ private:
     bool _bonusPayOnSplitAces;
     bool _das;
     bool _s17;
+    TDeckType _deckType;
 
 };
 
