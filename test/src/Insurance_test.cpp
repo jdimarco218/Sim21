@@ -20,6 +20,7 @@
 // Ace is up and not up
 // Players do and don't have blackjack
 // Players do and don't want insurance
+// Players are and are not counting for TC +3 and above
 //
 //******************************************************************************
 
@@ -30,6 +31,9 @@
 bool InsuranceTest(std::unique_ptr<Sim>& sim, bool verbose)
 {
     bool testPassed = true;
+    bool preTest = true;
+    std::string ref = "";
+    int refCount = 0;
 
     // We need players that both do and don't want insurance when the dealer
     // does and doesn't have blackjack.
@@ -47,6 +51,8 @@ bool InsuranceTest(std::unique_ptr<Sim>& sim, bool verbose)
     // Player 1 doesn't want insurance
     //
     ResetTestEnv(sim);
+    ref = "InsuranceTest " + std::to_string(refCount++);
+    preTest = testPassed;
     ranks.clear();
     ranks.push_back(10);
     ranks.push_back(11); // player 20
@@ -71,6 +77,8 @@ bool InsuranceTest(std::unique_ptr<Sim>& sim, bool verbose)
     // Player 1 doesn't want insurance
     //
     ResetTestEnv(sim);
+    ref = "InsuranceTest " + std::to_string(refCount++);
+    preTest = testPassed;
     ranks.clear();
     dealerRanks.clear();
     ranks.push_back(1);
@@ -95,6 +103,8 @@ bool InsuranceTest(std::unique_ptr<Sim>& sim, bool verbose)
     // Neither player can get insurance
     //
     ResetTestEnv(sim);
+    ref = "InsuranceTest " + std::to_string(refCount++);
+    preTest = testPassed;
     ranks.clear();
     dealerRanks.clear();
     ranks.push_back(8);
@@ -119,6 +129,8 @@ bool InsuranceTest(std::unique_ptr<Sim>& sim, bool verbose)
     // Neither player can get insurance
     //
     ResetTestEnv(sim);
+    ref = "InsuranceTest " + std::to_string(refCount++);
+    preTest = testPassed;
     ranks.clear();
     dealerRanks.clear();
     ranks.push_back(12);
@@ -143,6 +155,8 @@ bool InsuranceTest(std::unique_ptr<Sim>& sim, bool verbose)
     // Neither player can ask for insurance
     //
     ResetTestEnv(sim);
+    ref = "InsuranceTest " + std::to_string(refCount++);
+    preTest = testPassed;
     ranks.clear();
     dealerRanks.clear();
     ranks.push_back(1);
@@ -167,6 +181,8 @@ bool InsuranceTest(std::unique_ptr<Sim>& sim, bool verbose)
     // Neither player can ask for insurance
     //
     ResetTestEnv(sim);
+    ref = "InsuranceTest " + std::to_string(refCount++);
+    preTest = testPassed;
     ranks.clear();
     dealerRanks.clear();
     ranks.push_back(1);
@@ -191,6 +207,8 @@ bool InsuranceTest(std::unique_ptr<Sim>& sim, bool verbose)
     // Neither player can ask for insurance
     //
     ResetTestEnv(sim);
+    ref = "InsuranceTest " + std::to_string(refCount++);
+    preTest = testPassed;
     ranks.clear();
     dealerRanks.clear();
     ranks.push_back(1);
@@ -215,6 +233,8 @@ bool InsuranceTest(std::unique_ptr<Sim>& sim, bool verbose)
     // Neither player can ask for insurance
     //
     ResetTestEnv(sim);
+    ref = "InsuranceTest " + std::to_string(refCount++);
+    preTest = testPassed;
     ranks.clear();
     dealerRanks.clear();
     ranks.push_back(5);
@@ -232,6 +252,84 @@ bool InsuranceTest(std::unique_ptr<Sim>& sim, bool verbose)
     if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &= -25 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -25 == sim->GetPlayerAt(1)->GetChips();
+
+    // TEST CASE
+    // Dealer has blackjack with Ace up
+    // TC +4
+    // Both players have blackjack
+    // Player 0 is counting
+    // Player 1 is not counting
+    //
+    ResetTestEnv(sim);
+    ref = "InsuranceTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    ranks.clear();
+    dealerRanks.clear();
+    sim->GetPlayerAt(0)->SetWantsInsurance(false);
+    sim->GetPlayerAt(1)->SetWantsInsurance(false);
+    sim->GetPlayerAt(0)->SetCounting(true);
+    sim->GetPlayerAt(1)->SetCounting(false);
+    ranks.push_back(1);
+    ranks.push_back(11); // player blackjack
+    dealerRanks.push_back(1);
+    dealerRanks.push_back(10); // dealer blackjack
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    SetHiloCount(sim, 8);
+    SetShoeToNumCards(sim, 104); // Two decks, TC +4
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get()); // 8x
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get()); // minimum
+    if(verbose){std::cout << "test. IsAceUp(): " << sim->IsAceUp() << std::endl;}
+    sim->CheckInsuranceAndBlackjack();
+    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &= 200 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= 0  == sim->GetPlayerAt(1)->GetChips();
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
+    sim->GetPlayerAt(0)->SetCounting(false);
+    sim->GetPlayerAt(1)->SetCounting(false);
+    sim->GetPlayerAt(0)->SetWantsInsurance(true);
+    sim->GetPlayerAt(1)->SetWantsInsurance(false);
+
+    // TEST CASE
+    // Dealer has blackjack with Ace up
+    // TC +2
+    // Both players have blackjack
+    // Player 0 is counting
+    // Player 1 is not counting
+    //
+    ResetTestEnv(sim);
+    ref = "InsuranceTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    ranks.clear();
+    dealerRanks.clear();
+    sim->GetPlayerAt(0)->SetWantsInsurance(false);
+    sim->GetPlayerAt(1)->SetWantsInsurance(false);
+    sim->GetPlayerAt(0)->SetCounting(true);
+    sim->GetPlayerAt(1)->SetCounting(false);
+    ranks.push_back(1);
+    ranks.push_back(9); // player no blackjack
+    dealerRanks.push_back(1);
+    dealerRanks.push_back(10); // dealer blackjack
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    SetHiloCount(sim, 4);
+    SetShoeToNumCards(sim, 104); // Two decks, TC +2
+    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get()); // 2x
+    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get()); // minimum
+    if(verbose){std::cout << "test. IsAceUp(): " << sim->IsAceUp() << std::endl;}
+    sim->CheckInsuranceAndBlackjack();
+    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
+    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
+    testPassed &= -50 == sim->GetPlayerAt(0)->GetChips();
+    testPassed &= -25  == sim->GetPlayerAt(1)->GetChips();
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
+    sim->GetPlayerAt(0)->SetCounting(false);
+    sim->GetPlayerAt(1)->SetCounting(false);
+    sim->GetPlayerAt(0)->SetWantsInsurance(true);
+    sim->GetPlayerAt(1)->SetWantsInsurance(false);
 
 
     return testPassed;

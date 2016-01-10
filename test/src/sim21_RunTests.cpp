@@ -13,6 +13,7 @@
 #include "PlayHand_test.h"
 #include "SetInitialBet_test.h"
 #include "GetTrueCount_test.h"
+#include "GetDecision_test.h"
 
 int main(int argc, char ** argv)
 {
@@ -26,6 +27,7 @@ int main(int argc, char ** argv)
     testsPassed &= InsuranceTest(sim);
     testsPassed &= SetInitialBetTest(sim);
     testsPassed &= GetTrueCountTest(sim);
+    testsPassed &= GetDecisionTest(sim);
 
     if (testsPassed)
     {

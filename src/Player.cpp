@@ -15,6 +15,7 @@ Player::Player()
     _wantsInsurance = false;
     _strategy = std::unique_ptr<Strategy>(new Strategy());
     _isCounting = true;
+    _isDeviating = true;
     ResetPlayer();
 }
 
@@ -95,8 +96,15 @@ void Player::MakeInsuranceBet()
 
 bool Player::WantsInsurance(Game * game)
 {
-    // TODO: more intelligent
-    return _wantsInsurance;
+    bool ret = _wantsInsurance;
+    if (IsCounting())
+    {
+        if (game->GetHiloTrueCount() >= 3)
+        {
+            ret = true;
+        }
+    }
+    return ret;
 }
 
 map<string, vector<pair<TPlayAction, TPlayAction> > > Player::GetMap()
@@ -104,9 +112,20 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::GetMap()
     return bs_s17_das_ls;
 }
 
+map<string, vector<pair<int, TPlayAction> > > Player::GetDeviationStrategy()
+{
+    return ds_s17_das_ls;
+}
+
 void Player::SetCounting(bool counting)
 {
     _isCounting = counting;
+    return;
+}
+
+void Player::SetDeviating(bool deviating)
+{
+    _isDeviating = deviating;
     return;
 }
 
@@ -668,4 +687,54 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_s17_das_ls =
             make_pair(TPlayAction::STAND, TPlayAction::STAND), // T
         }
     }
+};
+
+// Deviation strategy for Stand-17, DAS LS
+map<string, vector<pair<int, TPlayAction> > > Player::ds_s17_das_ls = 
+{ 
+    {"9", vector<pair<int, TPlayAction> >
+        {
+            make_pair(0, TPlayAction::NONE), // 0, non-situation
+            make_pair(0, TPlayAction::NONE), // 1, dealer ace
+            make_pair(1, TPlayAction::DOUBLE), // 2
+            make_pair(0, TPlayAction::NONE), // 3
+            make_pair(0, TPlayAction::NONE), // 4
+            make_pair(0, TPlayAction::NONE), // 5
+            make_pair(0, TPlayAction::NONE), // 6
+            make_pair(3, TPlayAction::DOUBLE), // 7
+            make_pair(0, TPlayAction::NONE), // 8
+            make_pair(0, TPlayAction::NONE), // 9
+            make_pair(0, TPlayAction::NONE), // T
+        }
+    }, 
+    {"10", vector<pair<int, TPlayAction> >
+        {
+            make_pair(0, TPlayAction::NONE), // 0, non-situation
+            make_pair(4, TPlayAction::DOUBLE), // 1, dealer ace
+            make_pair(0, TPlayAction::NONE), // 2
+            make_pair(0, TPlayAction::NONE), // 3
+            make_pair(0, TPlayAction::NONE), // 4
+            make_pair(0, TPlayAction::NONE), // 5
+            make_pair(0, TPlayAction::NONE), // 6
+            make_pair(0, TPlayAction::NONE), // 7
+            make_pair(0, TPlayAction::NONE), // 8
+            make_pair(0, TPlayAction::NONE), // 9
+            make_pair(0, TPlayAction::NONE), // T
+        }
+    } ,
+    {"p5", vector<pair<int, TPlayAction> >
+        {
+            make_pair(0, TPlayAction::NONE), // 0, non-situation
+            make_pair(4, TPlayAction::DOUBLE), // 1, dealer ace
+            make_pair(0, TPlayAction::NONE), // 2
+            make_pair(0, TPlayAction::NONE), // 3
+            make_pair(0, TPlayAction::NONE), // 4
+            make_pair(0, TPlayAction::NONE), // 5
+            make_pair(0, TPlayAction::NONE), // 6
+            make_pair(0, TPlayAction::NONE), // 7
+            make_pair(0, TPlayAction::NONE), // 8
+            make_pair(0, TPlayAction::NONE), // 9
+            make_pair(0, TPlayAction::NONE), // T
+        }
+    } 
 };

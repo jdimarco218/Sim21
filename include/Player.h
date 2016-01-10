@@ -36,10 +36,12 @@ public:
     friend class Sim;
 
     static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_s17_das_ls;
-    static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ls;
-    static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_s17_das_ns;
-    static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ns;
+    static map<string, vector<pair<int, TPlayAction> > >         ds_s17_das_ls;
+    //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ls;
+    //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_s17_das_ns;
+    //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ns;
     map<string, vector<pair<TPlayAction, TPlayAction> > > GetMap();
+    map<string, vector<pair<int, TPlayAction> > > GetDeviationStrategy();
 
     std::vector<std::unique_ptr<Bet> > &GetBetVec(){ return _handsBetVec; }
     std::vector<std::vector<std::unique_ptr<Card> > > &GetHands(){ return _hands; }
@@ -54,7 +56,9 @@ public:
     bool WantsInsurance(Game * game);
     double GetChips(){ return _chips; }
     inline bool IsCounting(){ return _isCounting; }
+    inline bool IsDeviating(){ return _isDeviating; }
     void SetCounting(bool counting);
+    void SetDeviating(bool deviating);
     void SetChips(double chips){ _chips = chips; }
     inline bool IsActiveAt(int hIdx){ return _activeVec[hIdx]; }
 
@@ -70,6 +74,7 @@ private:
     long double                                _totalWinnings;
     bool                                      _wantsInsurance;
     bool                                          _isCounting;
+    bool                                         _isDeviating;
     std::unique_ptr<Strategy>                       _strategy;
     std::vector<bool>                              _activeVec;
     std::vector<bool>                              _doubleVec;

@@ -17,6 +17,7 @@ int main(int argc, char ** argv)
 
     std::unique_ptr<Sim> sim(new Sim(TSimMode::STRATEGY, TDeckType::BLACKJACK));
     sim->GetPlayerAt(1)->SetCounting(false);
+    sim->GetPlayerAt(1)->SetDeviating(false);
     sim->RunSimulation();
 
     auto end = std::chrono::steady_clock::now();

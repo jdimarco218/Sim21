@@ -28,7 +28,7 @@ Sim::Sim(TSimMode simMode, TDeckType deckType)
     }
     _handsPlayed = 0;
     _shoesPlayed = 0;
-    _handsToPlay = 1000000;
+    _handsToPlay = 100;
     _simMode = simMode;
     _deckType = deckType;
     _upCardIndex = 0;
@@ -152,8 +152,6 @@ void Sim::RunStrategySimulation()
             _shoesPlayed++;
             if (DEBUG) {std::cout << "Shuffle up. New Shoe." << std::endl;}
             _game = std::unique_ptr<Game>(new Game(_deckType));
-            // J5e3
-            //std::cout << "NEW SHOE!" << std::endl;
             SaveStatistics();
         }
         if (DEBUG) {std::cout << "Playing new hand..." << std::endl;}
@@ -448,7 +446,27 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
         }
         std::cout << std::endl;
     }
+
+    // Check if the Player deviates from basic strategy and if it applies
+    //
+    auto deviationStrat = player->GetDeviationStrategy();
+    auto it = deviationStrat.find(stratKey);
+    if (player->IsDeviating() && it != deviationStrat.end())
+    {
+        if (it->second[GetUpCardRank()].second != TPlayAction::NONE) 
+        {
+            int indexNum = it->second[GetUpCardRank()].first;
+            if ((indexNum >= 0 && _game->GetHiloTrueCount() >= indexNum) ||
+                (indexNum <  0 && _game->GetHiloTrueCount() <= indexNum) )
+            {
+                // The deviation applies, use it
+                //
+                return it->second[GetUpCardRank()].second;
+            }
+        }
+    }
     
+    // Check the basic strategy the Player is using
     if (isFollowUp)
     {
         return player->bs_s17_das_ls.find(stratKey)->second[GetUpCardRank()].second;
@@ -804,13 +822,6 @@ void Sim::SimulateHand(Game * game)
     {
         player->ResetPlayer();
         player->SetInitialBet(game);
-        //J5e3
-        //std::cout << "Betting " << player->GetHandBetAmount(0) 
-        //          << " on cards,RC,TC: " 
-        //          << game->GetCardsRemaining()
-        //          << ", " << game->GetHiloCount()
-        //          << ", " << game->GetHiloTrueCount()
-        //          << std::endl;
     }
     _dealer->ResetPlayer();
 
