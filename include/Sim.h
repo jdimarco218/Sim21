@@ -45,6 +45,7 @@ public:
     void CheckInsuranceAndBlackjack();
     bool WantsInsurance(int playerIdx);
     bool IsAceUp();
+    bool CanTakeAction(std::unique_ptr<Player>& player, std::vector<std::unique_ptr<Card> >& hand, TPlayAction action);
     int  GetOptimalValue(const std::vector<std::unique_ptr<Card> >& hand) const;
     int  GetMinimalValue(const std::vector<std::unique_ptr<Card> >& hand) const;
     std::string GetStratKey(const std::vector<std::unique_ptr<Card> >& hand) const;

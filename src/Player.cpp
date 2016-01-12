@@ -112,7 +112,7 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::GetMap()
     return bs_s17_das_ls;
 }
 
-map<string, vector<pair<int, TPlayAction> > > Player::GetDeviationStrategy()
+map<string, vector<pair<int, pair<TPlayAction, TPlayAction> > > > Player::GetDeviationStrategy()
 {
     return ds_s17_das_ls;
 }
@@ -690,51 +690,81 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_s17_das_ls =
 };
 
 // Deviation strategy for Stand-17, DAS LS
-map<string, vector<pair<int, TPlayAction> > > Player::ds_s17_das_ls = 
+map<string, vector<pair<int, pair<TPlayAction, TPlayAction> > > > Player::ds_s17_das_ls = 
 { 
-    {"9", vector<pair<int, TPlayAction> >
+    {"9", vector<pair<int, pair<TPlayAction, TPlayAction> > >
         {
-            make_pair(0, TPlayAction::NONE), // 0, non-situation
-            make_pair(0, TPlayAction::NONE), // 1, dealer ace
-            make_pair(1, TPlayAction::DOUBLE), // 2
-            make_pair(0, TPlayAction::NONE), // 3
-            make_pair(0, TPlayAction::NONE), // 4
-            make_pair(0, TPlayAction::NONE), // 5
-            make_pair(0, TPlayAction::NONE), // 6
-            make_pair(3, TPlayAction::DOUBLE), // 7
-            make_pair(0, TPlayAction::NONE), // 8
-            make_pair(0, TPlayAction::NONE), // 9
-            make_pair(0, TPlayAction::NONE), // T
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 0, non-situation
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 1, dealer ace
+            make_pair(1, make_pair(TPlayAction::DOUBLE, TPlayAction::NONE)), // 2
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 3
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 4
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 5
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 6
+            make_pair(3, make_pair(TPlayAction::DOUBLE, TPlayAction::NONE)), // 7
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 8
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 9
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // T
         }
     }, 
-    {"10", vector<pair<int, TPlayAction> >
+    {"10", vector<pair<int, pair<TPlayAction, TPlayAction> > >
         {
-            make_pair(0, TPlayAction::NONE), // 0, non-situation
-            make_pair(4, TPlayAction::DOUBLE), // 1, dealer ace
-            make_pair(0, TPlayAction::NONE), // 2
-            make_pair(0, TPlayAction::NONE), // 3
-            make_pair(0, TPlayAction::NONE), // 4
-            make_pair(0, TPlayAction::NONE), // 5
-            make_pair(0, TPlayAction::NONE), // 6
-            make_pair(0, TPlayAction::NONE), // 7
-            make_pair(0, TPlayAction::NONE), // 8
-            make_pair(0, TPlayAction::NONE), // 9
-            make_pair(0, TPlayAction::NONE), // T
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 0, non-situation
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 1, dealer ace
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 2
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 3
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 4
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 5
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 6
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 7
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 8
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 9
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // T
         }
     } ,
-    {"p5", vector<pair<int, TPlayAction> >
+    {"15", vector<pair<int, pair<TPlayAction, TPlayAction> > >
         {
-            make_pair(0, TPlayAction::NONE), // 0, non-situation
-            make_pair(4, TPlayAction::DOUBLE), // 1, dealer ace
-            make_pair(0, TPlayAction::NONE), // 2
-            make_pair(0, TPlayAction::NONE), // 3
-            make_pair(0, TPlayAction::NONE), // 4
-            make_pair(0, TPlayAction::NONE), // 5
-            make_pair(0, TPlayAction::NONE), // 6
-            make_pair(0, TPlayAction::NONE), // 7
-            make_pair(0, TPlayAction::NONE), // 8
-            make_pair(0, TPlayAction::NONE), // 9
-            make_pair(0, TPlayAction::NONE), // T
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 0, non-situation
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 1, dealer ace
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 2
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 3
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 4
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 5
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 6
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 7
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 8
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 9
+            make_pair(4, make_pair(TPlayAction::SURRENDER, TPlayAction::STAND)), // T
+        }
+    } ,
+    {"16", vector<pair<int, pair<TPlayAction, TPlayAction> > >
+        {
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 0, non-situation
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 1, dealer ace
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 2
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 3
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 4
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 5
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 6
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 7
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 8
+            make_pair(5, make_pair(TPlayAction::SURRENDER, TPlayAction::STAND)), // 9
+            make_pair(0, make_pair(TPlayAction::SURRENDER, TPlayAction::STAND)), // T
+        }
+    }, 
+    {"p5", vector<pair<int, pair<TPlayAction, TPlayAction> > >
+        {
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 0, non-situation
+            make_pair(4, make_pair(TPlayAction::DOUBLE, TPlayAction::NONE)), // 1, dealer ace
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 2
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 3
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 4
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 5
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 6
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 7
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 8
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 9
+            make_pair(4, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // T
         }
     } 
 };

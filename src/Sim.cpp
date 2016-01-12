@@ -425,6 +425,55 @@ int Sim::GetUpCardRank()
 }
 
 /**
+ * Checks if the given Action is able to be played for the current game and
+ * set of rules.
+ */
+bool Sim::CanTakeAction(std::unique_ptr<Player>& player, 
+                        std::vector<std::unique_ptr<Card> >& hand,
+                        TPlayAction action)
+{
+    bool ret = false;
+    // TODO check type TDeckType or gametype or something
+    switch(action)
+    {
+        case TPlayAction::DOUBLE:
+            if (hand.size() == 2)
+            {
+                ret = true;
+            }
+            break;
+        case TPlayAction::SURRENDER:
+            if (hand.size() == 2 &&_game->IsLateSurrender())
+            {
+                ret = true;
+            }
+            break;
+        case TPlayAction::SPLIT:
+            if (player->NumHands() < _game->GetNumSplits())
+            {
+                if (hand[0]->GetRank() == 1)
+                {
+                    if (player->NumHands() == 1 ||
+                        player->NumHands() < _game->GetNumSplitAces())
+                    {
+                        ret = true;
+                    }
+                     
+                }
+                else
+                {
+                    ret = true;
+                }
+            }
+            break;
+        default:
+            ret = false;
+            break;
+    }
+    return ret;
+}
+
+/**
  * Does a lookup of the Player's strategy decision based on
  * TODO
  */
@@ -453,7 +502,7 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
     auto it = deviationStrat.find(stratKey);
     if (player->IsDeviating() && it != deviationStrat.end())
     {
-        if (it->second[GetUpCardRank()].second != TPlayAction::NONE) 
+        if (it->second[GetUpCardRank()].second.first != TPlayAction::NONE) 
         {
             int indexNum = it->second[GetUpCardRank()].first;
             if ((indexNum >= 0 && _game->GetHiloTrueCount() >= indexNum) ||
@@ -461,7 +510,19 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
             {
                 // The deviation applies, use it
                 //
-                return it->second[GetUpCardRank()].second;
+                auto decision = it->second[GetUpCardRank()].second.first;
+                if (CanTakeAction(player, hand, decision))
+                {
+                    return decision;
+                }
+                else
+                {
+                    auto followUpDecision = it->second[GetUpCardRank()].second.second;
+                    if (CanTakeAction(player, hand, followUpDecision))
+                    {
+                        return followUpDecision;
+                    }
+                }
             }
         }
     }

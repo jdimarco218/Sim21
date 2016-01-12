@@ -21,6 +21,8 @@ public:
     void SetPlaySplitAces(bool playSplitAces){ _playSplitAces = playSplitAces; }
     void SetBonusPayOnSplitAces(bool bonus){ _bonusPayOnSplitAces = bonus; }
     void SetS17(bool s17){ _s17 = s17; }
+    void SetLateSurrender(bool ls){ _lateSurrender = ls; }
+    void SetNumSplitAces(bool nsa){ _numSplitAces = nsa; }
     double GetHiloTrueCount();
     int GetNumCardsDealt();
     inline TDeckType GetDeckType(){ return _deckType; }
@@ -31,11 +33,13 @@ public:
     inline double GetMinimumBet(){ return _minimumBet; }
     inline int GetNumSplits(){ return _numSplits; }
     inline bool GetResplitAces(){ return _resplitAces; }
+    inline bool GetNumSplitAces() { return _numSplitAces; }
     inline bool GetPlaySplitAces(){ return _playSplitAces; }
     inline bool GetBonusPayOnSplitAces(){ return _bonusPayOnSplitAces; }
     inline bool GetDaS(){ return _das; }
     inline bool GetS17(){ return _s17; }
     inline bool IsS17(){ return _s17; }
+    inline bool IsLateSurrender(){ return _lateSurrender; }
     inline std::unique_ptr<Shoe>& GetShoe(){ return _shoe; }
 
     Game()
@@ -64,11 +68,13 @@ private:
     int _hiloCount;
     double _minimumBet;
     int _numSplits;
+    int _numSplitAces;
     bool _resplitAces;
     bool _playSplitAces;
     bool _bonusPayOnSplitAces;
     bool _das;
     bool _s17;
+    bool _lateSurrender;
     TDeckType _deckType;
 
 };

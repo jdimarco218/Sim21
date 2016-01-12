@@ -46,6 +46,7 @@ Game::Game(TDeckType deckType, int numDecks, double minimumBet, int cutPercentMi
     _bonusPayOnSplitAces = false;
     _das = true;
     _s17 = true;
+    _numSplitAces = 3;
 
     // Generate a random cut card in the penetration range
     //

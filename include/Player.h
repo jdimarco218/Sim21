@@ -36,12 +36,12 @@ public:
     friend class Sim;
 
     static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_s17_das_ls;
-    static map<string, vector<pair<int, TPlayAction> > >         ds_s17_das_ls;
+    static map<string, vector<pair<int, pair<TPlayAction, TPlayAction> > > > ds_s17_das_ls;
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ls;
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_s17_das_ns;
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ns;
     map<string, vector<pair<TPlayAction, TPlayAction> > > GetMap();
-    map<string, vector<pair<int, TPlayAction> > > GetDeviationStrategy();
+    map<string, vector<pair<int, pair<TPlayAction, TPlayAction> > > > GetDeviationStrategy();
 
     std::vector<std::unique_ptr<Bet> > &GetBetVec(){ return _handsBetVec; }
     std::vector<std::vector<std::unique_ptr<Card> > > &GetHands(){ return _hands; }
@@ -54,6 +54,7 @@ public:
     double GetHandBetAmount(int handIdx); 
     void MakeInsuranceBet();
     bool WantsInsurance(Game * game);
+    inline int  NumHands(){ return _hands.size(); }
     double GetChips(){ return _chips; }
     inline bool IsCounting(){ return _isCounting; }
     inline bool IsDeviating(){ return _isDeviating; }
