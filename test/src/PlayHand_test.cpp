@@ -11,6 +11,8 @@
 #include "PlayHand_test.h"
 #include "TestUtil.h"
 
+#define DEBUG false
+
 //******************************************************************************
 //
 // Tests:
@@ -85,6 +87,8 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     std::vector<int> dealerRanks;
     std::string ref = "";
     int refCount = 0;
+    sim->GetPlayerAt(0)->SetDeviating(false);
+    sim->GetPlayerAt(1)->SetDeviating(false);
 
     // TEST CASE
     // Both players split 7s
@@ -222,6 +226,7 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     //
     ResetTestEnv(sim);
     ref = "PlayHandSplitTest " + std::to_string(refCount++);
+    if(DEBUG) {std::cout << "Starting " << ref << std::endl;}
     preTest = testPassed;
     sim->GetGame()->SetNumSplits(3); // 3 max splits for this test
     ranks0.clear();

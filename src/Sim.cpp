@@ -443,34 +443,82 @@ bool Sim::CanTakeAction(std::unique_ptr<Player>& player,
             }
             break;
         case TPlayAction::SURRENDER:
-            if (hand.size() == 2 &&_game->IsLateSurrender())
+            if (hand.size() == 2 && _game->IsLateSurrender())
             {
+                if (DEBUG) {std::cout << "CanTake(Surrender)." << std::endl;}
                 ret = true;
             }
             break;
         case TPlayAction::SPLIT:
+            //if (player->_hands.size() < _game->GetNumSplits() &&
+            //    (player->_hands[hIdx][0]->GetRank() != 1 ||
+            //     player->_hands.size() == 1 ||
+            //     GetGame()->GetPlaySplitAces()) )
             if (player->NumHands() < _game->GetNumSplits())
             {
-                if (hand[0]->GetRank() == 1)
-                {
-                    if (player->NumHands() == 1 ||
-                        player->NumHands() < _game->GetNumSplitAces())
-                    {
-                        ret = true;
-                    }
-                     
-                }
-                else
+                if (hand[0]->GetRank() != 1 ||
+                    player->_hands.size() == 1 ||
+                    GetGame()->GetPlaySplitAces()) 
                 {
                     ret = true;
                 }
+                //if (hand[0]->GetRank() == 1)
+                //{
+                //    if (player->NumHands() == 1 ||
+                //        player->NumHands() < _game->GetNumSplitAces())
+                //    {
+                //        ret = true;
+                //    }
+                //     
+                //}
+                //else
+                //{
+                //    ret = true;
+                //}
             }
+            break;
+        case TPlayAction::HIT:
+            ret = true;
+            break;
+        case TPlayAction::STAND:
+            ret = true;
             break;
         default:
             ret = false;
             break;
     }
     return ret;
+}
+
+void Sim::PrintDecision(TPlayAction action)
+{
+    if (DEBUG)
+    {
+        switch (action)
+        {
+            case TPlayAction::SURRENDER:
+                std::cout << "Surrender action." << std::endl;
+                break;
+            case TPlayAction::DOUBLE:
+                std::cout << "Double action." << std::endl;
+                break;
+            case TPlayAction::SPLIT:
+                std::cout << "Split action." << std::endl;
+                break;
+            case TPlayAction::HIT:
+                std::cout << "Hit action." << std::endl;
+                break;
+            case TPlayAction::STAND:
+                std::cout << "Stand action." << std::endl;
+                break;
+            default:
+                std::cout << "Unknown TPlayAction." << std::endl;
+                break;
+        }
+
+    }
+
+    return;
 }
 
 /**
@@ -511,8 +559,10 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                 // The deviation applies, use it
                 //
                 auto decision = it->second[GetUpCardRank()].second.first;
+                if (DEBUG) {std::cout << "Deviating." << std::endl;}
                 if (CanTakeAction(player, hand, decision))
                 {
+                    if (DEBUG) {PrintDecision(decision);}
                     return decision;
                 }
                 else
@@ -520,6 +570,8 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                     auto followUpDecision = it->second[GetUpCardRank()].second.second;
                     if (CanTakeAction(player, hand, followUpDecision))
                     {
+                        if (DEBUG) {std::cout << "Follow-up deviation." << std::endl;}
+                        if (DEBUG) {PrintDecision(followUpDecision);}
                         return followUpDecision;
                     }
                 }
@@ -528,14 +580,36 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
     }
     
     // Check the basic strategy the Player is using
-    if (isFollowUp)
+    //
+    auto basicStrat = player->GetPlayStrategy();
+    //auto  it = basicStrat.find(stratKey);
+    auto decision = basicStrat.find(stratKey)->second[GetUpCardRank()].first;
+    if (CanTakeAction(player, hand, decision))
     {
-        return player->bs_s17_das_ls.find(stratKey)->second[GetUpCardRank()].second;
-    }   
+        if (DEBUG) {PrintDecision(decision);}
+        return decision;
+    }
     else
     {
-        return player->bs_s17_das_ls.find(stratKey)->second[GetUpCardRank()].first;
+        if (DEBUG) {PrintDecision(basicStrat.find(stratKey)->second[GetUpCardRank()].second);}
+        return basicStrat.find(stratKey)->second[GetUpCardRank()].second;
     }
+    //if (it->second[GetUpCardRank()].first != TPlayAction::NONE) 
+    //{
+    //    if (DEBUG)
+    //    {
+    //        PrintDecision(player->bs_s17_das_ls.find(stratKey)->second[GetUpCardRank()].second);
+    //    }
+    //    return player->bs_s17_das_ls.find(stratKey)->second[GetUpCardRank()].second;
+    //}   
+    //else
+    //{
+    //    if (DEBUG)
+    //    {
+    //        PrintDecision(player->bs_s17_das_ls.find(stratKey)->second[GetUpCardRank()].first);
+    //    }
+    //    return player->bs_s17_das_ls.find(stratKey)->second[GetUpCardRank()].first;
+    //}
 }
 
 /**

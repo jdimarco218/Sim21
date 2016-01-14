@@ -107,7 +107,7 @@ bool Player::WantsInsurance(Game * game)
     return ret;
 }
 
-map<string, vector<pair<TPlayAction, TPlayAction> > > Player::GetMap()
+map<string, vector<pair<TPlayAction, TPlayAction> > > Player::GetPlayStrategy()
 {
     return bs_s17_das_ls;
 }

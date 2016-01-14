@@ -40,7 +40,7 @@ public:
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ls;
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_s17_das_ns;
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ns;
-    map<string, vector<pair<TPlayAction, TPlayAction> > > GetMap();
+    map<string, vector<pair<TPlayAction, TPlayAction> > > GetPlayStrategy();
     map<string, vector<pair<int, pair<TPlayAction, TPlayAction> > > > GetDeviationStrategy();
 
     std::vector<std::unique_ptr<Bet> > &GetBetVec(){ return _handsBetVec; }
