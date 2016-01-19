@@ -47,7 +47,7 @@ public:
     bool CanTakeAction(std::unique_ptr<Player>& player, std::vector<std::unique_ptr<Card> >& hand, TPlayAction action);
     int  GetOptimalValue(const std::vector<std::unique_ptr<Card> >& hand) const;
     int  GetMinimalValue(const std::vector<std::unique_ptr<Card> >& hand) const;
-    std::string GetStratKey(const std::vector<std::unique_ptr<Card> >& hand) const;
+    std::string GetStratKey(const std::vector<std::unique_ptr<Card> >& hand, bool hardTotal = false) const;
     int GetUpCardRank();
     bool IsHandSoft(const std::vector<std::unique_ptr<Card> >& hand) const;
     bool IsBlackjack(const std::vector<std::unique_ptr<Card> >& hand) const;
@@ -62,7 +62,7 @@ public:
     std::unique_ptr<Player>& GetDealer(){ return _dealer; }
     std::unique_ptr<Game>&   GetGame(){ return _game; }
     std::vector< std::unique_ptr<Player> >& GetPlayersVec(){ return _playersVec; }
-    TPlayAction GetDecision(std::unique_ptr<Player>& player, std::vector<std::unique_ptr<Card> >& hand, bool isFollowUp);
+    TPlayAction GetDecision(std::unique_ptr<Player>& player, std::vector<std::unique_ptr<Card> >& hand);
 
     Sim(TSimMode simMode, TDeckType deckType);
     ~Sim()

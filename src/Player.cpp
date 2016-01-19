@@ -766,5 +766,20 @@ map<string, vector<pair<int, pair<TPlayAction, TPlayAction> > > > Player::ds_s17
             make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 9
             make_pair(4, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // T
         }
+    },
+    {"p8", vector<pair<int, pair<TPlayAction, TPlayAction> > >
+        {
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 0, non-situation
+            make_pair(4, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 1, dealer ace
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 2
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 3
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 4
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 5
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 6
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 7
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 8
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // 9
+            make_pair(0, make_pair(TPlayAction::NONE, TPlayAction::NONE)), // T
+        }
     } 
 };

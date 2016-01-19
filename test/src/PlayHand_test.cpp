@@ -80,6 +80,7 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     bool prevResplitAces = sim->GetGame()->GetResplitAces();
     bool prevPlaySplitAces = sim->GetGame()->GetPlaySplitAces();
     bool prevBonusPayOnSplitAces = sim->GetGame()->GetBonusPayOnSplitAces();
+    bool prevLateSurrender = sim->GetGame()->IsLateSurrender();
 
     std::vector<int> ranks0;
     std::vector<int> ranks1;
@@ -88,7 +89,10 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     std::string ref = "";
     int refCount = 0;
     sim->GetPlayerAt(0)->SetDeviating(false);
+    sim->GetPlayerAt(0)->SetCounting(false);
     sim->GetPlayerAt(1)->SetDeviating(false);
+    sim->GetPlayerAt(1)->SetCounting(false);
+    sim->GetGame()->SetLateSurrender(true);
 
     // TEST CASE
     // Both players split 7s
@@ -229,6 +233,7 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     if(DEBUG) {std::cout << "Starting " << ref << std::endl;}
     preTest = testPassed;
     sim->GetGame()->SetNumSplits(3); // 3 max splits for this test
+    sim->GetGame()->SetLateSurrender(true);
     ranks0.clear();
     ranks1.clear();
     dealerRanks.clear();
@@ -766,6 +771,8 @@ bool PlayHandSplitTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->GetGame()->SetResplitAces(prevResplitAces); // revert resplitAces
     sim->GetGame()->SetPlaySplitAces(prevPlaySplitAces); // revert play split
     sim->GetGame()->SetBonusPayOnSplitAces(prevBonusPayOnSplitAces); // revert
+
+    sim->GetGame()->SetLateSurrender(prevLateSurrender);
 
     return testPassed;
 }

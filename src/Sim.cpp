@@ -382,7 +382,7 @@ bool Sim::IsAceUp()
  * For all others, the integer total is used
  *   - 3 5 Jack    --> "18"
  */
-std::string Sim::GetStratKey(const std::vector<std::unique_ptr<Card> >& hand) const
+std::string Sim::GetStratKey(const std::vector<std::unique_ptr<Card> >& hand, bool hardTotal) const
 {
     std::string ret = "";
     if (hand.size() == 2)
@@ -397,7 +397,7 @@ std::string Sim::GetStratKey(const std::vector<std::unique_ptr<Card> >& hand) co
         {
             rank_1 = 10;
         }
-        if (rank_0 == rank_1)
+        if (rank_0 == rank_1 && !hardTotal)
         {
             return "p" + std::to_string(rank_0);
         }
@@ -526,8 +526,7 @@ void Sim::PrintDecision(TPlayAction action)
  * TODO
  */
 TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
-                             std::vector<std::unique_ptr<Card> >& hand,
-                             bool isFollowUp)
+                             std::vector<std::unique_ptr<Card> >& hand)
 {
 
     std::string stratKey = GetStratKey(hand);
@@ -577,6 +576,44 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                 }
             }
         }
+        else
+        {
+            // Unable to find a deviation for the StratKey. Check the hardTotal
+            // in case there is a better play for the given rules.
+            //
+            std::string hardStratKey = GetStratKey(hand, true);
+            it = deviationStrat.find(hardStratKey);
+            if (player->IsDeviating() && it != deviationStrat.end())
+            {
+                if (it->second[GetUpCardRank()].second.first != TPlayAction::NONE) 
+                {
+                    int indexNum = it->second[GetUpCardRank()].first;
+                    if ((indexNum >= 0 && _game->GetHiloTrueCount() >= indexNum) ||
+                        (indexNum <  0 && _game->GetHiloTrueCount() <= indexNum) )
+                    {
+                        // The deviation applies, use it
+                        //
+                        auto hardDecision = it->second[GetUpCardRank()].second.first;
+                        if (DEBUG) {std::cout << "Deviating hard total." << std::endl;}
+                        if (CanTakeAction(player, hand, hardDecision))
+                        {
+                            if (DEBUG) {PrintDecision(hardDecision);}
+                            return hardDecision;
+                        }
+                        else
+                        {
+                            auto followUpHardDecision = it->second[GetUpCardRank()].second.second;
+                            if (CanTakeAction(player, hand, followUpHardDecision))
+                            {
+                                if (DEBUG) {std::cout << "Follow-up hard total deviation." << std::endl;}
+                                if (DEBUG) {PrintDecision(followUpHardDecision);}
+                                return followUpHardDecision;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     
     // Check the basic strategy the Player is using
@@ -584,15 +621,57 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
     auto basicStrat = player->GetPlayStrategy();
     //auto  it = basicStrat.find(stratKey);
     auto decision = basicStrat.find(stratKey)->second[GetUpCardRank()].first;
+    if (DEBUG) {std::cout << "Checking primary decision." << std::endl;}
+    if (DEBUG) {PrintDecision(decision);}
     if (CanTakeAction(player, hand, decision))
     {
+        if (DEBUG) {std::cout << "Primary decision." << std::endl;}
         if (DEBUG) {PrintDecision(decision);}
         return decision;
     }
     else
     {
+        // Take the follow-up decision
+        //
+        auto followUpDecision = basicStrat.find(stratKey)->second[GetUpCardRank()].second;
+        if (DEBUG) {std::cout << "Checking secondary decision." << std::endl;}
         if (DEBUG) {PrintDecision(basicStrat.find(stratKey)->second[GetUpCardRank()].second);}
-        return basicStrat.find(stratKey)->second[GetUpCardRank()].second;
+        if (CanTakeAction(player, hand, followUpDecision))
+        {
+            return basicStrat.find(stratKey)->second[GetUpCardRank()].second;
+        }
+        else
+        {
+            // Cannot take follow-up decision, which should happen very rarely.
+            // We will look up the hard total as a fall-back, since hard totals
+            // will not have a set of three possible decisions (afaik).
+            //
+            auto tertiaryStratKey = GetStratKey(hand, true);
+            auto tertiaryDecision = basicStrat.find(tertiaryStratKey)->second[GetUpCardRank()].first;
+            if (DEBUG) {std::cout << "Checking tertiary (primary hard total) decision." << std::endl;}
+            if (DEBUG) {PrintDecision(tertiaryDecision);}
+            if (CanTakeAction(player, hand, tertiaryDecision))
+            {
+                return tertiaryDecision;
+            }
+            else
+            {
+                auto hardTotalFollowup = basicStrat.find(tertiaryStratKey)->second[GetUpCardRank()].second;
+                if (DEBUG) {std::cout << "Checking primary hard total followup decision." << std::endl;}
+                if (DEBUG) {PrintDecision(hardTotalFollowup);}
+                if (CanTakeAction(player, hand, hardTotalFollowup))
+                {
+                    return hardTotalFollowup;
+                }
+                else
+                {
+                    // "I'm just gonna stand cuz I'm stupid."
+                    //
+                    std::cerr << "ERROR: Could not find a decision from the Player's strategy!" << std::endl;
+                    return TPlayAction::STAND; 
+                }
+            }
+        }
     }
     //if (it->second[GetUpCardRank()].first != TPlayAction::NONE) 
     //{
@@ -740,7 +819,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
 
         // At this point, the player has a two-card hand that needs a decision
         //
-        auto decision = GetDecision(player, player->_hands[hIdx], isFollowup);
+        auto decision = GetDecision(player, player->_hands[hIdx]);
         if (DEBUG) {std::cout << "Decision: " << static_cast<int>(decision) << std::endl;}
 
         // CHECK AND HANDLE Split action
@@ -778,7 +857,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
             {
                 // Player cannot split, take follow-up action
                 //
-                auto followup = GetDecision(player, player->_hands[hIdx], true);
+                auto followup = GetDecision(player, player->_hands[hIdx]);
                 if (followup == TPlayAction::STAND)
                 {
                     if (DEBUG) {std::cout << "Follow-up STAND." << std::endl;}
@@ -830,7 +909,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
                     // Player cannot execute double, lookup follow-up action
                     //
                     if (DEBUG) {std::cout << "Unable to double" << std::endl;}
-                    auto followup = GetDecision(player, player->_hands[hIdx], true);
+                    auto followup = GetDecision(player, player->_hands[hIdx]);
                     if (followup == TPlayAction::STAND)
                     {
                         if (DEBUG) {std::cout << "Follow-up STAND." << std::endl;}
@@ -899,7 +978,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
             else
             {
                 // Player cannot execute surrender, lookup follow-up action
-                auto followup = GetDecision(player, player->_hands[hIdx], true);
+                auto followup = GetDecision(player, player->_hands[hIdx]);
                 if (followup == TPlayAction::STAND)
                 {
                     if (DEBUG) {std::cout << "Follow-up STAND." << std::endl;}
