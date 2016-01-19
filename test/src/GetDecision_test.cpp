@@ -175,6 +175,40 @@ bool GetDecisionDeviatingTest(std::unique_ptr<Sim>& sim, bool verbose)
     sim->GetGame()->SetNumSplits(prevNumSplits); // reset splits
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
 
+    // TEST CASE
+    // J5e3
+    // Players' 13v2
+    // TC -3
+    // Player 0 deviates and hits
+    // Player 1 stands
+    //
+    ResetTestEnv(sim);
+    ref = "GetDecisionDeviationTest " + std::to_string(refCount++);
+    preTest = testPassed;
+    sim->GetPlayerAt(0)->SetCounting(true);
+    sim->GetPlayerAt(0)->SetDeviating(true);
+    sim->GetPlayerAt(1)->SetCounting(false);
+    sim->GetPlayerAt(1)->SetDeviating(false);
+    ranks0.clear();
+    ranks1.clear();
+    dealerRanks.clear();
+    ranks0.push_back(8);
+    ranks0.push_back(5);
+    ranks1.push_back(8);
+    ranks1.push_back(5);
+    dealerRanks.push_back(2);
+    dealerRanks.push_back(2); // dealer 2 up
+    MakeHandForPlayerIdxHandIdx(sim, ranks0, 0, 0);
+    MakeHandForPlayerIdxHandIdx(sim, ranks1, 1, 0);
+    MakeHandForDealer(sim, dealerRanks);
+    SetHiloCount(sim, -6);
+    SetShoeToNumCards(sim, 104); // Two decks, TC +1
+    testPassed &= TPlayAction::HIT   == sim->GetDecision(sim->GetPlayerAt(0),
+                                                         sim->GetPlayerAt(0)->GetHand(0));
+    testPassed &= TPlayAction::STAND == sim->GetDecision(sim->GetPlayerAt(1),
+                                                         sim->GetPlayerAt(1)->GetHand(0));
+    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
+
 
     return testPassed;
 }

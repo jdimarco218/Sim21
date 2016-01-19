@@ -28,7 +28,7 @@ Sim::Sim(TSimMode simMode, TDeckType deckType)
     }
     _handsPlayed = 0;
     _shoesPlayed = 0;
-    _handsToPlay = 100;
+    _handsToPlay = 1000000;
     _simMode = simMode;
     _deckType = deckType;
     _upCardIndex = 0;
@@ -673,22 +673,10 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
             }
         }
     }
-    //if (it->second[GetUpCardRank()].first != TPlayAction::NONE) 
-    //{
-    //    if (DEBUG)
-    //    {
-    //        PrintDecision(player->bs_s17_das_ls.find(stratKey)->second[GetUpCardRank()].second);
-    //    }
-    //    return player->bs_s17_das_ls.find(stratKey)->second[GetUpCardRank()].second;
-    //}   
-    //else
-    //{
-    //    if (DEBUG)
-    //    {
-    //        PrintDecision(player->bs_s17_das_ls.find(stratKey)->second[GetUpCardRank()].first);
-    //    }
-    //    return player->bs_s17_das_ls.find(stratKey)->second[GetUpCardRank()].first;
-    //}
+
+    // Should never get here.
+    //
+    return TPlayAction::STAND;
 }
 
 /**
@@ -826,61 +814,20 @@ void Sim::PlayHand(int pIdx, int hIdx)
         if (decision == TPlayAction::SPLIT)
         {
             if (DEBUG) {std::cout << "Handling split action." << std::endl;}
+            player->_hands.push_back(std::vector<std::unique_ptr<Card> >());
+            player->_activeVec.push_back(true);
+            player->_doubleVec.push_back(false);
 
-            // The player can split if:
-            //   - The number of splits has not reached the max AND
-            //   - They are not a resplit aces OR resplit aces are allowed
+            // std::move the Card from current hand to the newest hand
             //
-            if (player->_hands.size() < _game->GetNumSplits() &&
-                (player->_hands[hIdx][0]->GetRank() != 1 ||
-                 player->_hands.size() == 1 ||
-                 GetGame()->GetPlaySplitAces()) )
-            {
-                // Player can execute split
-                //
-                player->_hands.push_back(std::vector<std::unique_ptr<Card> >());
-                player->_activeVec.push_back(true);
-                player->_doubleVec.push_back(false);
+            int numHands = player->_hands.size();
+            const auto it = player->_hands[hIdx].rbegin();
+            player->_hands[numHands-1].push_back(std::move(*it));
+            player->_hands[hIdx].pop_back();
 
-                // std::move the Card from current hand to the newest hand
-                //
-                int numHands = player->_hands.size();
-                const auto it = player->_hands[hIdx].rbegin();
-                player->_hands[numHands-1].push_back(std::move(*it));
-                player->_hands[hIdx].pop_back();
-
-                // Update the new wager/Bet
-                //
-                player->MakeAdditionalBet(numHands-1, player->GetHandBetAmount(hIdx)); 
-            }
-            else
-            {
-                // Player cannot split, take follow-up action
-                //
-                auto followup = GetDecision(player, player->_hands[hIdx]);
-                if (followup == TPlayAction::STAND)
-                {
-                    if (DEBUG) {std::cout << "Follow-up STAND." << std::endl;}
-                    break;
-                }
-                else if (followup == TPlayAction::HIT)
-                {
-                    if (DEBUG) {std::cout << "Follow-up HIT." << std::endl;}
-                    player->_hands[hIdx].push_back(GetGame()->DealCard());
-                }
-                else if (followup == TPlayAction::SURRENDER)
-                {
-                    if (DEBUG) {std::cout << "Follow-up SURRENDER." << std::endl;}
-                    PayoutPlayer(player, hIdx, Sim::FACTOR_SURRENDER);
-                    player->_activeVec[hIdx] = false;
-                    break;
-                }
-                else
-                {
-                    std::cerr << "ERROR: Unknown followup decision after split." << std::endl;
-                    exit(-1);
-                }
-            }
+            // Update the new wager/Bet
+            //
+            player->MakeAdditionalBet(numHands-1, player->GetHandBetAmount(hIdx)); 
         }
         // CHECK AND HANDLE Double action
         else if (decision == TPlayAction::DOUBLE)
@@ -888,44 +835,19 @@ void Sim::PlayHand(int pIdx, int hIdx)
             if (DEBUG) {std::cout << "Handling double action." << std::endl;}
             if (_deckType == TDeckType::BLACKJACK)
             { 
-                if (player->_hands[hIdx].size() == 2)
+                player->_hands[hIdx].push_back(GetGame()->DealCard());
+                player->_doubleVec[hIdx] = true;
+                player->MakeAdditionalBet(hIdx, player->GetHandBetAmount(hIdx)); 
+                if (DEBUG) 
                 {
-                    player->_hands[hIdx].push_back(GetGame()->DealCard());
-                    player->_doubleVec[hIdx] = true;
-                    player->MakeAdditionalBet(hIdx, player->GetHandBetAmount(hIdx)); 
-                    if (DEBUG) 
+                    std::cout << "Hand after: " << std::endl;
+                    for (auto& card : player->_hands[hIdx])
                     {
-                        std::cout << "Hand after: " << std::endl;
-                        for (auto& card : player->_hands[hIdx])
-                        {
-                            std::cout << card->GetRank() << ", ";
-                        }
-                        std::cout << std::endl;
+                        std::cout << card->GetRank() << ", ";
                     }
-                    break;
+                    std::cout << std::endl;
                 }
-                else
-                {
-                    // Player cannot execute double, lookup follow-up action
-                    //
-                    if (DEBUG) {std::cout << "Unable to double" << std::endl;}
-                    auto followup = GetDecision(player, player->_hands[hIdx]);
-                    if (followup == TPlayAction::STAND)
-                    {
-                        if (DEBUG) {std::cout << "Follow-up STAND." << std::endl;}
-                        break;
-                    }
-                    else if (followup == TPlayAction::HIT)
-                    {
-                        if (DEBUG) {std::cout << "Follow-up HIT." << std::endl;}
-                        player->_hands[hIdx].push_back(GetGame()->DealCard());
-                    }
-                    else
-                    {
-                        std::cerr << "ERROR: Unknown followup decision after double." << std::endl;
-                        exit(-1);
-                    }
-                }
+                break;
             }
             else
             {
@@ -967,34 +889,10 @@ void Sim::PlayHand(int pIdx, int hIdx)
         // CHECK AND HANDLE Surrender action
         else if (decision == TPlayAction::SURRENDER)
         {
-            // TODO handle other possible game rules
-            if (player->_hands[hIdx].size() == 2)
-            {
-                if (DEBUG) {std::cout << "Handling surrender action." << std::endl;}
-                PayoutPlayer(player, hIdx, Sim::FACTOR_SURRENDER);
-                player->_activeVec[hIdx] = false;
-                break;
-            }
-            else
-            {
-                // Player cannot execute surrender, lookup follow-up action
-                auto followup = GetDecision(player, player->_hands[hIdx]);
-                if (followup == TPlayAction::STAND)
-                {
-                    if (DEBUG) {std::cout << "Follow-up STAND." << std::endl;}
-                    break;
-                }
-                else if (followup == TPlayAction::HIT)
-                {
-                    if (DEBUG) {std::cout << "Follow-up HIT." << std::endl;}
-                    player->_hands[hIdx].push_back(GetGame()->DealCard());
-                }
-                else
-                {
-                    std::cerr << "ERROR: Unknown followup decision after double." << std::endl;
-                    exit(-1);
-                }
-            }
+            if (DEBUG) {std::cout << "Handling surrender action." << std::endl;}
+            PayoutPlayer(player, hIdx, Sim::FACTOR_SURRENDER);
+            player->_activeVec[hIdx] = false;
+            break;
         }
         // Should never happen
         else
