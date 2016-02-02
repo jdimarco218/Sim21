@@ -21,12 +21,25 @@ using std::vector;
 
 enum class TPlayAction
 {
-    NONE = -1,
-    STAND = 0,
-    HIT = 1,
-    DOUBLE = 2,
-    SPLIT = 3,
-    SURRENDER = 4
+    NONE,
+    STAND,
+    HIT,
+    DOUBLE,
+    SPLIT,
+    SURRENDER,
+
+    // Spanish 21 unique actions
+    STAND_X_4,
+    STAND_X_5,
+    STAND_X_6,
+    SPLIT_X_S7,
+    DOUBLE_X_3,
+    DOUBLE_X_4,
+    DOUBLE_X_5,
+    HIT_IF_678,
+    HIT_IF_S678,
+    HIT_IF_SP678,
+    HIT_IF_SUPER
 };
 
 class Player
