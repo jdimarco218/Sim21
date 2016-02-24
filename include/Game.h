@@ -16,6 +16,7 @@ class Game
 {
 public:
     void ResetGame();
+    void SetNumDoubles(int numDoubles){ _numDoubles = numDoubles; }
     void SetNumSplits(int numSplits){ _numSplits = numSplits; }
     void SetResplitAces(bool resplitAces){ _resplitAces = resplitAces; }
     void SetPlaySplitAces(bool playSplitAces){ _playSplitAces = playSplitAces; }
@@ -31,6 +32,7 @@ public:
     inline int GetCardsRemaining(){ return _shoe->GetCardsRemaining(); }
     std::unique_ptr<Card> DealCard();
     inline double GetMinimumBet(){ return _minimumBet; }
+    inline int GetNumDoubles(){ return _numDoubles; }
     inline int GetNumSplits(){ return _numSplits; }
     inline bool GetResplitAces(){ return _resplitAces; }
     inline bool GetNumSplitAces() { return _numSplitAces; }
@@ -39,6 +41,8 @@ public:
     inline bool GetDaS(){ return _das; }
     inline bool GetS17(){ return _s17; }
     inline bool IsS17(){ return _s17; }
+    inline bool GetH17(){ return !_s17; }
+    inline bool IsH17(){ return !_s17; }
     inline bool IsLateSurrender(){ return _lateSurrender; }
     inline std::unique_ptr<Shoe>& GetShoe(){ return _shoe; }
 
@@ -67,6 +71,7 @@ private:
     int _cutCardPosition;
     int _hiloCount;
     double _minimumBet;
+    int _numDoubles;
     int _numSplits;
     int _numSplitAces;
     bool _resplitAces;

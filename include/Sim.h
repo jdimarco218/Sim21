@@ -44,13 +44,16 @@ public:
     void CheckInsuranceAndBlackjack();
     bool WantsInsurance(int playerIdx);
     bool IsAceUp();
-    bool CanTakeAction(std::unique_ptr<Player>& player, std::vector<std::unique_ptr<Card> >& hand, TPlayAction action);
+    bool CanTakeAction(std::unique_ptr<Player>& player, std::vector<std::unique_ptr<Card> >& hand, int hIdx, TPlayAction action);
     int  GetOptimalValue(const std::vector<std::unique_ptr<Card> >& hand) const;
     int  GetMinimalValue(const std::vector<std::unique_ptr<Card> >& hand) const;
     std::string GetStratKey(const std::vector<std::unique_ptr<Card> >& hand, bool hardTotal = false) const;
     int GetUpCardRank();
+    int GetUpCardSuit();
     bool IsHandSoft(const std::vector<std::unique_ptr<Card> >& hand) const;
     bool IsBlackjack(const std::vector<std::unique_ptr<Card> >& hand) const;
+    bool IsTwoOf678(int r0, int r1);
+    bool IsDoubleAction(TPlayAction action);
     void PayoutPlayer(std::unique_ptr<Player>& player, int handIdx, double payoutFactor);
     void PayoutInsurance(std::unique_ptr<Player>& player);
     void PlayHand(int pIdx, int hIdx);
@@ -62,7 +65,7 @@ public:
     std::unique_ptr<Player>& GetDealer(){ return _dealer; }
     std::unique_ptr<Game>&   GetGame(){ return _game; }
     std::vector< std::unique_ptr<Player> >& GetPlayersVec(){ return _playersVec; }
-    TPlayAction GetDecision(std::unique_ptr<Player>& player, std::vector<std::unique_ptr<Card> >& hand);
+    TPlayAction GetDecision(std::unique_ptr<Player>& player, std::vector<std::unique_ptr<Card> >& hand, int hIdx);
 
     Sim(TSimMode simMode, TDeckType deckType);
     ~Sim()

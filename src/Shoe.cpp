@@ -24,10 +24,13 @@ Shoe::Shoe(int numDecks, TDeckType deckType)
     {
         case TDeckType::BLACKJACK:
             _cardsPerDeck = 52;
+            break;
         case TDeckType::SPANISH21:
             _cardsPerDeck = 48;
+            break;
         default:
             _cardsPerDeck = 52;
+            break;
     }
 }
 

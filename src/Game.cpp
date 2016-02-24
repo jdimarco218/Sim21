@@ -49,6 +49,19 @@ Game::Game(TDeckType deckType, int numDecks, double minimumBet, int cutPercentMi
     _numSplitAces = 3;
     _lateSurrender = true;
 
+    switch(deckType)
+    {
+    case TDeckType::BLACKJACK:
+        _numDoubles = 1;
+        break;
+    case TDeckType::SPANISH21:
+        _numDoubles = 3;
+        break;
+    default:
+        _numDoubles = 1;
+        break;
+    }
+
     // Generate a random cut card in the penetration range
     //
     std::random_device rd;

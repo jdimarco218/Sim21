@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-enum class TSuitType
+enum class TSuitType : int
 {
     CLUBS = 0,
     DIAMONDS = 1,

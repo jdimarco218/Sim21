@@ -64,9 +64,11 @@ bool GetDecisionDeviatingTest(std::unique_ptr<Sim>& sim, bool verbose)
     SetHiloCount(sim, 4);
     SetShoeToNumCards(sim, 104); // Two decks, TC +2
     testPassed &= TPlayAction::DOUBLE == sim->GetDecision(sim->GetPlayerAt(0),
-                                                          sim->GetPlayerAt(0)->GetHand(0));
+                                                          sim->GetPlayerAt(0)->GetHand(0),
+                                                          0);
     testPassed &= TPlayAction::HIT    == sim->GetDecision(sim->GetPlayerAt(1),
-                                                          sim->GetPlayerAt(1)->GetHand(0));
+                                                          sim->GetPlayerAt(1)->GetHand(0),
+                                                          0);
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
 
     // TEST CASE
@@ -98,9 +100,11 @@ bool GetDecisionDeviatingTest(std::unique_ptr<Sim>& sim, bool verbose)
     SetHiloCount(sim, 2);
     SetShoeToNumCards(sim, 104); // Two decks, TC +1
     testPassed &= TPlayAction::SURRENDER == sim->GetDecision(sim->GetPlayerAt(0),
-                                                          sim->GetPlayerAt(0)->GetHand(0));
+                                                          sim->GetPlayerAt(0)->GetHand(0),
+                                                          0);
     testPassed &= TPlayAction::SURRENDER == sim->GetDecision(sim->GetPlayerAt(1),
-                                                          sim->GetPlayerAt(1)->GetHand(0));
+                                                          sim->GetPlayerAt(1)->GetHand(0),
+                                                          0);
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
 
     // TEST CASE
@@ -132,9 +136,11 @@ bool GetDecisionDeviatingTest(std::unique_ptr<Sim>& sim, bool verbose)
     SetHiloCount(sim, 2);
     SetShoeToNumCards(sim, 104); // Two decks, TC +1
     testPassed &= TPlayAction::STAND == sim->GetDecision(sim->GetPlayerAt(0),
-                                                         sim->GetPlayerAt(0)->GetHand(0));
+                                                         sim->GetPlayerAt(0)->GetHand(0),
+                                                         0);
     testPassed &= TPlayAction::HIT   == sim->GetDecision(sim->GetPlayerAt(1),
-                                                         sim->GetPlayerAt(1)->GetHand(0));
+                                                         sim->GetPlayerAt(1)->GetHand(0),
+                                                         0);
     sim->GetGame()->SetLateSurrender(true);
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
 
@@ -168,9 +174,11 @@ bool GetDecisionDeviatingTest(std::unique_ptr<Sim>& sim, bool verbose)
     SetHiloCount(sim, 2);
     SetShoeToNumCards(sim, 104); // Two decks, TC +1
     testPassed &= TPlayAction::STAND == sim->GetDecision(sim->GetPlayerAt(0),
-                                                         sim->GetPlayerAt(0)->GetHand(0));
+                                                         sim->GetPlayerAt(0)->GetHand(0),
+                                                         0);
     testPassed &= TPlayAction::HIT   == sim->GetDecision(sim->GetPlayerAt(1),
-                                                         sim->GetPlayerAt(1)->GetHand(0));
+                                                         sim->GetPlayerAt(1)->GetHand(0),
+                                                         0);
     sim->GetGame()->SetLateSurrender(true);
     sim->GetGame()->SetNumSplits(prevNumSplits); // reset splits
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
@@ -204,9 +212,11 @@ bool GetDecisionDeviatingTest(std::unique_ptr<Sim>& sim, bool verbose)
     SetHiloCount(sim, -6);
     SetShoeToNumCards(sim, 104); // Two decks, TC +1
     testPassed &= TPlayAction::HIT   == sim->GetDecision(sim->GetPlayerAt(0),
-                                                         sim->GetPlayerAt(0)->GetHand(0));
+                                                         sim->GetPlayerAt(0)->GetHand(0),
+                                                         0);
     testPassed &= TPlayAction::STAND == sim->GetDecision(sim->GetPlayerAt(1),
-                                                         sim->GetPlayerAt(1)->GetHand(0));
+                                                         sim->GetPlayerAt(1)->GetHand(0),
+                                                         0);
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
 
 

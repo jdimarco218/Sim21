@@ -36,6 +36,7 @@ enum class TPlayAction
     DOUBLE_X_3,
     DOUBLE_X_4,
     DOUBLE_X_5,
+    DOUBLE_X_6,
     HIT_IF_678,
     HIT_IF_S678,
     HIT_IF_SP678,
@@ -50,10 +51,11 @@ public:
 
     static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_s17_das_ls;
     static map<string, vector<pair<int, pair<TPlayAction, TPlayAction> > > > ds_s17_das_ls;
+    static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_sp_h17;
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ls;
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_s17_das_ns;
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ns;
-    map<string, vector<pair<TPlayAction, TPlayAction> > > GetPlayStrategy();
+    map<string, vector<pair<TPlayAction, TPlayAction> > > GetPlayStrategy(std::unique_ptr<Game>& game);
     map<string, vector<pair<int, pair<TPlayAction, TPlayAction> > > > GetDeviationStrategy();
 
     std::vector<std::unique_ptr<Bet> > &GetBetVec(){ return _handsBetVec; }
@@ -68,7 +70,8 @@ public:
     void MakeInsuranceBet();
     bool WantsInsurance(Game * game);
     inline int  NumHands(){ return _hands.size(); }
-    double GetChips(){ return _chips; }
+    inline double GetChips(){ return _chips; }
+    inline int  NumDoubles(int hIdx){ return _doubleVec[hIdx]; }
     inline bool IsCounting(){ return _isCounting; }
     inline bool IsDeviating(){ return _isDeviating; }
     void SetCounting(bool counting);
@@ -89,9 +92,10 @@ private:
     bool                                      _wantsInsurance;
     bool                                          _isCounting;
     bool                                         _isDeviating;
+    int                                           _numDoubles;
     std::unique_ptr<Strategy>                       _strategy;
     std::vector<bool>                              _activeVec;
-    std::vector<bool>                              _doubleVec;
+    std::vector<int>                               _doubleVec;
     std::vector<std::unique_ptr<Bet> >           _handsBetVec;
     std::unique_ptr<Bet>                        _insuranceBet;
     std::vector< std::vector<std::unique_ptr<Card> > > _hands;
