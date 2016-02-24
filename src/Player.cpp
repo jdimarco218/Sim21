@@ -112,15 +112,12 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::GetPlayStrategy(st
     switch (game->GetDeckType())
     {
     case TDeckType::SPANISH21:
-        std::cout << "STRAT FOR SP21!" << std::endl;
         return bs_sp_h17;
         break;
     case TDeckType::BLACKJACK:
-        std::cout << "STRAT FOR BLACKJACK!" << std::endl;
         return bs_s17_das_ls;
         break;
     default:
-        std::cout << "STRAT FOR DEFAULT(BJ)!" << std::endl;
         return bs_s17_das_ls;
         break;
     }

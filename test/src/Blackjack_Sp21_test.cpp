@@ -87,8 +87,6 @@ bool BlackjackSp21Test(std::unique_ptr<Sim>& sim, bool verbose)
     sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
     if(verbose){std::cout << "test. IsAceUp(): " << sim->IsAceUp() << std::endl;}
     sim->CheckInsuranceAndBlackjack();
-    if(verbose){std::cout << "test. chips p0: " << sim->GetPlayerAt(0)->GetChips() << std::endl;}
-    if(verbose){std::cout << "test. chips p1: " << sim->GetPlayerAt(1)->GetChips() << std::endl;}
     testPassed &= 37.5 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= 37.5 == sim->GetPlayerAt(1)->GetChips();
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}

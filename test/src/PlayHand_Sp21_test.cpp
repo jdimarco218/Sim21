@@ -841,47 +841,8 @@ bool PlayHandDoubleSp21Test(std::unique_ptr<Sim>& sim, bool verbose)
     sim->PayoutWinners();
     testPassed &=  50 == sim->GetPlayerAt(0)->GetChips();
     testPassed &= -50 == sim->GetPlayerAt(1)->GetChips();
-    std::cout << "player 0 chips: " << sim->GetPlayerAt(0)->GetChips() << std::endl;
-    std::cout << "player 1 chips: " << sim->GetPlayerAt(1)->GetChips() << std::endl;
     if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
 
-    // TEST CASE
-    // Both players double s18
-    // Player 0 wins
-    // Player 1 loses
-    //
-//    ResetTestEnv(sim);
-//    ref = "PlayHandDoubleSp21Test " + std::to_string(refCount++);
-//    preTest = testPassed;
-//    sim->GetGame()->SetS17(true);
-//    ranks0.clear();
-//    ranks1.clear();
-//    dealerRanks.clear();
-//    shoeRanks.clear();
-//    ranks0.push_back(1);
-//    ranks0.push_back(7); // player0 11
-//    ranks1.push_back(7);
-//    ranks1.push_back(1); // player1 11
-//    shoeRanks.push_back(2); // player0 gets 20
-//    shoeRanks.push_back(8); // player1 gets 16 on first hand
-//    shoeRanks.push_back(8); // should not be dealt
-//    dealerRanks.push_back(6);
-//    dealerRanks.push_back(1); // dealer s17
-//    MakeHandForPlayerIdxHandIdx(sim, ranks0, 0, 0);
-//    MakeHandForPlayerIdxHandIdx(sim, ranks1, 1, 0);
-//    MakeHandForDealer(sim, dealerRanks);
-//    sim->GetPlayerAt(0)->SetInitialBet(sim->GetGame().get());
-//    sim->GetPlayerAt(1)->SetInitialBet(sim->GetGame().get());
-//    FrontloadShoe(sim, shoeRanks);
-//    sim->CheckInsuranceAndBlackjack();
-//    sim->PlayHand(0, 0);
-//    sim->PlayHand(1, 0);
-//    sim->PlayDealerHand();
-//    sim->PayoutWinners();
-//    testPassed &=  50 == sim->GetPlayerAt(0)->GetChips();
-//    testPassed &= -50 == sim->GetPlayerAt(1)->GetChips();
-//    if (!testPassed && preTest) {std::cout << ref << " failed." << std::endl;}
-//    sim->GetGame()->SetS17(prevS17);
 
     return testPassed;
 }
