@@ -13,8 +13,9 @@
 #include "PlayHand_test.h"
 #include "PlayHand_Sp21_test.h"
 #include "SetInitialBet_test.h"
-#include "GetTrueCount_test.h"
 #include "GetDecision_test.h"
+#include "GetTrueCount_test.h"
+#include "GetPlayStrategy_test.h"
 #include "Blackjack_Sp21_test.h"
 
 int main(int argc, char ** argv)
@@ -34,6 +35,7 @@ int main(int argc, char ** argv)
     sim.reset(new Sim(TSimMode::STRATEGY, TDeckType::SPANISH21));
     testsPassed &= BlackjackSp21Test(sim);
     testsPassed &= PlayHandSp21Test(sim);
+    testsPassed &= GetPlayStrategySp21Test(sim);
 
     if (testsPassed)
     {

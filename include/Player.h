@@ -51,11 +51,14 @@ public:
 
     static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_s17_das_ls;
     static map<string, vector<pair<int, pair<TPlayAction, TPlayAction> > > > ds_s17_das_ls;
-    static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_sp_h17;
+    static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_sp_nrd_h17;
+    static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_sp_rd_h17;
+    static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_sp_rd_1d_h17;
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ls;
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_s17_das_ns;
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ns;
     map<string, vector<pair<TPlayAction, TPlayAction> > > GetPlayStrategy(std::unique_ptr<Game>& game);
+    map<string, vector<pair<TPlayAction, TPlayAction> > > GetPlayStrategy(std::unique_ptr<Game>& game, std::vector<std::unique_ptr<Card> >& hand);
     map<string, vector<pair<int, pair<TPlayAction, TPlayAction> > > > GetDeviationStrategy();
 
     std::vector<std::unique_ptr<Bet> > &GetBetVec(){ return _handsBetVec; }
@@ -65,6 +68,7 @@ public:
     void ResetPlayer();
     void SetInitialBet(Game * game);
     void SetWantsInsurance(bool wantsInsurance);
+    void IncrementDoubleAtIdx(int hIdx);
     void MakeAdditionalBet(int handIdx, int betAmount);
     double GetHandBetAmount(int handIdx); 
     void MakeInsuranceBet();

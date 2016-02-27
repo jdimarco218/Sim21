@@ -860,7 +860,7 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
     
     // Check the basic strategy the Player is using
     //
-    auto basicStrat = player->GetPlayStrategy(_game);
+    auto basicStrat = player->GetPlayStrategy(_game, hand);
     //auto  it = basicStrat.find(stratKey);
     auto decision = basicStrat.find(stratKey)->second[GetUpCardRank()].first;
     if (DEBUG) {std::cout << "Checking primary decision." << std::endl;}
