@@ -535,6 +535,7 @@ bool Sim::CanTakeAction(std::unique_ptr<Player>& player,
         case TPlayAction::STAND:
             ret = true;
             break;
+        case TPlayAction::NONE:
         default:
             ret = false;
             break;
@@ -661,6 +662,7 @@ bool Sim::CanTakeAction(std::unique_ptr<Player>& player,
         case TPlayAction::STAND:
             ret = true;
             break;
+        case TPlayAction::NONE:
         default:
             ret = false;
             break;

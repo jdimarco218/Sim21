@@ -1472,7 +1472,7 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 6
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
@@ -1487,7 +1487,7 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 6
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
@@ -1502,7 +1502,7 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 6
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
@@ -1516,8 +1516,8 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 5
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 6
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
@@ -1529,9 +1529,9 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
+            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 3
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 4
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 5
             make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 6
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
@@ -1548,8 +1548,8 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 4
             make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 5
             make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::DOUBLE_X_3, TPlayAction::HIT), // 8
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 7
+            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 8
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
         }
@@ -1563,8 +1563,8 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 4
             make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 5
             make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 8
+            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 7
+            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 8
             make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 9
             make_pair(TPlayAction::DOUBLE_X_3, TPlayAction::HIT), // T
         }
@@ -1592,7 +1592,7 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::STAND_X_4, TPlayAction::HIT), // 6
+            make_pair(TPlayAction::HIT_IF_678, TPlayAction::STAND_X_4), // 6
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
@@ -1605,9 +1605,9 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::STAND_X_4, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::STAND_X_5, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::STAND_X_6, TPlayAction::HIT), // 6
+            make_pair(TPlayAction::HIT_IF_678, TPlayAction::STAND_X_4), // 4
+            make_pair(TPlayAction::HIT_IF_S678, TPlayAction::STAND_X_5), // 5
+            make_pair(TPlayAction::HIT_IF_SP678, TPlayAction::STAND_X_6), // 6
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
@@ -1618,10 +1618,10 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::STAND_X_4, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::STAND_X_5, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::STAND_X_6, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::STAND_X_6, TPlayAction::HIT), // 5
+            make_pair(TPlayAction::HIT_IF_678, TPlayAction::STAND_X_4), // 2
+            make_pair(TPlayAction::HIT_IF_S678, TPlayAction::STAND_X_5), // 3
+            make_pair(TPlayAction::STAND_X_6, TPlayAction::STAND), // 4
+            make_pair(TPlayAction::STAND_X_6, TPlayAction::STAND), // 5
             make_pair(TPlayAction::STAND, TPlayAction::STAND), // 6
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
@@ -1633,9 +1633,9 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
             make_pair(TPlayAction::SURRENDER, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::STAND_X_6, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::STAND_X_6, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::STAND_X_6, TPlayAction::HIT), // 4
+            make_pair(TPlayAction::STAND_X_6, TPlayAction::STAND), // 2
+            make_pair(TPlayAction::STAND_X_6, TPlayAction::STAND), // 3
+            make_pair(TPlayAction::STAND_X_6, TPlayAction::STAND), // 4
             make_pair(TPlayAction::STAND, TPlayAction::STAND), // 5
             make_pair(TPlayAction::STAND, TPlayAction::STAND), // 6
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
@@ -1653,7 +1653,7 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::STAND, TPlayAction::STAND), // 4
             make_pair(TPlayAction::STAND, TPlayAction::STAND), // 5
             make_pair(TPlayAction::STAND, TPlayAction::STAND), // 6
-            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 7
+            make_pair(TPlayAction::STAND_X_6, TPlayAction::STAND), // 7
             make_pair(TPlayAction::STAND_X_6, TPlayAction::HIT), // 8
             make_pair(TPlayAction::STAND_X_6, TPlayAction::HIT), // 9
             make_pair(TPlayAction::STAND_X_6, TPlayAction::HIT), // T
@@ -1709,10 +1709,10 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
+            make_pair(TPlayAction::DOUBLE_X_3, TPlayAction::HIT), // 3
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 4
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 5
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 6
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
@@ -1724,10 +1724,10 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
+            make_pair(TPlayAction::DOUBLE_X_3, TPlayAction::HIT), // 3
+            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 4
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 5
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 6
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
@@ -1740,9 +1740,9 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::STAND), // 6
+            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 4
+            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 5
+            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 6
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
@@ -1755,9 +1755,9 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::DOUBLE_X_3, TPlayAction::STAND), // 5
-            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::STAND), // 6
+            make_pair(TPlayAction::DOUBLE_X_3, TPlayAction::HIT), // 4
+            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::STAND), // 5
+            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::STAND), // 6
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
@@ -1785,9 +1785,9 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::HIT, TPlayAction::STAND), // 1, dealer ace
             make_pair(TPlayAction::STAND_X_4, TPlayAction::STAND), // 2
             make_pair(TPlayAction::STAND_X_4, TPlayAction::STAND), // 3
-            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::STAND), // 4
-            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::STAND), // 5
-            make_pair(TPlayAction::DOUBLE_X_6, TPlayAction::STAND), // 6
+            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 4
+            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 5
+            make_pair(TPlayAction::DOUBLE_X_6, TPlayAction::HIT), // 6
             make_pair(TPlayAction::STAND_X_6, TPlayAction::STAND), // 7
             make_pair(TPlayAction::STAND_X_4, TPlayAction::STAND), // 8
             make_pair(TPlayAction::HIT, TPlayAction::STAND), // 9
@@ -1893,8 +1893,8 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
             make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 4
             make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 5
             make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::DOUBLE_X_3, TPlayAction::HIT), // 8
+            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 7
+            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 8
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
         }
@@ -1918,12 +1918,12 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::SPLIT, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::SPLIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND_X_4), // 4
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND_X_5), // 5
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND_X_6), // 6
-            make_pair(TPlayAction::SPLIT_X_S7, TPlayAction::HIT), // 7
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 2
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 3
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 4
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 5
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 6
+            make_pair(TPlayAction::SPLIT_X_S7, TPlayAction::NONE), // 7
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
             make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
@@ -1933,30 +1933,30 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_h17 =
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
             make_pair(TPlayAction::SURRENDER, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND_X_6), // 2
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND_X_6), // 3
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND_X_6), // 4
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 5
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 6
-            make_pair(TPlayAction::SPLIT, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::SPLIT, TPlayAction::HIT), // 8
-            make_pair(TPlayAction::SPLIT, TPlayAction::HIT), // 9
-            make_pair(TPlayAction::SPLIT, TPlayAction::HIT), // T
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 2
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 3
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 4
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 5
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 6
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 7
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 8
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 9
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // T
         }
     }, 
     {"p9", vector<pair<TPlayAction, TPlayAction> >
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
-            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 1, dealer ace
-            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 2
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 3
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 4
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 5
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 6
-            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 7
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 8
-            make_pair(TPlayAction::SPLIT, TPlayAction::STAND), // 9
-            make_pair(TPlayAction::STAND, TPlayAction::STAND), // T
+            make_pair(TPlayAction::STAND, TPlayAction::NONE), // 1, dealer ace
+            make_pair(TPlayAction::STAND, TPlayAction::NONE), // 2
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 3
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 4
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 5
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 6
+            make_pair(TPlayAction::STAND, TPlayAction::NONE), // 7
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 8
+            make_pair(TPlayAction::SPLIT, TPlayAction::NONE), // 9
+            make_pair(TPlayAction::STAND, TPlayAction::NONE), // T
         }
     }, 
     {"p10", vector<pair<TPlayAction, TPlayAction> >
@@ -1982,166 +1982,166 @@ map<string, vector<pair<TPlayAction, TPlayAction> > > Player::bs_sp_rd_1d_h17 =
     {"2", vector<pair<TPlayAction, TPlayAction> >
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 1, dealer ace
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 2
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 3
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 4
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 5
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 6
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 7
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 8
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 9
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // T
         }
     }, 
     {"3", vector<pair<TPlayAction, TPlayAction> >
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 1, dealer ace
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 2
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 3
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 4
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 5
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 6
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 7
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 8
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 9
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // T
         }
     }, 
     {"4", vector<pair<TPlayAction, TPlayAction> >
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 1, dealer ace
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 2
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 3
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 4
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 5
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 6
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 7
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 8
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 9
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // T
         }
     }, 
     {"5", vector<pair<TPlayAction, TPlayAction> >
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 1, dealer ace
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 2
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 3
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 4
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 5
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 6
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 7
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 8
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // 9
+            make_pair(TPlayAction::STAND, TPlayAction::HIT), // T
         }
     }, 
     {"6", vector<pair<TPlayAction, TPlayAction> >
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
+            make_pair(TPlayAction::SURRENDER, TPlayAction::STAND), // 1, dealer ace
+            make_pair(TPlayAction::STAND, TPlayAction::STAND), // 2
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 3
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 4
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 5
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 6
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 7
+            make_pair(TPlayAction::SURRENDER, TPlayAction::STAND), // 8
+            make_pair(TPlayAction::SURRENDER, TPlayAction::STAND), // 9
+            make_pair(TPlayAction::SURRENDER, TPlayAction::STAND), // T
         }
     }, 
     {"7", vector<pair<TPlayAction, TPlayAction> >
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
+            make_pair(TPlayAction::SURRENDER, TPlayAction::STAND), // 1, dealer ace
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 2
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 3
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 4
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 5
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 6
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 7
+            make_pair(TPlayAction::SURRENDER, TPlayAction::STAND), // 8
+            make_pair(TPlayAction::SURRENDER, TPlayAction::STAND), // 9
+            make_pair(TPlayAction::SURRENDER, TPlayAction::STAND), // T
         }
     }, 
     {"8", vector<pair<TPlayAction, TPlayAction> >
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
+            make_pair(TPlayAction::SURRENDER, TPlayAction::STAND), // 1, dealer ace
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 2
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 3
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 4
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 5
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 6
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 7
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 8
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 9
+            make_pair(TPlayAction::SURRENDER, TPlayAction::STAND), // T
         }
     }, 
     {"9", vector<pair<TPlayAction, TPlayAction> >
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 1, dealer ace
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 2
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 3
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 4
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 5
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 6
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 7
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 8
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 9
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // T
         }
     }, 
     {"10", vector<pair<TPlayAction, TPlayAction> >
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::DOUBLE, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::DOUBLE_X_3, TPlayAction::HIT), // 8
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 1, dealer ace
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 2
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 3
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 4
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 5
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 6
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 7
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 8
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 9
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // T
         }
     }, 
     {"11", vector<pair<TPlayAction, TPlayAction> >
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
-            make_pair(TPlayAction::DOUBLE_X_3, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::DOUBLE_X_5, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 8
-            make_pair(TPlayAction::DOUBLE_X_4, TPlayAction::HIT), // 9
-            make_pair(TPlayAction::DOUBLE_X_3, TPlayAction::HIT), // T
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 1, dealer ace
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 2
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 3
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 4
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 5
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 6
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 7
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 8
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // 9
+            make_pair(TPlayAction::DOUBLE, TPlayAction::STAND), // T
         }
     }, 
     {"12", vector<pair<TPlayAction, TPlayAction> >
         {
             make_pair(TPlayAction::NONE, TPlayAction::NONE), // 0, non-situation
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 1, dealer ace
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 2
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 3
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 4
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 5
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 6
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 7
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 8
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // 9
-            make_pair(TPlayAction::HIT, TPlayAction::HIT), // T
+            make_pair(TPlayAction::SURRENDER, TPlayAction::HIT), // 1, dealer ace
+            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 2
+            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 3
+            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 4
+            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 5
+            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 6
+            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 7
+            make_pair(TPlayAction::HIT, TPlayAction::STAND), // 8
+            make_pair(TPlayAction::SURRENDER, TPlayAction::STAND), // 9
+            make_pair(TPlayAction::SURRENDER, TPlayAction::STAND), // T
         }
     }, 
     {"13", vector<pair<TPlayAction, TPlayAction> >
