@@ -33,8 +33,21 @@ void FrontloadShoe(std::unique_ptr<Sim>& sim, std::vector<int> ranks)
     auto& shoeCards = sim->GetGame()->GetShoe()->GetCards();
     for (auto it = ranks.rbegin(); it != ranks.rend(); it++)
     {
-        // All suited as "1", whoe cares?
+        // Use 1 as the default suit
         shoeCards.push_front(std::unique_ptr<Card>(new Card(*it, 1)));
+    }
+    return;
+}
+
+/**
+ * Sets the front of the Shoe to the given Card ranks and suits
+ */
+void FrontloadShoe(std::unique_ptr<Sim>& sim, std::vector<std::pair<int, int> > ranks)
+{
+    auto& shoeCards = sim->GetGame()->GetShoe()->GetCards();
+    for (auto it = ranks.rbegin(); it != ranks.rend(); it++)
+    {
+        shoeCards.push_front(std::unique_ptr<Card>(new Card(it->first, it->second)));
     }
     return;
 }
@@ -80,16 +93,50 @@ void MakeHandForPlayerIdxHandIdx(std::unique_ptr<Sim>& sim, std::vector<int> ran
 }
 
 /**
+ * Helper function to create a player's specific hand given a set of ranks and suits
+ */
+void MakeHandForPlayerIdxHandIdx(std::unique_ptr<Sim>& sim, std::vector<std::pair<int, int> > ranks, int pIdx, int hIdx)
+{
+
+    // Assert this is a new or existing hand
+    assert(sim->GetPlayerAt(pIdx)->GetHands().size() >= hIdx && "Must be a new or existing hand index!");
+
+    // Insert the hand at the correct index
+    if(sim->GetPlayerAt(pIdx)->GetHands().size() == hIdx)
+    {
+        // New hand, populate a new one
+        std::vector<std::unique_ptr<Card> > hand;
+        hand.clear();
+
+        for (auto it = ranks.begin(); it != ranks.end(); it++)
+        {
+            hand.push_back(std::unique_ptr<Card>(new Card(it->first, it->second)));
+        }
+
+        sim->GetPlayerAt(pIdx)->GetHands().push_back(std::move(hand));
+    }
+    else
+    {
+        // Existing hand, update it
+        std::vector<std::unique_ptr<Card> >& hand = sim->GetPlayerAt(pIdx)->GetHand(hIdx);
+        hand.clear();
+
+        for (auto it = ranks.begin(); it != ranks.end(); it++)
+        {
+            hand.push_back(std::unique_ptr<Card>(new Card(it->first, it->second)));
+        }
+    }
+
+    return;
+}
+
+/**
  * Helper function to create a dealer's specific hand given a set of ranks
  */
 void MakeHandForDealer(std::unique_ptr<Sim>& sim, std::vector<int> ranks)
 {
     // If dealer has a hand already, clear it
     assert(sim->GetDealer()->GetHands().size() == 1 && "Dealer must have one hand during InsuranceTest()");
-    //if(sim->GetDealer()->GetHand(0).size() > 0)
-    //{
-    //    sim->GetDealer()->GetHand(0).clear();
-    //}
 
     // Insert the hand at the zero'th index
     std::vector<std::unique_ptr<Card> >& hand = sim->GetDealer()->GetHand(0);
@@ -99,6 +146,27 @@ void MakeHandForDealer(std::unique_ptr<Sim>& sim, std::vector<int> ranks)
     {
         // All suited as "1", who cares?
         hand.push_back(std::unique_ptr<Card>(new Card(i, 1)));
+    }
+
+    return;
+}
+
+/**
+ * Helper function to create a dealer's specific hand given a set of ranks and suits
+ */
+void MakeHandForDealer(std::unique_ptr<Sim>& sim, std::vector<std::pair<int, int> > ranks)
+{
+    // If dealer has a hand already, clear it
+    assert(sim->GetDealer()->GetHands().size() == 1 && "Dealer must have one hand during InsuranceTest()");
+
+    // Insert the hand at the zero'th index
+    std::vector<std::unique_ptr<Card> >& hand = sim->GetDealer()->GetHand(0);
+    hand.clear();
+
+        for (auto it = ranks.begin(); it != ranks.end(); it++)
+    {
+        // All suited as "1", who cares?
+        hand.push_back(std::unique_ptr<Card>(new Card(it->first, it->second)));
     }
 
     return;

@@ -15,7 +15,7 @@ using std::map;
 using std::string;
 using std::vector;
 
-#define DEBUG false
+#define DEBUG true
 
 Sim::Sim(TSimMode simMode, TDeckType deckType)
 {
@@ -574,6 +574,17 @@ bool Sim::CanTakeAction(std::unique_ptr<Player>& player,
                 ret = true;
             }
             break;
+        case TPlayAction::SPLIT_X_SUPER:
+            if (CanTakeAction(player, hand, handIdx, TPlayAction::SPLIT) &&
+                !(hand[0]->GetRank() == 7 &&
+                  hand[1]->GetRank() == 7 &&
+                  _dealer->_hands[0][0]->GetRank() == 7 &&
+                  hand[0]->GetSuit() == hand[1]->GetSuit() &&
+                  hand[0]->GetSuit() == _dealer->_hands[0][0]->GetSuit()))
+            {
+                ret = true;
+            }
+            break;
         case TPlayAction::DOUBLE_X_3:
             if (player->NumDoubles(handIdx) <= _game->GetNumDoubles() &&
                 hand.size() < 3)
@@ -639,7 +650,7 @@ bool Sim::CanTakeAction(std::unique_ptr<Player>& player,
             }
             break;
         case TPlayAction::SURRENDER:
-            if (hand.size() == 2 && _game->IsLateSurrender())
+            if (_game->IsLateSurrender())
             {
                 if (DEBUG) {std::cout << "CanTake(Surrender)." << std::endl;}
                 ret = true;
@@ -657,7 +668,10 @@ bool Sim::CanTakeAction(std::unique_ptr<Player>& player,
             }
             break;
         case TPlayAction::HIT:
-            ret = true;
+            if (player->NumDoubles(handIdx) == 0)
+            {
+                ret = true;
+            }
             break;
         case TPlayAction::STAND:
             ret = true;
@@ -689,6 +703,12 @@ void Sim::PrintDecision(TPlayAction action)
             case TPlayAction::SPLIT:
                 std::cout << "Split action." << std::endl;
                 break;
+            case TPlayAction::SPLIT_X_S7:
+                std::cout << "Split except suited 7s action." << std::endl;
+                break;
+            case TPlayAction::SPLIT_X_SUPER:
+                std::cout << "Split except super bonus action." << std::endl;
+                break;
             case TPlayAction::HIT:
                 std::cout << "Hit action." << std::endl;
                 break;
@@ -703,9 +723,6 @@ void Sim::PrintDecision(TPlayAction action)
                 break;
             case TPlayAction::STAND_X_6:
                 std::cout << "Stand except six cards action." << std::endl;
-                break;
-            case TPlayAction::SPLIT_X_S7:
-                std::cout << "Split except suited 7s action." << std::endl;
                 break;
             case TPlayAction::DOUBLE_X_3:
                 std::cout << "Double except three cards action." << std::endl;
@@ -745,8 +762,8 @@ void Sim::PrintDecision(TPlayAction action)
  * Does a lookup of the Player's strategy decision based on
  * TODO
  *
- * Returns a basic decision, that is a decision that does not have
- * a condition attached to it.
+ * Returns a decision
+ * TODO: make this only basic decisions?
  */
 TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                              std::vector<std::unique_ptr<Card> >& hand,
@@ -862,8 +879,7 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
     
     // Check the basic strategy the Player is using
     //
-    auto basicStrat = player->GetPlayStrategy(_game, hand);
-    //auto  it = basicStrat.find(stratKey);
+    auto basicStrat = player->GetPlayStrategy(_game, hand, handIdx);
     auto decision = basicStrat.find(stratKey)->second[GetUpCardRank()].first;
     if (DEBUG) {std::cout << "Checking primary decision." << std::endl;}
     if (DEBUG) {PrintDecision(decision);}
@@ -893,13 +909,15 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                 followUpDecision = TPlayAction::DOUBLE;
             }
             return followUpDecision;
-            //return basicStrat.find(stratKey)->second[GetUpCardRank()].second;
         }
         else
         {
             // Cannot take follow-up decision, which should happen very rarely.
             // We will look up the hard total as a fall-back, since hard totals
-            // will not have a set of three possible decisions (afaik).
+            // will not have a set of three possible distinct decisions. At the
+            // moment, the final decision could be a conditional
+            // (e.g. STAND_X_4), but we will check for that. If other decisions
+            // arise, then vectors of decisions will need to be implemented!
             //
             auto tertiaryStratKey = GetStratKey(hand, true);
             auto tertiaryDecision = basicStrat.find(tertiaryStratKey)->second[GetUpCardRank()].first;
@@ -930,10 +948,26 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                 }
                 else
                 {
-                    // "I'm just gonna stand cuz I'm stupid."
+                    // If we are here without knowing all possible decisions,
+                    // or we cannot conditionally decide, then we have a
+                    // problem. Currently we can account for STAND_X_<num>
                     //
-                    std::cerr << "ERROR: Could not find a decision from the Player's strategy!" << std::endl;
-                    return TPlayAction::STAND; 
+                    if (hardTotalFollowup == TPlayAction::STAND_X_4 ||
+                        hardTotalFollowup == TPlayAction::STAND_X_5 ||
+                        hardTotalFollowup == TPlayAction::STAND_X_6)
+                    {
+                        if (DEBUG) {std::cout << "Not standing due to hand size." << std::endl;}
+                        auto determinedDecision = TPlayAction::HIT;
+                        if (DEBUG) {PrintDecision(determinedDecision);}
+                        return determinedDecision;
+                    }
+                    else
+                    {
+                        // "I'm just gonna stand cuz I'm stupid."
+                        //
+                        std::cerr << "ERROR: Could not find a decision from the Player's strategy!" << std::endl;
+                        return TPlayAction::STAND; 
+                    }
                 }
             }
         }
@@ -991,8 +1025,22 @@ void Sim::PayoutWinners()
                         }
                         else
                         {
-                            if (DEBUG) {std::cout << "Paying player[" << pIdx << "] WIN." << std::endl;}
-                            PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_WIN);
+                            if (_deckType == TDeckType::SPANISH21)
+                            {
+                                auto factor = CheckForBonusPayout(pIdx, hIdx);
+                                if (DEBUG) {std::cout << "Calculated win/bonus factor: " << std::to_string(factor) << std::endl;}
+                                PayoutPlayer(_playersVec[pIdx], hIdx, factor);
+                            }
+                            else if (_deckType == TDeckType::BLACKJACK)
+                            {
+                                if (DEBUG) {std::cout << "Paying player[" << pIdx << "] WIN." << std::endl;}
+                                PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_WIN);
+                            }
+                            else
+                            {
+                                // should never get here
+                                std::cerr << "ERROR: Unknown decktype during PayoutWinners()" << std::endl;
+                            }
                         }
                     }
                 }
@@ -1003,6 +1051,77 @@ void Sim::PayoutWinners()
             _playersVec[pIdx]->_activeVec[hIdx] = false;
         }
     }
+}
+
+/**
+ * This function returns the proper factor in the case of a bonus payout
+ * for games like Spanish 21.
+ *
+ * Note that it should only be called for a winner and the default payout
+ * is a standard win of 1:1, which equates to 2.0 the Bet since payouts
+ * include the original bet amount.
+ */
+double Sim::CheckForBonusPayout(int playerIndex, int handIndex)
+{
+    auto ret = Sim::FACTOR_WIN;
+
+    if (_deckType == TDeckType::SPANISH21)
+    {
+        // First, check for the super bonus
+        //
+        auto& hand = _playersVec[playerIndex]->_hands[handIndex];
+        if (hand.size() == 3 &&
+            hand[0]->GetRank() == 7 &&
+            hand[1]->GetRank() == 7 &&
+            hand[2]->GetRank() == 7 &&
+            hand[0]->GetSuit() == hand[1]->GetSuit() &&
+            hand[0]->GetSuit() == hand[2]->GetSuit() &&
+            GetUpCardRank() == 7 &&
+            hand[0]->GetSuit() == GetUpCardSuit())
+        {
+            // We have a super bonus! Calculate the appropriate
+            // factor, since it varies
+            //
+            // The factor is the value that will give a 1000 payout
+            // if the bet is 5-24, or 5000 payout for bets of at least 25
+            //
+            if (_playersVec[playerIndex]->_handsBetVec[handIndex]->_amount < 25)
+            {
+                ret = 1000.0 / _playersVec[playerIndex]->_handsBetVec[handIndex]->_amount;
+            }
+            else
+            {
+                ret = 5000.0 / _playersVec[playerIndex]->_handsBetVec[handIndex]->_amount;
+            }
+        }
+        else
+        {
+            // Check for hand size bonus
+            int numCards = _playersVec[playerIndex]->_hands[handIndex].size();
+            if (numCards == 5)
+            {
+                if (DEBUG) {std::cout << "Player[" << playerIndex << "] sees WIN_5_CARD_BONUS." << std::endl;}
+                ret = Sim::FACTOR_WIN_5_CARD_BONUS;
+            }
+            else if (numCards == 6)
+            {
+                if (DEBUG) {std::cout << "Player[" << playerIndex << "] sees WIN_6_CARD_BONUS." << std::endl;}
+                ret = Sim::FACTOR_WIN_6_CARD_BONUS;
+            }
+            else if (numCards >= 7)
+            {
+                if (DEBUG) {std::cout << "Player[" << playerIndex << "] sees WIN_7_CARD_BONUS." << std::endl;}
+                ret = Sim::FACTOR_WIN_7_CARD_BONUS;
+            }
+            else
+            {
+                if (DEBUG) {std::cout << "Player[" << playerIndex << "] sees WIN." << std::endl;}
+                ret = Sim::FACTOR_WIN;
+            }
+        }
+    }
+
+    return ret;
 }
 
 void Sim::PlayDealerHand()
@@ -1034,7 +1153,6 @@ void Sim::PlayDealerHand()
 void Sim::PlayHand(int pIdx, int hIdx)
 {
     auto& player = _playersVec[pIdx];
-    bool isFollowup = false;
 
     while (GetOptimalValue(player->_hands[hIdx]) < 21)
     {
@@ -1076,7 +1194,9 @@ void Sim::PlayHand(int pIdx, int hIdx)
         if (DEBUG) {std::cout << "Decision: "; PrintDecision(decision);}
 
         // CHECK AND HANDLE Split action
-        if (decision == TPlayAction::SPLIT)
+        if (decision == TPlayAction::SPLIT ||
+            decision == TPlayAction::SPLIT_X_S7 ||
+            decision == TPlayAction::SPLIT_X_SUPER)
         {
             if (DEBUG) {std::cout << "Handling split action." << std::endl;}
             player->_hands.push_back(std::vector<std::unique_ptr<Card> >());
@@ -1098,7 +1218,6 @@ void Sim::PlayHand(int pIdx, int hIdx)
         else if (decision == TPlayAction::DOUBLE)
         {
             if (DEBUG) {std::cout << "Handling double action." << std::endl;}
-//            if (_deckType == TDeckType::BLACKJACK)
             { 
                 player->_hands[hIdx].push_back(GetGame()->DealCard());
                 player->_doubleVec[hIdx] += 1;
@@ -1112,27 +1231,27 @@ void Sim::PlayHand(int pIdx, int hIdx)
                     }
                     std::cout << std::endl;
                 }
-                break;
+
+                //
+                // We are finished with this hand if we reach the maximum number
+                // of doubles, but we may have further decisions if the rules
+                // allow it
+                //
+                if (player->NumDoubles(hIdx) >= GetGame()->GetNumDoubles())
+                {
+                    break;
+                }
             }
-//            else
-//            {
-//                // TODO FOR SP21
-//                player->_hands[hIdx].push_back(GetGame()->DealCard());
-//                if (DEBUG)
-//                {
-//                    std::cout << "Hand after: " << std::endl;
-//                    for (auto& card : player->_hands[hIdx])
-//                    {
-//                        std::cout << card->GetRank() << ", ";
-//                    }
-//                    std::cout << std::endl;
-//                }
-//                break;
-//            }
         }
         // CHECK AND HANDLE Stand action
-        else if (decision == TPlayAction::STAND)
+        else if (decision == TPlayAction::STAND ||
+                 decision == TPlayAction::STAND_X_4 ||
+                 decision == TPlayAction::STAND_X_5 ||
+                 decision == TPlayAction::STAND_X_6)
         {
+            //
+            // The stand action has been verified by this point
+            //
             if (DEBUG) {std::cout << "Handling stand action." << std::endl;}
             break;
         }

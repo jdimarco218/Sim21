@@ -1,1 +1,2 @@
 bin/RunTests
+bin/gcov_RunTests

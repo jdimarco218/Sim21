@@ -26,11 +26,18 @@ class Sim
 {
 public:
     // Payout coefficients, these include the original amount
-    static constexpr double FACTOR_BLACKJACK   = 2.5;
-    static constexpr double FACTOR_WIN         = 2.0;
-    static constexpr double FACTOR_PUSH        = 1.0;
-    static constexpr double FACTOR_SURRENDER   = 0.5;
-    static constexpr double FACTOR_INSURANCE   = 1.5;
+    static constexpr double FACTOR_BLACKJACK        = 2.5;
+    static constexpr double FACTOR_WIN              = 2.0;
+    static constexpr double FACTOR_WIN_5_CARD_BONUS = 2.5;
+    static constexpr double FACTOR_WIN_6_CARD_BONUS = 3.0;
+    static constexpr double FACTOR_WIN_7_CARD_BONUS = 4.0;
+    static constexpr double FACTOR_PUSH             = 1.0;
+    static constexpr double FACTOR_SURRENDER        = 0.5;
+    static constexpr double FACTOR_INSURANCE        = 1.5;
+    // In the very rare case of a super bonus, we calculate
+    // the factor at the time of payout. The result should be
+    // 1000 total for bet amounts of 5-24, and 5000 for bet
+    // amounts of at least 25.
 
     void RunSimulation();
     void RunStrategySimulation();
@@ -66,6 +73,7 @@ public:
     std::unique_ptr<Game>&   GetGame(){ return _game; }
     std::vector< std::unique_ptr<Player> >& GetPlayersVec(){ return _playersVec; }
     TPlayAction GetDecision(std::unique_ptr<Player>& player, std::vector<std::unique_ptr<Card> >& hand, int hIdx);
+    double CheckForBonusPayout(int playerIndex, int handIndex);
 
     Sim(TSimMode simMode, TDeckType deckType);
     ~Sim()

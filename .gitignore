@@ -5,3 +5,10 @@ build/*
 *.swp
 results/*.csv
 *.txt
+*.gcda
+*.gcov
+*.gcno
+gcov/build/*
+src/*.gcov
+src/*.gcda
+src/*.gcno

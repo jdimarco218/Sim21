@@ -33,6 +33,7 @@ enum class TPlayAction
     STAND_X_5,
     STAND_X_6,
     SPLIT_X_S7,
+    SPLIT_X_SUPER,
     DOUBLE_X_3,
     DOUBLE_X_4,
     DOUBLE_X_5,
@@ -58,7 +59,7 @@ public:
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_s17_das_ns;
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ns;
     map<string, vector<pair<TPlayAction, TPlayAction> > > GetPlayStrategy(std::unique_ptr<Game>& game);
-    map<string, vector<pair<TPlayAction, TPlayAction> > > GetPlayStrategy(std::unique_ptr<Game>& game, std::vector<std::unique_ptr<Card> >& hand);
+    map<string, vector<pair<TPlayAction, TPlayAction> > > GetPlayStrategy(std::unique_ptr<Game>& game, std::vector<std::unique_ptr<Card> >& hand, int handIdx);
     map<string, vector<pair<int, pair<TPlayAction, TPlayAction> > > > GetDeviationStrategy();
 
     std::vector<std::unique_ptr<Bet> > &GetBetVec(){ return _handsBetVec; }
