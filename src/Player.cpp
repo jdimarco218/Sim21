@@ -48,8 +48,8 @@ void Player::ResetPlayer()
     _doubleVec.push_back(0);
     _handsBetVec.clear();
     _hands.clear();
-    _totalWagered = 0.0;
-    _totalWinnings = 0.0;
+    //_totalWagered = 0.0;
+    //_totalWinnings = 0.0;
 
     // Create an empty initial hand
     //
