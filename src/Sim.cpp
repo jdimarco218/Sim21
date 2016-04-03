@@ -15,7 +15,7 @@ using std::map;
 using std::string;
 using std::vector;
 
-#define DEBUG false
+#define DEBUG true
 
 Sim::Sim(TSimMode       simMode, 
          TDeckType      deckType,
@@ -1252,6 +1252,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
 
             if (IsBlackjack(player->_hands[hIdx]))
             {
+                if(DEBUG) {std::cout << "Single ace sees a natural." << std::endl;}
                 // Payout, then finished this particular hand
                 //
                 if (GetGame()->GetBonusPayOnSplitAces())

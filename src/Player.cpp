@@ -130,6 +130,30 @@ bool Player::WantsInsurance(Game * game)
     return ret;
 }
 
+bool Player::IsHandSplit()
+{
+    bool ret = false;
+
+    if (_hands.size() > 1)
+    {
+        ret = true;
+    }
+
+    return ret;
+}
+
+bool Player::IsHandDoubled(int handIdx)
+{
+    bool ret = false;
+
+    if (_doubleVec[handIdx] > 0)
+    {
+        ret = true;
+    }
+
+    return ret;
+}
+
 map<string, vector<pair<TPlayAction, TPlayAction> > > 
 Player::GetPlayStrategy(std::unique_ptr<Game>& game, std::vector<std::unique_ptr<Card> >& hand, int handIdx)
 {

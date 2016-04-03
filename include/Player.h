@@ -72,6 +72,8 @@ public:
     double GetHandBetAmount(int handIdx); 
     void MakeInsuranceBet();
     bool WantsInsurance(Game * game);
+    bool IsHandSplit();
+    bool IsHandDoubled(int handIdx);
     inline std::string GetName(){ return _name; }
     inline long double GetTotalWagered(){ return _totalWagered; }
     inline int  NumHands(){ return _hands.size(); }
