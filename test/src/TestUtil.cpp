@@ -14,7 +14,9 @@
 void ResetTestEnv(std::unique_ptr<Sim>& sim)
 {
     sim->GetGame() = std::unique_ptr<Game>(new Game(sim->GetGame()->GetDeckType()));
+    
     // Reset chips to zero, clear hands, clear bets
+    //
     for (auto& player : sim->GetPlayersVec())
     {
         player->ResetPlayer();

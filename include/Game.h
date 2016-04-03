@@ -21,6 +21,7 @@ public:
     void SetResplitAces(bool resplitAces){ _resplitAces = resplitAces; }
     void SetPlaySplitAces(bool playSplitAces){ _playSplitAces = playSplitAces; }
     void SetBonusPayOnSplitAces(bool bonus){ _bonusPayOnSplitAces = bonus; }
+    void SetH17(bool h17){ _s17 = !h17; }
     void SetS17(bool s17){ _s17 = s17; }
     void SetLateSurrender(bool ls){ _lateSurrender = ls; }
     void SetNumSplitAces(bool nsa){ _numSplitAces = nsa; }

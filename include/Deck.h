@@ -12,7 +12,6 @@ enum class TDeckType
 {
     BLACKJACK = 0,
     SPANISH21 = 1
-
 };
 
 class Deck

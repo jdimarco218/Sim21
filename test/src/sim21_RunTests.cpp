@@ -23,7 +23,10 @@ int main(int argc, char ** argv)
     bool testsPassed = true;
     std::cout << "Starting test." << std::endl;
 
-    std::unique_ptr<Sim> sim(new Sim(TSimMode::STRATEGY, TDeckType::BLACKJACK));
+    std::vector<std::string> players;
+    players.push_back("Player_0");
+    players.push_back("Player_1");
+    std::unique_ptr<Sim> sim(new Sim(TSimMode::STRATEGY, TDeckType::BLACKJACK, 1000, players));
 
     testsPassed &= PlayHandTest(sim);
     testsPassed &= GetOptimalValueTest(sim);
@@ -32,7 +35,7 @@ int main(int argc, char ** argv)
     testsPassed &= GetTrueCountTest(sim);
     testsPassed &= GetDecisionTest(sim);
 
-    sim.reset(new Sim(TSimMode::STRATEGY, TDeckType::SPANISH21));
+    sim.reset(new Sim(TSimMode::STRATEGY, TDeckType::SPANISH21, 1000, players));
     testsPassed &= BlackjackSp21Test(sim);
     testsPassed &= PlayHandSp21Test(sim);
     testsPassed &= GetPlayStrategySp21Test(sim);

@@ -15,29 +15,33 @@ using std::map;
 using std::string;
 using std::vector;
 
-#define DEBUG true
+#define DEBUG false
 
-Sim::Sim(TSimMode simMode, TDeckType deckType)
+Sim::Sim(TSimMode       simMode, 
+         TDeckType      deckType,
+         int            handsToPlay,
+         vector<string> players,
+         bool           hit17)
 {
     _game = std::unique_ptr<Game>(new Game(deckType));
     _dealer = std::unique_ptr<Player>(new Player());
-    int numPlayers = 2;
-    for(int i = 0; i < numPlayers; ++i)
+    _playerNames = std::vector<std::string>();
+    for (auto& player : players)
     {
-        _playersVec.push_back( std::unique_ptr<Player>(new Player()) );
+        _playersVec.push_back( std::unique_ptr<Player>(new Player(player)) );
+        _playerNames.push_back(player);
     }
     _handsPlayed = 0;
     _shoesPlayed = 0;
-    _handsToPlay = 100000;
+    _handsToPlay = handsToPlay;
     _simMode = simMode;
     _deckType = deckType;
     _upCardIndex = 0;
-    //TODO: Take these from config
     _outputDir = "results";
-    _playerNames = std::vector<std::string>();
-    _playerNames.push_back("Player_0");
-    _playerNames.push_back("Player_1");
     _saveStatsPerShoe = 1;
+
+    // Rules
+    _game->SetH17(hit17);
 }
 
 /**
@@ -62,6 +66,7 @@ void Sim::SaveStatistics()
                 outputFile << _playersVec[i]->GetChips() << ", "
                            << _shoesPlayed << ", "
                            << _handsPlayed << ", "
+                           << _playersVec[i]->GetTotalWagered() << ", "
                            << std::endl;
             }
         }
@@ -91,6 +96,7 @@ void Sim::FinalizeStatistics()
                 outputFile << _playersVec[i]->GetChips() << ", "
                            << _shoesPlayed << ", "
                            << _handsPlayed << ", "
+                           << _playersVec[i]->GetTotalWagered() << ", "
                            << std::endl
                            << "#End of run."
                            << std::endl;
@@ -101,6 +107,10 @@ void Sim::FinalizeStatistics()
     return;
 }
 
+/**
+ * Getter function that returns a reference to the Player
+ * at the given index.
+ */
 std::unique_ptr<Player>& Sim::GetPlayerAt(int idx)
 {
     assert(idx < _playersVec.size());
@@ -170,24 +180,27 @@ void Sim::RunStrategySimulation()
 
 bool Sim::IsSimulationFinished()
 {
+    bool ret = true;
+
     switch(_simMode)
     {
     case TSimMode::STRATEGY:
         if(_handsPlayed < _handsToPlay)
         {
-            return false;
+            ret = false;
         }
         break;
     case TSimMode::EOR:
-        RunEorSimulation();
+        ret = true;
         break;
     case TSimMode::INDEX:
-        RunIndexSimulation();
+        ret = true;
         break;
     default:
+        ret = true;
         break;
     }
-    return true;
+    return ret;
 }
 
 void Sim::PrintGameState(Game * game)
@@ -379,6 +392,13 @@ void Sim::PayoutInsurance(std::unique_ptr<Player>& player)
 
 void Sim::PayoutPlayer(std::unique_ptr<Player>& player, int handIdx, double factor)
 {
+    if (DEBUG)
+    {
+        std::cout << "Paying player's " << handIdx << ": "
+                  << player->_handsBetVec[handIdx]->_amount
+                  << " with a factor of " << factor
+                  << std::endl;
+    }
     player->_totalWinnings += player->_handsBetVec[handIdx]->_amount * factor;
     player->_chips += player->_handsBetVec[handIdx]->_amount * factor;
     return;
@@ -455,6 +475,37 @@ int Sim::GetUpCardSuit()
     return _dealer->_hands[0][_upCardIndex]->GetSuit();
 }
 
+bool Sim::Is678(int r0, int r1, int r2)
+{
+    bool ret = false;
+
+    ret =  (r0 == 6 &&
+            r1 == 7 &&
+            r2 == 8)  ||
+
+           (r0 == 6 &&
+            r1 == 8 &&
+            r2 == 7)  ||
+
+           (r0 == 7 &&
+            r1 == 6 &&
+            r2 == 8)  ||
+
+           (r0 == 7 &&
+            r1 == 8 &&
+            r2 == 6)  ||
+
+           (r0 == 8 &&
+            r1 == 6 &&
+            r2 == 7)  ||
+
+           (r0 == 8 &&
+            r1 == 7 &&
+            r2 == 6);
+
+    return ret;
+}
+
 bool Sim::IsTwoOf678(int r0, int r1)
 {
     bool ret = false;
@@ -474,15 +525,36 @@ bool Sim::IsTwoOf678(int r0, int r1)
     return ret;
 }
 
-bool Sim::IsDoubleAction(TPlayAction action)
+TPlayAction Sim::GetBaseDecision(TPlayAction action)
 {
-    bool ret = false;
+    TPlayAction ret = action;
 
-    ret |= action == TPlayAction::DOUBLE;
-    ret |= action == TPlayAction::DOUBLE_X_3;
-    ret |= action == TPlayAction::DOUBLE_X_4;
-    ret |= action == TPlayAction::DOUBLE_X_5;
-    ret |= action == TPlayAction::DOUBLE_X_6;
+    if (action == TPlayAction::DOUBLE ||
+        action == TPlayAction::DOUBLE_X_3 ||
+        action == TPlayAction::DOUBLE_X_4 ||
+        action == TPlayAction::DOUBLE_X_5 ||
+        action == TPlayAction::DOUBLE_X_6)
+    {
+        ret = TPlayAction::DOUBLE;
+    }
+    else if (action == TPlayAction::STAND ||
+             action == TPlayAction::STAND_X_4 ||
+             action == TPlayAction::STAND_X_5 ||
+             action == TPlayAction::STAND_X_6)
+    {
+        ret = TPlayAction::STAND;
+    }
+    else if (action == TPlayAction::HIT ||
+             action == TPlayAction::HIT_IF_678 ||
+             action == TPlayAction::HIT_IF_S678 ||
+             action == TPlayAction::HIT_IF_SP678)
+    {
+        ret = TPlayAction::HIT;
+    }
+    else if (action == TPlayAction::SPLIT_X_SUPER)
+    {
+        ret = TPlayAction::SPLIT;
+    }
 
     return ret;
 }
@@ -565,22 +637,12 @@ bool Sim::CanTakeAction(std::unique_ptr<Player>& player,
                 ret = true;
             }
             break;
-        case TPlayAction::SPLIT_X_S7:
-            if (CanTakeAction(player, hand, handIdx, TPlayAction::SPLIT) &&
-                !(hand[0]->GetRank() == 7 &&
-                  hand[1]->GetRank() == 7 &&
-                  hand[0]->GetSuit() == hand[1]->GetSuit()))
-            {
-                ret = true;
-            }
-            break;
         case TPlayAction::SPLIT_X_SUPER:
             if (CanTakeAction(player, hand, handIdx, TPlayAction::SPLIT) &&
                 !(hand[0]->GetRank() == 7 &&
                   hand[1]->GetRank() == 7 &&
                   _dealer->_hands[0][0]->GetRank() == 7 &&
-                  hand[0]->GetSuit() == hand[1]->GetSuit() &&
-                  hand[0]->GetSuit() == _dealer->_hands[0][0]->GetSuit()))
+                  hand[0]->GetSuit() == hand[1]->GetSuit()))
             {
                 ret = true;
             }
@@ -633,15 +695,6 @@ bool Sim::CanTakeAction(std::unique_ptr<Player>& player,
             {
                 ret = true;
             }
-            break;
-        case TPlayAction::HIT_IF_SUPER:
-            if (hand.size() == 2 &&
-                hand[0]->GetRank() == 7 &&
-                hand[1]->GetRank() == 7 &&
-                GetUpCardRank() == 7 &&
-                hand[0]->GetSuit() == hand[1]->GetSuit() &&
-                hand[0]->GetSuit() == GetUpCardSuit())
-                ret = true;
             break;
         case TPlayAction::DOUBLE:
             if (player->NumDoubles(handIdx) <= _game->GetNumDoubles())
@@ -703,9 +756,6 @@ void Sim::PrintDecision(TPlayAction action)
             case TPlayAction::SPLIT:
                 std::cout << "Split action." << std::endl;
                 break;
-            case TPlayAction::SPLIT_X_S7:
-                std::cout << "Split except suited 7s action." << std::endl;
-                break;
             case TPlayAction::SPLIT_X_SUPER:
                 std::cout << "Split except super bonus action." << std::endl;
                 break;
@@ -745,9 +795,6 @@ void Sim::PrintDecision(TPlayAction action)
             case TPlayAction::HIT_IF_SP678:
                 std::cout << "Hit if 6 7 8 spades action." << std::endl;
                 break;
-            case TPlayAction::HIT_IF_SUPER:
-                std::cout << "Hit if super action." << std::endl;
-                break;
             default:
                 std::cout << "Unknown TPlayAction." << std::endl;
                 break;
@@ -760,10 +807,11 @@ void Sim::PrintDecision(TPlayAction action)
 
 /**
  * Does a lookup of the Player's strategy decision based on
- * TODO
+ * the game conditions and the Player's strategy. Determines
+ * which decision to ultimately take.
  *
- * Returns a decision
- * TODO: make this only basic decisions?
+ * Returns a basic decision. That is, a decision that is not
+ * conditional (e.g. STAND, SPLIT, DOUBLE, HIT, SURRENDER).
  */
 TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                              std::vector<std::unique_ptr<Card> >& hand,
@@ -786,7 +834,7 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
 
     // Check if the Player deviates from basic strategy and if it applies
     //
-    auto deviationStrat = player->GetDeviationStrategy();
+    auto deviationStrat = player->GetDeviationStrategy(_game);
     auto it = deviationStrat.find(stratKey);
     if (player->IsDeviating() && it != deviationStrat.end())
     {
@@ -802,12 +850,9 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                 if (DEBUG) {std::cout << "Deviating." << std::endl;}
                 if (CanTakeAction(player, hand, handIdx, decision))
                 {
+                    decision = GetBaseDecision(decision);
                     if (DEBUG) {PrintDecision(decision);}
-                    if (IsDoubleAction(decision))
-                    {
-                        if (DEBUG) {std::cout << "Using DOUBLE as base action." << std::endl;}
-                        decision = TPlayAction::DOUBLE;
-                    }
+
                     return decision;
                 }
                 else
@@ -816,12 +861,9 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                     if (CanTakeAction(player, hand, handIdx, followUpDecision))
                     {
                         if (DEBUG) {std::cout << "Follow-up deviation." << std::endl;}
+                        followUpDecision = GetBaseDecision(followUpDecision);
                         if (DEBUG) {PrintDecision(followUpDecision);}
-                        if (IsDoubleAction(followUpDecision))
-                        {
-                            if (DEBUG) {std::cout << "Using DOUBLE as base action." << std::endl;}
-                            followUpDecision = TPlayAction::DOUBLE;
-                        }
+
                         return followUpDecision;
                     }
                 }
@@ -848,12 +890,9 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                         if (DEBUG) {std::cout << "Deviating hard total." << std::endl;}
                         if (CanTakeAction(player, hand, handIdx, hardDecision))
                         {
+                            hardDecision = GetBaseDecision(hardDecision);
                             if (DEBUG) {PrintDecision(hardDecision);}
-                            if (IsDoubleAction(hardDecision))
-                            {
-                                if (DEBUG) {std::cout << "Using DOUBLE as base action." << std::endl;}
-                                hardDecision = TPlayAction::DOUBLE;
-                            }
+
                             return hardDecision;
                         }
                         else
@@ -861,13 +900,10 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                             auto followUpHardDecision = it->second[GetUpCardRank()].second.second;
                             if (CanTakeAction(player, hand, handIdx, followUpHardDecision))
                             {
+                                followUpHardDecision = GetBaseDecision(followUpHardDecision);
                                 if (DEBUG) {std::cout << "Follow-up hard total deviation." << std::endl;}
                                 if (DEBUG) {PrintDecision(followUpHardDecision);}
-                                if (IsDoubleAction(followUpHardDecision))
-                                {
-                                    if (DEBUG) {std::cout << "Using DOUBLE as base action." << std::endl;}
-                                    followUpHardDecision = TPlayAction::DOUBLE;
-                                }
+
                                 return followUpHardDecision;
                             }
                         }
@@ -886,13 +922,7 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
     if (CanTakeAction(player, hand, handIdx, decision))
     {
         if (DEBUG) {std::cout << "Primary decision." << std::endl;}
-        if (DEBUG) {PrintDecision(decision);}
-        if (IsDoubleAction(decision))
-        {
-            if (DEBUG) {std::cout << "Using DOUBLE as base action." << std::endl;}
-            decision = TPlayAction::DOUBLE;
-        }
-        return decision;
+        return GetBaseDecision(decision);
     }
     else
     {
@@ -903,12 +933,8 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
         if (DEBUG) {PrintDecision(basicStrat.find(stratKey)->second[GetUpCardRank()].second);}
         if (CanTakeAction(player, hand, handIdx, followUpDecision))
         {
-            if (IsDoubleAction(followUpDecision))
-            {
-                if (DEBUG) {std::cout << "Using DOUBLE as base action." << std::endl;}
-                followUpDecision = TPlayAction::DOUBLE;
-            }
-            return followUpDecision;
+            if (DEBUG) {std::cout << "FollowUp decision." << std::endl;}
+            return GetBaseDecision(followUpDecision);
         }
         else
         {
@@ -925,12 +951,7 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
             if (DEBUG) {PrintDecision(tertiaryDecision);}
             if (CanTakeAction(player, hand, handIdx, tertiaryDecision))
             {
-                if (IsDoubleAction(tertiaryDecision))
-                {
-                    if (DEBUG) {std::cout << "Using DOUBLE as base action." << std::endl;}
-                    tertiaryDecision = TPlayAction::DOUBLE;
-                }
-                return tertiaryDecision;
+                return GetBaseDecision(tertiaryDecision);
             }
             else
             {
@@ -939,12 +960,7 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                 if (DEBUG) {PrintDecision(hardTotalFollowup);}
                 if (CanTakeAction(player, hand, handIdx, hardTotalFollowup))
                 {
-                    if (IsDoubleAction(hardTotalFollowup))
-                    {
-                        if (DEBUG) {std::cout << "Using DOUBLE as base action." << std::endl;}
-                        hardTotalFollowup = TPlayAction::DOUBLE;
-                    }
-                    return hardTotalFollowup;
+                    return GetBaseDecision(hardTotalFollowup);
                 }
                 else
                 {
@@ -965,8 +981,10 @@ TPlayAction Sim::GetDecision(std::unique_ptr<Player>& player,
                     {
                         // "I'm just gonna stand cuz I'm stupid."
                         //
-                        std::cerr << "ERROR: Could not find a decision from the Player's strategy!" << std::endl;
-                        return TPlayAction::STAND; 
+                        std::cerr << "ERROR: Could not find " << player->GetName()
+                                  << "'s decision for " << stratKey << " vs " << GetUpCardRank()
+                                  << " and " << player->NumDoubles(handIdx) << " doubles!" << std::endl;
+                       return TPlayAction::STAND; 
                     }
                 }
             }
@@ -1001,17 +1019,29 @@ void Sim::PayoutWinners()
                 {
                     if (playerResult == dealerResult)
                     {
-                        // Push
-                        //
-                        if (_playersVec[pIdx]->_doubleVec[hIdx])
+                        if (playerResult == 21 && _deckType == TDeckType::SPANISH21)
                         {
-                            if (DEBUG) {std::cout << "Paying player[" << pIdx << "] PUSH on a double." << std::endl;}
-                            PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_PUSH);
+                            if (_deckType == TDeckType::SPANISH21)
+                            {
+                                auto factor = CheckForBonusPayout(pIdx, hIdx);
+                                if (DEBUG) {std::cout << "Calculated win/bonus factor: " << std::to_string(factor) << std::endl;}
+                                PayoutPlayer(_playersVec[pIdx], hIdx, factor);
+                            }
                         }
                         else
                         {
-                            if (DEBUG) {std::cout << "Paying player[" << pIdx << "] PUSH." << std::endl;}
-                            PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_PUSH);
+                            // Push
+                            //
+                            if (_playersVec[pIdx]->_doubleVec[hIdx])
+                            {
+                                if (DEBUG) {std::cout << "Paying player[" << pIdx << "] PUSH on a double." << std::endl;}
+                                PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_PUSH);
+                            }
+                            else
+                            {
+                                if (DEBUG) {std::cout << "Paying player[" << pIdx << "] PUSH." << std::endl;}
+                                PayoutPlayer(_playersVec[pIdx], hIdx, Sim::FACTOR_PUSH);
+                            }
                         }
                     }
                     else if (playerResult > dealerResult || dealerResult > 21)
@@ -1076,8 +1106,7 @@ double Sim::CheckForBonusPayout(int playerIndex, int handIndex)
             hand[2]->GetRank() == 7 &&
             hand[0]->GetSuit() == hand[1]->GetSuit() &&
             hand[0]->GetSuit() == hand[2]->GetSuit() &&
-            GetUpCardRank() == 7 &&
-            hand[0]->GetSuit() == GetUpCardSuit())
+            GetUpCardRank() == 7)
         {
             // We have a super bonus! Calculate the appropriate
             // factor, since it varies
@@ -1094,9 +1123,64 @@ double Sim::CheckForBonusPayout(int playerIndex, int handIndex)
                 ret = 5000.0 / _playersVec[playerIndex]->_handsBetVec[handIndex]->_amount;
             }
         }
+        else if (hand.size() == 3 &&
+                 hand[0]->GetRank() == 7 &&
+                 hand[1]->GetRank() == 7 &&
+                 hand[2]->GetRank() == 7)
+        {
+            if (hand[0]->GetSuit() == hand[1]->GetSuit() &&
+                hand[0]->GetSuit() == hand[2]->GetSuit())
+            {
+                // We have suited 7s, lets payout appropraitely. Spades 3:1, other suits 2:1
+                //
+                if (hand[0]->GetSuit() == static_cast<int>(TSuitType::SPADES))
+                {
+                    if (DEBUG) {std::cout << "Player[" << playerIndex << "] sees WIN_SP7." << std::endl;}
+                    ret = Sim::FACTOR_WIN_SP7;
+                }
+                else
+                {
+                    if (DEBUG) {std::cout << "Player[" << playerIndex << "] sees WIN_S7." << std::endl;}
+                    ret = Sim::FACTOR_WIN_S7;
+                }
+            }
+            else
+            {
+                // Off-suit pays 3:2
+                if (DEBUG) {std::cout << "Player[" << playerIndex << "] sees WIN_7." << std::endl;}
+                ret = Sim::FACTOR_WIN_7;
+            }
+        }
+        else if (hand.size() == 3 &&
+                 Is678(hand[0]->GetRank(), hand[1]->GetRank(), hand[2]->GetRank()))
+        {
+            // 6 7 8 bonus
+            //
+            if (hand[0]->GetSuit() == hand[1]->GetSuit() &&
+                hand[0]->GetSuit() == hand[2]->GetSuit())
+            {
+                // We have suited 678, lets payout appropraitely. Spades 3:1, other suits 2:1
+                //
+                if (hand[0]->GetSuit() == static_cast<int>(TSuitType::SPADES))
+                {
+                    if (DEBUG) {std::cout << "Player[" << playerIndex << "] sees WIN_SP678." << std::endl;}
+                    ret = Sim::FACTOR_WIN_SP678;
+                }
+                else
+                {
+                    if (DEBUG) {std::cout << "Player[" << playerIndex << "] sees WIN_S678." << std::endl;}
+                    ret = Sim::FACTOR_WIN_S678;
+                }
+            }
+            else
+            {
+                // Off-suit pays 3:2
+                if (DEBUG) {std::cout << "Player[" << playerIndex << "] sees WIN_678." << std::endl;}
+                ret = Sim::FACTOR_WIN_678;
+            }
+        }
         else
         {
-            // Check for hand size bonus
             int numCards = _playersVec[playerIndex]->_hands[handIndex].size();
             if (numCards == 5)
             {
@@ -1148,7 +1232,10 @@ void Sim::PlayDealerHand()
 }
 
 /**
- * TODO
+ * This function runs a given player's hands to completion.  If
+ * the player splits off multiple hands, then this function
+ * recurses for that player in order to complete all of their hands.
+ *
  */
 void Sim::PlayHand(int pIdx, int hIdx)
 {
@@ -1194,9 +1281,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
         if (DEBUG) {std::cout << "Decision: "; PrintDecision(decision);}
 
         // CHECK AND HANDLE Split action
-        if (decision == TPlayAction::SPLIT ||
-            decision == TPlayAction::SPLIT_X_S7 ||
-            decision == TPlayAction::SPLIT_X_SUPER)
+        if (decision == TPlayAction::SPLIT)
         {
             if (DEBUG) {std::cout << "Handling split action." << std::endl;}
             player->_hands.push_back(std::vector<std::unique_ptr<Card> >());
@@ -1244,10 +1329,7 @@ void Sim::PlayHand(int pIdx, int hIdx)
             }
         }
         // CHECK AND HANDLE Stand action
-        else if (decision == TPlayAction::STAND ||
-                 decision == TPlayAction::STAND_X_4 ||
-                 decision == TPlayAction::STAND_X_5 ||
-                 decision == TPlayAction::STAND_X_6)
+        else if (decision == TPlayAction::STAND)
         {
             //
             // The stand action has been verified by this point

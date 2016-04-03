@@ -31,6 +31,12 @@ public:
     static constexpr double FACTOR_WIN_5_CARD_BONUS = 2.5;
     static constexpr double FACTOR_WIN_6_CARD_BONUS = 3.0;
     static constexpr double FACTOR_WIN_7_CARD_BONUS = 4.0;
+    static constexpr double FACTOR_WIN_678          = 2.5;
+    static constexpr double FACTOR_WIN_S678         = 3.0;
+    static constexpr double FACTOR_WIN_SP678        = 4.0;
+    static constexpr double FACTOR_WIN_7            = 2.5;
+    static constexpr double FACTOR_WIN_S7           = 3.0;
+    static constexpr double FACTOR_WIN_SP7          = 4.0;
     static constexpr double FACTOR_PUSH             = 1.0;
     static constexpr double FACTOR_SURRENDER        = 0.5;
     static constexpr double FACTOR_INSURANCE        = 1.5;
@@ -59,8 +65,9 @@ public:
     int GetUpCardSuit();
     bool IsHandSoft(const std::vector<std::unique_ptr<Card> >& hand) const;
     bool IsBlackjack(const std::vector<std::unique_ptr<Card> >& hand) const;
+    bool Is678(int r0, int r1, int r2);
     bool IsTwoOf678(int r0, int r1);
-    bool IsDoubleAction(TPlayAction action);
+    TPlayAction GetBaseDecision(TPlayAction action);
     void PayoutPlayer(std::unique_ptr<Player>& player, int handIdx, double payoutFactor);
     void PayoutInsurance(std::unique_ptr<Player>& player);
     void PlayHand(int pIdx, int hIdx);
@@ -75,7 +82,12 @@ public:
     TPlayAction GetDecision(std::unique_ptr<Player>& player, std::vector<std::unique_ptr<Card> >& hand, int hIdx);
     double CheckForBonusPayout(int playerIndex, int handIndex);
 
-    Sim(TSimMode simMode, TDeckType deckType);
+    Sim(TSimMode       simMode, 
+        TDeckType      deckType,
+        int            handsToPlay,
+        vector<string> players,
+        bool           hit17 = false);
+
     ~Sim()
     {
         //std::cout << "Sim dtor." << std::endl;

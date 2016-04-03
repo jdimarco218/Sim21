@@ -32,7 +32,6 @@ enum class TPlayAction
     STAND_X_4,
     STAND_X_5,
     STAND_X_6,
-    SPLIT_X_S7,
     SPLIT_X_SUPER,
     DOUBLE_X_3,
     DOUBLE_X_4,
@@ -40,8 +39,7 @@ enum class TPlayAction
     DOUBLE_X_6,
     HIT_IF_678,
     HIT_IF_S678,
-    HIT_IF_SP678,
-    HIT_IF_SUPER
+    HIT_IF_SP678
 };
 
 class Player
@@ -60,7 +58,7 @@ public:
     //static map<string, vector<pair<TPlayAction, TPlayAction> > > bs_h17_das_ns;
     map<string, vector<pair<TPlayAction, TPlayAction> > > GetPlayStrategy(std::unique_ptr<Game>& game);
     map<string, vector<pair<TPlayAction, TPlayAction> > > GetPlayStrategy(std::unique_ptr<Game>& game, std::vector<std::unique_ptr<Card> >& hand, int handIdx);
-    map<string, vector<pair<int, pair<TPlayAction, TPlayAction> > > > GetDeviationStrategy();
+    map<string, vector<pair<int, pair<TPlayAction, TPlayAction> > > > GetDeviationStrategy(std::unique_ptr<Game>& game);
 
     std::vector<std::unique_ptr<Bet> > &GetBetVec(){ return _handsBetVec; }
     std::vector<std::vector<std::unique_ptr<Card> > > &GetHands(){ return _hands; }
@@ -74,6 +72,8 @@ public:
     double GetHandBetAmount(int handIdx); 
     void MakeInsuranceBet();
     bool WantsInsurance(Game * game);
+    inline std::string GetName(){ return _name; }
+    inline long double GetTotalWagered(){ return _totalWagered; }
     inline int  NumHands(){ return _hands.size(); }
     inline double GetChips(){ return _chips; }
     inline int  NumDoubles(int hIdx){ return _doubleVec[hIdx]; }
@@ -85,12 +85,14 @@ public:
     inline bool IsActiveAt(int hIdx){ return _activeVec[hIdx]; }
 
     Player();
+    Player(std::string);
     ~Player()
     {
         //std::cout << "Player dtor." << std::endl;
     }
 
 private:
+    std::string                                         _name;
     double                                             _chips;
     long double                                 _totalWagered;
     long double                                _totalWinnings;
