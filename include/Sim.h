@@ -51,6 +51,7 @@ public:
     void RunIndexSimulation();
     void SimulateHand(Game * game);
     bool IsSimulationFinished();
+    bool IsBonusEligibleHand(std::unique_ptr<Player>& player, int hIdx);
     void PrintGameState(Game * game);
     void PrintDecision(TPlayAction action);
     void PrintChips();

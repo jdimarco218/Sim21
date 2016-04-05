@@ -15,8 +15,8 @@ Player::Player()
     _chips = 0;
     _wantsInsurance = false;
     _strategy = std::unique_ptr<Strategy>(new Strategy());
-    _isCounting = true;
-    _isDeviating = true;
+    _isCounting = false;
+    _isDeviating = false;
     ResetPlayer();
 }
 
@@ -30,8 +30,8 @@ Player::Player(std::string name)
     _chips = 0;
     _wantsInsurance = false;
     _strategy = std::unique_ptr<Strategy>(new Strategy());
-    _isCounting = true;
-    _isDeviating = true;
+    _isCounting = false;
+    _isDeviating = false;
     ResetPlayer();
 }
 

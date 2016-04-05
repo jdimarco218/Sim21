@@ -15,7 +15,7 @@ using std::map;
 using std::string;
 using std::vector;
 
-#define DEBUG true
+#define DEBUG false
 
 Sim::Sim(TSimMode       simMode, 
          TDeckType      deckType,
@@ -260,7 +260,7 @@ void Sim::CheckInsuranceAndBlackjack()
         {
             if ( isAceUp && player->WantsInsurance(_game.get()) )
             {
-                if(DEBUG){ std::cout << "db.   Player takes insurance." << std::endl; }
+                if(DEBUG){ std::cout << "Player takes insurance." << std::endl; }
                 player->MakeInsuranceBet();
             }
 
@@ -270,7 +270,7 @@ void Sim::CheckInsuranceAndBlackjack()
         //
         if (_dealer->_hands[0].size() == 2 && GetOptimalValue(_dealer->_hands[0]) == 21)
         {
-            if(DEBUG){ std::cout << "db.   Dealer has bj." << std::endl; }
+            if(DEBUG){ std::cout << "Dealer has natural." << std::endl; }
             for (auto& player : _playersVec)
             {
                 if ( isAceUp && player->WantsInsurance(_game.get()) )
@@ -281,12 +281,12 @@ void Sim::CheckInsuranceAndBlackjack()
                 {
                     // Player and dealer both have blackjack
                     //
-                    if(DEBUG){ std::cout << "db.   Player has bj." << std::endl; }
+                    if(DEBUG){ std::cout << "Player has natural." << std::endl; }
                     PayoutPlayer(player, 0, Sim::FACTOR_PUSH);
                 }
                 else
                 {
-                    if(DEBUG){ std::cout << "db.   Player does not have bj." << std::endl; }
+                    if(DEBUG){ std::cout << "Player does not have natural." << std::endl; }
                     // Player doesn't have blackjack but dealer does
                 }
 
@@ -297,12 +297,12 @@ void Sim::CheckInsuranceAndBlackjack()
         }
         else // Dealer does NOT have blackjack
         { 
-            if(DEBUG){ std::cout << "db.   Dealer does not have bj." << std::endl; }
-            for (auto &player : _playersVec)
+            if(DEBUG){ std::cout << "Dealer does not have natural." << std::endl; }
+            for (auto& player : _playersVec)
             {
                 if (player->_hands[0].size() == 2 && GetOptimalValue(player->_hands[0]) == 21)
                 {
-                    if (DEBUG) {std::cout << "db.   Player has bj." << std::endl;}
+                    if (DEBUG) {std::cout << "Player has natural." << std::endl;}
                     PayoutPlayer(player, 0, Sim::FACTOR_BLACKJACK);
                     player->_activeVec[0] = false;
                 }
@@ -311,12 +311,26 @@ void Sim::CheckInsuranceAndBlackjack()
         break;
     }
     case TDeckType::SPANISH21:
-        for (auto &player : _playersVec)
+        //
+        // Payout player blackjacks no matter what
+        //
+        for (auto& player : _playersVec)
         {
             if (player->_hands[0].size() == 2 && GetOptimalValue(player->_hands[0]) == 21)
             {
-                if (DEBUG) {std::cout << "db.   Player has bj." << std::endl;}
+                if (DEBUG) {std::cout << "Player has natural." << std::endl;}
                 PayoutPlayer(player, 0, Sim::FACTOR_BLACKJACK);
+                player->_activeVec[0] = false;
+            }
+        }
+        //
+        // Do not allow players to play further if dealer has blackjack
+        //
+        if (_dealer->_hands[0].size() == 2 && GetOptimalValue(_dealer->_hands[0]) == 21)
+        {
+            if (DEBUG) {std::cout << "Dealer has natural." << std::endl;}
+            for (auto& player : _playersVec)
+            {
                 player->_activeVec[0] = false;
             }
         }
@@ -1094,12 +1108,14 @@ void Sim::PayoutWinners()
 double Sim::CheckForBonusPayout(int playerIndex, int handIndex)
 {
     auto ret = Sim::FACTOR_WIN;
+    auto& player = _playersVec[playerIndex];
+    auto& hand = _playersVec[playerIndex]->_hands[handIndex];
 
-    if (_deckType == TDeckType::SPANISH21)
+    if (_deckType == TDeckType::SPANISH21 &&
+        IsBonusEligibleHand(player, handIndex))
     {
         // First, check for the super bonus
         //
-        auto& hand = _playersVec[playerIndex]->_hands[handIndex];
         if (hand.size() == 3 &&
             hand[0]->GetRank() == 7 &&
             hand[1]->GetRank() == 7 &&
@@ -1203,6 +1219,33 @@ double Sim::CheckForBonusPayout(int playerIndex, int handIndex)
                 ret = Sim::FACTOR_WIN;
             }
         }
+    }
+
+    return ret;
+}
+
+bool Sim::IsBonusEligibleHand(std::unique_ptr<Player>& player, int hIdx)
+{
+    bool ret = true;
+
+    // TODO possibly: check if it is common for this to 
+    // count for suited 3 card 21 and make configurable
+    //
+    if (player->IsHandSplit() ||
+        player->IsHandDoubled(hIdx))
+    {
+//        //J5e3db
+//
+//        _dealer->GetHand(0);
+//        std::cout << "not eligible: " << GetStratKey(player->GetHand(hIdx))
+//                  << " vs " << GetStratKey(_dealer->GetHand(0)) << std::endl;
+//        std::cout << "hands.size(): " << player->NumHands() << std::endl;
+//        for (auto& card : player->GetHand(hIdx))
+//        {
+//            std::cout << card->GetRank() << " ";
+//        }
+//        std::cout << std::endl;
+        ret = false;
     }
 
     return ret;
